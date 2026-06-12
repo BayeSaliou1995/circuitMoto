@@ -1,0 +1,94 @@
+@'
+# =========================
+# PYTHON / DJANGO
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# =========================
+# ENVIRONNEMENTS VIRTUELS
+# =========================
+env/
+venv/
+.venv/
+ENV/
+
+# =========================
+# FICHIERS SENSIBLES
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# BASES LOCALES
+# =========================
+db.sqlite3
+*.sqlite3
+*.db
+
+# =========================
+# PRODUCTION / UPLOADS / COLLECTSTATIC
+# =========================
+media/
+staticfiles/
+collected_static/
+
+# Documents uploadés par les utilisateurs
+static/images/documents/
+static/images/signatures/
+static/images/tmp_wizard/
+
+# =========================
+# LOGS
+# =========================
+*.log
+logs/
+runserver.err.log
+runserver.out.log
+
+# =========================
+# ARCHIVES / BACKUPS
+# =========================
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.bak
+*.backup
+*.save
+*.old
+*.tmp
+*.temp
+
+# =========================
+# WINDOWS / MAC / IDE
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# =========================
+# NODE SI UTILISÉ
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# DOSSIERS LOCAUX
+# =========================
+local/
+'@ | Set-Content .gitignore -Encoding UTF8
