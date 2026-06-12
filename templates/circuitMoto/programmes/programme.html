@@ -1,0 +1,732 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+
+<div class="programs-container">
+
+  <!-- Navigation améliorée -->
+  <nav class="breadcrumb-nav">
+    <a href="{% url 'home' %}" class="breadcrumb-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Accueil
+    </a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-current">Programmes</span>
+  </nav>
+
+  <!-- En-tête avec design amélioré -->
+  <header class="programs-header">
+    <div class="header-content">
+      <h1 class="header-title">
+        <span class="title-gradient">Programmes des circuits</span>
+        <div class="title-underline"></div>
+      </h1>
+      <p class="header-subtitle">Explorez nos circuits par année et découvrez les aventures qui vous attendent</p>
+    </div>
+    <div class="header-decoration">
+      <div class="decoration-element"></div>
+      <div class="decoration-element"></div>
+      <div class="decoration-element"></div>
+    </div>
+  </header>
+
+  <!-- Grille de programmes avec animations -->
+  <div class="programs-grid">
+    {% for c in cards %}
+    <a href="{% url 'programme_detail' c.annee %}" class="program-card" data-year="{{ c.annee }}">
+      <div class="card-content">
+        <div class="year-display">
+          <span class="year-number">{{ c.annee }}</span>
+          <span class="year-badge">{{ c.count }} circuit{{ c.count|pluralize }}</span>
+        </div>
+        
+        <div class="circuit-stats">
+          <div class="stat-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>Toute l'année</span>
+          </div>
+        </div>
+
+        <div class="card-cta">
+          <span>Explorer les circuits</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="card-background">
+        <div class="background-overlay"></div>
+        <div class="background-pattern"></div>
+      </div>
+      
+      <div class="card-hover-effect"></div>
+    </a>
+    {% empty %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h3>Aucun programme disponible</h3>
+      <p>Revenez plus tard pour découvrir nos prochains circuits</p>
+      <a href="{% url 'home' %}" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        </svg>
+        Retour à l'accueil
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Section d'inspiration -->
+  <section class="inspiration-section">
+    <div class="inspiration-content">
+      <h2>Prêt pour l'aventure ?</h2>
+      <p>Rejoignez-nous sur les plus beaux circuits et vivez une expérience moto inoubliable</p>
+      <a href="" class="btn btn-outline">
+        Voir tous les circuits
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+</div>
+
+<style>
+:root {
+  --primary: #4361ee;
+  --primary-light: rgba(67, 97, 238, 0.1);
+  --primary-dark: #3a56d4;
+  --secondary: #8b5cf6;
+  --accent: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --text-lighter: #b2bec3;
+  --bg: #ffffff;
+  --bg-card: #ffffff;
+  --border: #dfe6e9;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-slow: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+[data-theme="dark"] {
+  --primary: #5e72e4;
+  --primary-light: rgba(94, 114, 228, 0.15);
+  --primary-dark: #4d5fd0;
+  --secondary: #a78bfa;
+  --text: #edf2f7;
+  --text-light: #a0aec0;
+  --text-lighter: #718096;
+  --bg: #1a202c;
+  --bg-card: #2d3748;
+  --border: #4a5563;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Layout */
+.programs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--bg);
+  color: var(--text);
+  transition: var(--transition-slow);
+}
+
+/* Navigation */
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
+.breadcrumb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.breadcrumb-separator {
+  color: var(--text-light);
+}
+
+.breadcrumb-current {
+  color: var(--text);
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+}
+
+/* Header styles */
+.programs-header {
+  position: relative;
+  margin-bottom: 3rem;
+  padding: 3rem 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header-title {
+  font-size: 3rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.title-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  background-size: 200% auto;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+.title-underline {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  margin: 1rem auto;
+  border-radius: 2px;
+}
+
+.header-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-light);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.header-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.decoration-element {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  animation: float 6s ease-in-out infinite;
+}
+
+.decoration-element:nth-child(1) {
+  width: 300px;
+  height: 300px;
+  top: -100px;
+  right: -100px;
+  animation-delay: 0s;
+}
+
+.decoration-element:nth-child(2) {
+  width: 200px;
+  height: 200px;
+  bottom: -50px;
+  left: -50px;
+  animation-delay: -2s;
+}
+
+.decoration-element:nth-child(3) {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 10%;
+  animation-delay: -4s;
+}
+
+/* Grid layout */
+.programs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+/* Program card styles */
+.program-card {
+  position: relative;
+  display: block;
+  height: 280px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  text-decoration: none;
+  color: white;
+  transition: var(--transition);
+  box-shadow: var(--shadow-md);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.program-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  opacity: 0;
+  transition: var(--transition);
+  z-index: 2;
+}
+
+.program-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.program-card:hover::before {
+  opacity: 0.1;
+}
+
+.card-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.background-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(139, 92, 246, 0.8));
+}
+
+.background-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+  background-size: 30px 30px;
+  opacity: 0.5;
+}
+
+.card-hover-effect {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  z-index: 2;
+}
+
+.program-card:hover .card-hover-effect {
+  transform: translateX(100%);
+}
+
+.card-content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+.year-display {
+  margin-bottom: 1rem;
+}
+
+.year-number {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.year-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.circuit-stats {
+  margin-bottom: auto;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+  transition: var(--transition);
+}
+
+.program-card:hover .card-cta {
+  transform: translateX(5px);
+}
+
+.card-cta svg {
+  transition: var(--transition);
+}
+
+.program-card:hover .card-cta svg {
+  transform: translateX(3px);
+}
+
+/* Empty state */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-xl);
+  color: var(--text-light);
+  background: var(--primary-light);
+  transition: var(--transition);
+}
+
+.empty-state:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.empty-icon {
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.empty-state p {
+  margin: 0 0 2rem;
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Inspiration section */
+.inspiration-section {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary-light), transparent);
+  border-radius: var(--radius-xl);
+  margin-top: 2rem;
+}
+
+.inspiration-content h2 {
+  font-size: 2rem;
+  margin: 0 0 1rem;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.inspiration-content p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin: 0 0 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply animations to cards */
+.program-card {
+  animation: slideIn 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.program-card:nth-child(1) { animation-delay: 0.1s; }
+.program-card:nth-child(2) { animation-delay: 0.2s; }
+.program-card:nth-child(3) { animation-delay: 0.3s; }
+.program-card:nth-child(4) { animation-delay: 0.4s; }
+.program-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .programs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .programs-container {
+    padding: 1.5rem;
+  }
+  
+  .header-title {
+    font-size: 2.25rem;
+  }
+  
+  .header-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .program-card {
+    height: 240px;
+  }
+  
+  .year-number {
+    font-size: 2.5rem;
+  }
+  
+  .inspiration-section {
+    padding: 2rem 1.5rem;
+  }
+  
+  .inspiration-content h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .programs-header {
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+  }
+  
+  .header-title {
+    font-size: 2rem;
+  }
+  
+  .programs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .breadcrumb-nav {
+    flex-wrap: wrap;
+  }
+  
+  .empty-state {
+    padding: 3rem 1.5rem;
+  }
+  
+  .empty-state h3 {
+    font-size: 1.25rem;
+  }
+  
+  .empty-state p {
+    font-size: 1rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .program-card,
+  .decoration-element,
+  .card-hover-effect,
+  .btn {
+    animation: none;
+    transition: none;
+  }
+  
+  .program-card:hover {
+    transform: none;
+  }
+  
+  .title-gradient {
+    animation: none;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced hover effects
+  const programCards = document.querySelectorAll('.program-card');
+  
+  programCards.forEach(card => {
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateY = (x - centerX) / 25;
+      const rotateX = (centerY - y) / 25;
+      
+      this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(-8px) scale(1.02)';
+      
+      // Smooth reset
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 500);
+    });
+  });
+
+  // Parallax effect for header elements
+  const header = document.querySelector('.programs-header');
+  if (header) {
+    window.addEventListener('scroll', function() {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * -0.5;
+      header.style.transform = `translateY(${rate}px)`;
+    });
+  }
+
+  // Lazy loading for cards
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  programCards.forEach(card => {
+    observer.observe(card);
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+Cher {{ dest_name }},
+
+Votre inscription pour « {{ c.nom }} » ({{ c.code }}) est bien VALIDÉE{% if circuit_dates %} — dates : {{ circuit_dates }}{% endif %}.
+
+{% if option_expire_le %}
+Votre option reste valable jusqu’au {{ option_expire_le|date:"d/m/Y" }}.
+{% elif delai_option %}
+Votre option est bloquée pendant {{ delai_option }} jour{{ delai_option|pluralize:"s" }} à compter de ce jour.
+{% endif %}
+
+Documents à nous renvoyer (si pas déjà faits) :
+• Bulletin d’inscription complété et signé
+• Paiement de l’acompte demandé
+• Documents “assurance”, “décharge” et “fiche individuelle”
+
+Côté pratique :
+• Rendez-vous / logistique : {{ c.infos_rdv|default:"les informations de rendez-vous seront précisées par email."|striptags }}
+• Le circuit se déroule en groupe avec véhicule suiveur pour les bagages.
+• Pièce d’identité en cours de validité et permis de conduire requis.
+• Conseils utiles : petite trousse de secours personnelle, protection solaire, bouchons d’oreilles, etc.
+
+Pour compléter/mettre à jour votre dossier :
+{{ edit_url }}
+
+Nous restons à votre disposition et vous recontacterons prochainement avec les derniers détails utiles.
+
+À très bientôt,
+
+L’équipe Pulsion Horizon
