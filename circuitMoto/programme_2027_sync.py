@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from importlib import import_module
 from typing import Any
 
 from django.db import transaction
@@ -37,10 +36,47 @@ SYNC_FIELDS = (
     "actif",
 )
 
+PROGRAMME_2027_CIRCUITS = [
+    {"titre": "Laos", "slug": "laos-fevrier-2027", "mois": "Fevrier", "duree": "14 jours", "formule": "Moto ou 4x4", "categorie": "GRAND_VOYAGE", "ordre": 10},
+    {"titre": "Vietnam", "slug": "vietnam-fevrier-2027", "mois": "Fevrier", "duree": "14 jours", "formule": "Moto ou 4x4", "categorie": "GRAND_VOYAGE", "ordre": 20},
+    {"titre": "Sud Maroc - moto loc", "slug": "sud-maroc-moto-loc-mars-2027", "mois": "Mars", "duree": "10 jours", "formule": "Moto de location", "categorie": "RAID", "ordre": 30},
+    {"titre": "Senegal", "slug": "senegal-mars-2027", "mois": "Mars", "duree": "8 ou 12 jours", "formule": "Moto ou 4x4", "categorie": "GRAND_VOYAGE", "ordre": 40},
+    {"titre": "USA", "slug": "usa-avril-2027", "mois": "Avril", "duree": "12 ou 17 jours", "formule": "Harley ou Mustang", "categorie": "GRAND_VOYAGE", "ordre": 50},
+    {"titre": "Foret Noire", "slug": "foret-noire-mai-2027", "mois": "Mai", "duree": "4 ou 5 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 60},
+    {"titre": "Sardaigne", "slug": "sardaigne-mai-2027", "mois": "Mai", "duree": "11 ou 13 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 70},
+    {"titre": "Morvan", "slug": "morvan-mai-2027", "mois": "Mai", "duree": "5 ou 6 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 80},
+    {"titre": "Corse I", "slug": "corse-i-mai-2027", "mois": "Mai", "duree": "11 ou 13 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 90},
+    {"titre": "Pyrenees", "slug": "pyrenees-mai-2027", "mois": "Mai", "duree": "9 ou 11 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 100},
+    {"titre": "Toscane", "slug": "toscane-juin-2027", "mois": "Juin", "duree": "7 ou 9 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 110},
+    {"titre": "Vosges", "slug": "vosges-juin-2027", "mois": "Juin", "duree": "3 ou 4 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 120},
+    {"titre": "Corse II", "slug": "corse-ii-juin-2027", "mois": "Juin", "duree": "11 ou 13 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 130},
+    {"titre": "Dolomites I", "slug": "dolomites-i-juin-2027", "mois": "Juin", "duree": "8 ou 9 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 140},
+    {"titre": "Alsace I", "slug": "alsace-i-juin-2027", "mois": "Juin", "duree": "3 ou 5 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "lien_reference": "https://pulsionhorizon.com/alsace", "ordre": 150},
+    {"titre": "Corse autrement", "slug": "corse-autrement-juin-2027", "mois": "Juin", "duree": "11 ou 13 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 160},
+    {"titre": "Cote d'Opale - Normandie", "slug": "cote-opale-normandie-juin-2027", "mois": "Juin", "duree": "4 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 170},
+    {"titre": "Normandie - Bretagne", "slug": "normandie-bretagne-juin-2027", "mois": "Juin", "duree": "6 ou 7 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 180},
+    {"titre": "Cote d'Opale - Normandie - Bretagne", "slug": "cote-opale-normandie-bretagne-juin-2027", "mois": "Juin", "duree": "8 ou 9 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 190},
+    {"titre": "Ecosse", "slug": "ecosse-juin-2027", "mois": "Juin", "duree": "9 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 200},
+    {"titre": "Jura", "slug": "jura-juin-2027", "mois": "Juin", "duree": "5 ou 6 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 210},
+    {"titre": "Corse III", "slug": "corse-iii-septembre-2027", "mois": "Septembre", "duree": "11 ou 13 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 220},
+    {"titre": "Corse IV", "slug": "corse-iv-septembre-2027", "mois": "Septembre", "duree": "11 ou 13 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 230},
+    {"titre": "Alpes du sud", "slug": "alpes-du-sud-septembre-2027", "mois": "Septembre", "duree": "9 ou 10 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 240},
+    {"titre": "Croatie", "slug": "croatie-septembre-2027", "mois": "Septembre", "duree": "14 ou 15 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 250},
+    {"titre": "Albanie Grece", "slug": "albanie-grece-septembre-2027", "mois": "Septembre", "duree": "14 ou 15 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 260},
+    {"titre": "Champagne", "slug": "champagne-septembre-2027", "mois": "Septembre", "duree": "3 ou 4 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "ordre": 270},
+    {"titre": "Dolomites II", "slug": "dolomites-ii-septembre-2027", "mois": "Septembre", "duree": "8 ou 9 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 280},
+    {"titre": "Alsace II", "slug": "alsace-ii-septembre-2027", "mois": "Septembre", "duree": "3 ou 5 jours", "formule": "Moto", "categorie": "FRANCE_BELGIQUE", "lien_reference": "https://pulsionhorizon.com/alsace", "ordre": 290},
+    {"titre": "Usine Guzzi", "slug": "usine-guzzi-septembre-2027", "mois": "Septembre", "duree": "5 jours", "formule": "Moto", "categorie": "EUROPE", "ordre": 300},
+    {"titre": "Namibie", "slug": "namibie-octobre-2027", "mois": "Octobre", "duree": "14 jours", "formule": "Moto ou 4x4", "categorie": "GRAND_VOYAGE", "ordre": 310},
+    {"titre": "Raid Bxl/Dakar", "slug": "raid-bxl-dakar-octobre-2027", "mois": "Octobre", "duree": "24 jours", "formule": "100% route ou mixte route et piste", "categorie": "RAID", "ordre": 320},
+    {"titre": "Raid sud Maroc", "slug": "raid-sud-maroc-octobre-2027", "mois": "Octobre", "duree": "16 jours", "formule": "Route ou piste", "categorie": "RAID", "lien_reference": "https://pulsionhorizon.com/raid-sud-maroc-2026", "ordre": 330},
+    {"titre": "Sud Maroc - moto loc", "slug": "sud-maroc-moto-loc-octobre-2027", "mois": "Octobre", "duree": "10 jours", "formule": "Moto de location", "categorie": "RAID", "ordre": 340},
+    {"titre": "Senegal", "slug": "senegal-novembre-2027", "mois": "Novembre", "duree": "8 ou 12 jours", "formule": "Moto ou 4x4", "categorie": "GRAND_VOYAGE", "ordre": 350},
+]
+
 
 def programme_2027_circuits() -> list[dict[str, Any]]:
-    source = import_module("circuitMoto.migrations.0026_programme2027")
-    return [item.copy() for item in source.PROGRAMME_2027_CIRCUITS]
+    return [item.copy() for item in PROGRAMME_2027_CIRCUITS]
 
 
 def _defaults(item: dict[str, Any]) -> dict[str, Any]:

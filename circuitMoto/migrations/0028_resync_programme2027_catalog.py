@@ -11,7 +11,7 @@ def resync_programme_2027(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("circuitMoto", "0027_update_programme2027_circuits"),
+        ("circuitMoto", "0017_programme2027circuit_programme2027interest_and_more"),
     ]
 
     operations = [
