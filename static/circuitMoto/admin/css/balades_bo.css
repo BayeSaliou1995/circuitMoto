@@ -1,0 +1,319 @@
+
+/* static/circuitMoto/admin/css/balades_bo.css */
+.bo-filters{
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(148,163,184,.16);
+  border-radius: 20px;
+  background: rgba(255,255,255,.6);
+  backdrop-filter: blur(10px);
+}
+
+.bo-filters__grid{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 1rem;
+}
+
+.bo-filters__actions{
+  display:flex;
+  gap:.8rem;
+  flex-wrap:wrap;
+  margin-top:1rem;
+}
+
+.section-head--space{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+
+.bo-form{
+  margin-top:1rem;
+}
+
+.bo-form-grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:1rem;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:.45rem;
+}
+
+.field--full{
+  grid-column: 1 / -1;
+}
+
+.field label{
+  font-weight:700;
+}
+
+.form-control{
+  width:100%;
+  min-height:48px;
+  padding:.85rem 1rem;
+  border-radius:14px;
+  border:1px solid var(--border, #e5e7eb);
+  background:#fff;
+  color:inherit;
+}
+
+textarea.form-control{
+  min-height:120px;
+}
+
+.help-text{
+  color:#6b7280;
+  font-size:.9rem;
+}
+
+.field-error,
+.form-error{
+  color:#dc2626;
+  font-size:.92rem;
+  font-weight:700;
+}
+
+.form-errors{
+  display:grid;
+  gap:.5rem;
+  margin-bottom:1rem;
+}
+
+.bo-form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:.8rem;
+  flex-wrap:wrap;
+  margin-top:1.3rem;
+}
+
+.check-row{
+  display:inline-flex;
+  align-items:center;
+  gap:.65rem;
+  font-weight:700;
+}
+
+.balades-grid,
+.demandes-grid{
+  display:grid;
+  gap:1rem;
+  margin-top:1.2rem;
+}
+
+.balades-grid{
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+
+.demandes-grid{
+  grid-template-columns: 1fr;
+}
+
+.balade-card,
+.demande-card{
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:22px;
+  background: rgba(255,255,255,.78);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(15,23,42,.06);
+  padding:1rem;
+}
+
+.balade-card__top,
+.demande-card__head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:.8rem;
+}
+
+.balade-card__date{
+  display:inline-flex;
+  padding:.42rem .68rem;
+  border-radius:999px;
+  background: rgba(59,130,246,.12);
+  color:#2563eb;
+  font-size:.85rem;
+  font-weight:800;
+  margin-bottom:.65rem;
+}
+
+.balade-card__title{
+  margin:0;
+  font-size:1.06rem;
+  line-height:1.45;
+}
+
+.balade-card__meta,
+.balade-card__bottom,
+.demande-card__identity,
+.demande-card__section{
+  margin-top:.9rem;
+}
+
+.balade-card__meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem 1rem;
+  color:#475569;
+}
+
+.balade-card__bottom{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.42rem .72rem;
+  border-radius:999px;
+  font-size:.82rem;
+  font-weight:800;
+}
+
+.status-pill.is-success{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status-pill.is-muted{
+  background:#e5e7eb;
+  color:#374151;
+}
+
+.status-pill.is-warning{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.bulk-actions{
+  display:flex;
+  gap:.8rem;
+  flex-wrap:wrap;
+  align-items:center;
+  margin:1rem 0;
+}
+
+.bulk-actions__select{
+  max-width:280px;
+}
+
+.demande-card__identity h3{
+  margin:0 0 .3rem;
+}
+
+.demande-card__identity p{
+  margin:.15rem 0;
+}
+
+.demande-card__label{
+  font-weight:800;
+  margin-bottom:.45rem;
+}
+
+.choice-list{
+  margin:0;
+  padding-left:1.1rem;
+}
+
+.choice-list li{
+  margin:.25rem 0;
+}
+
+.demande-card__comment{
+  padding:.85rem 1rem;
+  border-radius:14px;
+  background:#f8fafc;
+  border:1px solid rgba(148,163,184,.16);
+}
+
+.muted{
+  color:#64748b;
+}
+
+.pagination-wrap{
+  margin-top:1.2rem;
+  display:flex;
+  justify-content:center;
+}
+
+.pagination{
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+}
+
+.page-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:42px;
+  height:42px;
+  border-radius:12px;
+  text-decoration:none;
+  border:1px solid rgba(148,163,184,.18);
+  background:#fff;
+  color:inherit;
+}
+
+.page-current{
+  font-weight:700;
+}
+
+@media (max-width: 900px){
+  .bo-filters__grid,
+  .bo-form-grid,
+  .balades-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px){
+  .bo-form-actions,
+  .bo-filters__actions,
+  .bulk-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .balade-card__bottom,
+  .balade-card__top,
+  .demande-card__head{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+
+.bo-kpi-inline{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin:16px 0 18px;
+}
+
+.inline-info-card{
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(15,23,42,.08);
+  box-shadow: 0 10px 30px rgba(2,6,23,.06);
+}
+
+@media (max-width: 860px){
+  .bo-kpi-inline{
+    grid-template-columns:1fr;
+  }
+}

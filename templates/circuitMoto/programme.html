@@ -1,0 +1,195 @@
+{# templates/circuitMoto/programme.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}{{ programme_title }} | Pulsion Horizon{% endblock %}
+{% block meta_description %}Programme 2026 Pulsion Horizon : balades d’un jour, circuits Europe, raids Maroc, Bruxelles-Dakar, Laos et découvertes Sénégal.{% endblock %}
+{% block body_class %}page-programme{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/programme.css' %}">
+  <script defer src="{% version_static 'circuitMoto/js/programme.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<section class="programme-progress" aria-hidden="true">
+  <span class="programme-progress__bar"></span>
+</section>
+
+<section class="programme-hero">
+  <div class="programme-shell">
+    <div class="programme-hero__grid">
+      <div class="programme-hero__content">
+        <span class="programme-kicker">Saison officielle</span>
+        <h1 class="programme-title">{{ programme_title }}</h1>
+        <p class="programme-lead">{{ programme_intro }}</p>
+
+        <div class="programme-hero__actions">
+          <a href="#programme-layout" class="btn btn-primary">Découvrir le programme</a>
+          {% comment %} <a href="{% url 'inscription_create_start' %}" class="btn btn-secondary">S’inscrire</a> {% endcomment %}
+        </div>
+
+        <div class="programme-stats">
+          <article class="programme-stat">
+            <strong>{{ sections|length }}</strong>
+            <span>univers</span>
+          </article>
+          <article class="programme-stat">
+            <strong>{{ total_items }}</strong>
+            <span>expériences</span>
+          </article>
+          <article class="programme-stat">
+            <strong>2026</strong>
+            <span>saison complète</span>
+          </article>
+        </div>
+      </div>
+
+      <aside class="programme-hero__panel">
+        <div class="programme-info-card">
+          <span class="programme-badge">Bon à savoir</span>
+          <p>{{ programme_notice }}</p>
+
+          <div class="programme-info-card__mini">
+            <span>Navigation rapide</span>
+            <strong>Utilisez le sommaire à gauche pour parcourir toutes les sections.</strong>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="programme-layout" class="programme-layout">
+  <div class="programme-shell">
+    <div class="programme-layout__grid">
+
+      <aside class="programme-sidebar">
+        <div class="programme-sidebar__card">
+          <div class="programme-sidebar__head">
+            <span class="programme-sidebar__eyebrow">Sommaire</span>
+            <h2>Programme 2026</h2>
+          </div>
+
+          <nav class="programme-sidebar__nav" aria-label="Navigation du programme">
+            {% for section in sections %}
+              <a href="#{{ section.slug }}" class="programme-sidebar__link" data-programme-link="{{ section.slug }}">
+                <span class="programme-sidebar__dot"></span>
+                <span class="programme-sidebar__text">
+                  <strong>{{ section.title }}</strong>
+                  <small>{{ section.kicker }}</small>
+                </span>
+              </a>
+            {% endfor %}
+          </nav>
+
+          <div class="programme-sidebar__footer">
+            <a href="{% url 'inscription_create_start' %}" class="btn btn-primary btn-sm">S’inscrire</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="programme-main">
+        {% for section in sections %}
+          <section id="{{ section.slug }}" class="programme-section js-programme-section">
+            <div class="programme-section__shell">
+              <div class="programme-section__head">
+                <div>
+                  <span class="programme-section__kicker">{{ section.kicker }}</span>
+                  <h2 class="programme-section__title">{{ section.title }}</h2>
+                  <p class="programme-section__desc">{{ section.description }}</p>
+                </div>
+
+                {% if section.cta_label and section.cta_url %}
+                  <div class="programme-section__cta">
+                    <a href="{{ section.cta_url }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener">
+                      {{ section.cta_label }}
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+
+              {% if section.links %}
+                <div class="programme-section__links programme-links-bar">
+                  {% for link in section.links %}
+                    <a href="{{ link.href }}" class="programme-link-pill" target="_blank" rel="noopener">
+                      {{ link.label }}
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <div class="programme-cards">
+                {% for item in section.items %}
+                  <article class="programme-card js-programme-card">
+                    <div class="programme-card__accent"></div>
+
+                    <div class="programme-card__top">
+                      <div class="programme-card__main">
+                        <h3 class="programme-card__title">{{ item.title }}</h3>
+
+                        <div class="programme-meta">
+                          {% if item.dates %}
+                            <span class="programme-meta__item"><strong>Dates :</strong> {{ item.dates }}</span>
+                          {% endif %}
+                          {% if item.duration %}
+                            <span class="programme-meta__item"><strong>Durée :</strong> {{ item.duration }}</span>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      {% if item.price %}
+                        <div class="programme-price">
+                          <span class="programme-price__label">Tarif</span>
+                          <strong>{{ item.price }}</strong>
+                        </div>
+                      {% endif %}
+                    </div>
+
+                    {% if item.note %}
+                      <p class="programme-note">{{ item.note }}</p>
+                    {% endif %}
+
+                    <div class="programme-card__actions">
+                      {% if item.primary_url %}
+                        <a
+                          href="{{ item.primary_url }}"
+                          class="btn btn-primary btn-sm"
+                          {% if "http" in item.primary_url %}target="_blank" rel="noopener"{% endif %}
+                        >
+                          {{ item.primary_label|default:"Voir le détail" }}
+                        </a>
+                      {% endif %}
+
+                      {% comment %} {% if item.registration_url %}
+                        <a
+                          href="{{ item.registration_url }}"
+                          class="btn btn-secondary btn-sm"
+                          {% if "http" in item.registration_url %}target="_blank" rel="noopener"{% endif %}
+                        >
+                          {{ item.registration_label|default:"S’inscrire" }}
+                        </a>
+                      {% endif %} {% endcomment %}
+                    </div>
+
+                    {% if item.links %}
+                      <div class="programme-card__links">
+                        {% for link in item.links %}
+                          <a href="{{ link.href }}" target="_blank" rel="noopener" class="programme-link-pill">
+                            {{ link.label }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </article>
+                {% endfor %}
+              </div>
+            </div>
+          </section>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

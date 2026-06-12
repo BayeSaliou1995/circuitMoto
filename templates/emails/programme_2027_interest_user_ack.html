@@ -1,0 +1,48 @@
+{# templates/emails/programme_2027_interest_user_ack.html #}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sélection reçue</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 12px 35px rgba(16,24,40,.08);">
+          <tr>
+            <td style="padding:28px;background:#0f172a;color:#fff;">
+              <div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;">Pulsion Horizon</div>
+              <h1 style="margin:8px 0 0;font-size:26px;line-height:1.2;">Votre sélection 2027 est bien reçue</h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:28px;">
+              <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#334155;">
+                Bonjour {{ demande.prenom }}, merci pour votre retour. Nous avons bien reçu votre sélection pour le Pré Programme 2027.
+              </p>
+
+              {% for s in selections %}
+                <div style="margin:0 0 12px;padding:16px 18px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
+                  <div style="font-size:13px;font-weight:700;color:#0f766e;margin-bottom:6px;">{{ s.circuit.mois }} · {{ s.circuit.duree }}</div>
+                  <div style="font-size:17px;font-weight:700;color:#0f172a;">{{ s.circuit.titre }}</div>
+                  <div style="font-size:14px;color:#475569;margin-top:6px;">{{ s.circuit.formule }}</div>
+                  <div style="font-size:14px;color:#0f172a;margin-top:10px;"><strong>Niveau :</strong> {{ s.get_niveau_interet_display }}</div>
+                </div>
+              {% endfor %}
+
+              <p style="margin:22px 0 0;font-size:15px;line-height:1.7;color:#334155;">
+                Nous reviendrons vers vous lorsque les programmes et les ouvertures de réservation avanceront.
+              </p>
+
+              <p style="margin:22px 0 0;color:#64748b;">L'équipe Pulsion Horizon</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

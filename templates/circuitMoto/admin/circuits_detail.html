@@ -1,0 +1,968 @@
+{# templates/circuitMoto/admin/circuits_detail.html #}
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+
+<div class="circuit-detail-container">
+  <!-- En-tête avec illustration -->
+  <header class="circuit-header animate__animated animate__fadeIn">
+    <div class="header-content">
+      <a href="{% url 'bo_circuit_list' %}" class="back-button">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" fill="none"/>
+        </svg>
+        Tous les circuits
+      </a>
+      
+      <div class="circuit-titles">
+        <h1 class="circuit-name gradient-text">{{ c.nom }}</h1>
+        <div class="circuit-meta">
+          <span class="circuit-code">{{ c.code }}</span>
+          <span class="circuit-dates">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" fill="none"/>
+              <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor"/>
+              <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor"/>
+              <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor"/>
+            </svg>
+            {{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Indicateurs clés -->
+      <div class="circuit-kpis">
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none"/>
+              <circle cx="9" cy="7" r="4" stroke="currentColor" fill="none"/>
+            </svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Capacité</div>
+            <div class="kpi-value">{{ c.capacite }}</div>
+          </div>
+        </div>
+        
+        <div class="kpi-card accent">
+          <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" fill="none"/>
+            </svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Inscriptions</div>
+            <div class="kpi-value">{{ c.nb_inscriptions }}</div>
+          </div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none"/>
+            </svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Occupation</div>
+            <div class="kpi-progress">
+              <div class="progress-bar" style="width: {{ pct }}%"></div>
+            </div>
+            <div class="kpi-percent">{{ pct }}%</div>
+          </div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/>
+              <path d="M16 8a6 6 0 0 1-6 6" stroke="currentColor" fill="none"/>
+              <path d="M12 6v6" stroke="currentColor"/>
+            </svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Tarifs</div>
+            <div class="kpi-value">
+              Pilote {{ c.prix_pilote_unitaire }} {{ c.devise }}
+              {% if c.prix_passager_unitaire %}<br>Passager {{ c.prix_passager_unitaire }} {{ c.devise }}{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions principales -->
+      <div class="circuit-actions">
+        <a href="{% url 'bo_circuit_edit' c.id %}" class="btn btn-edit">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" fill="none"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" fill="none"/>
+          </svg>
+          Éditer le circuit
+        </a>
+        <a href="{% url 'bo_inscription_list' %}?q={{ c.nom|urlencode }}" class="btn btn-view">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" fill="none"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" fill="none"/>
+          </svg>
+          Voir les inscrits
+        </a>
+        <a href="{% url 'bo_reservations_export' %}?circuit={{ c.id }}" class="btn btn-view">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path d="M3 3h18v18H3z" stroke="currentColor" fill="none"/>
+            <path d="M3 9h18M9 3v18" stroke="currentColor" fill="none"/>
+          </svg>
+          Export suivi
+        </a>
+      </div>
+    </div>
+    
+    <div class="header-illustration">
+      <svg viewBox="0 0 200 200" class="circuit-track">
+        <path d="M30 150 Q100 30 170 150" stroke="url(#trackGradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <circle cx="50" cy="160" r="12" fill="var(--primary)"/>
+        <circle cx="150" cy="160" r="12" fill="var(--primary)"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Contenu principal -->
+  <div class="circuit-content">
+    <!-- Section Description -->
+    <section class="card description-card animate__animated animate__fadeIn" style="--delay: 0.1s">
+
+
+      <div class="card-header">
+        <h2 class="card-title">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" fill="none"/>
+            <polyline points="14 2 14 8 20 8" stroke="currentColor" fill="none"/>
+            <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" fill="none"/>
+            <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" fill="none"/>
+            <polyline points="10 9 9 9 8 9" stroke="currentColor" fill="none"/>
+          </svg>
+          Description
+        </h2>
+      </div>
+
+      <div class="card-body">
+        {% if c.description %}
+          <div class="description-text">{{ c.description|linebreaks }}</div>
+        {% else %}
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24">
+              <path d="M10.5858 13.4142L7.75735 10.5858L6.34314 12L10.5858 16.2426L17.6568 9.17157L16.2426 7.75735L10.5858 13.4142Z" fill="currentColor"/>
+            </svg>
+            <p>Aucune description disponible</p>
+          </div>
+        {% endif %}
+        
+        {% if c.infos_rdv %}
+          <div class="meeting-info">
+            <h3 class="info-title">
+              <svg width="20" height="20" viewBox="0 0 24 24">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" fill="none"/>
+                <circle cx="12" cy="10" r="3" stroke="currentColor" fill="none"/>
+              </svg>
+              Point de rendez-vous
+            </h3>
+            <div class="info-content">{{ c.infos_rdv|linebreaks }}</div>
+          </div>
+        {% endif %}
+      </div>
+
+
+      
+    </section>
+
+    {% if c.programme %}
+    <section class="card animate__animated animate__fadeIn" style="--delay:.15s">
+      <div class="card-header">
+        <h2 class="card-title">Programme (jour par jour)</h2>
+      </div>
+      <div class="card-body"><pre style="white-space:pre-wrap">{{ c.programme }}</pre></div>
+    </section>
+    {% endif %}
+
+    {% if c.kilometrages %}
+    <section class="card animate__animated animate__fadeIn" style="--delay:.18s">
+      <div class="card-header">
+        <h2 class="card-title">Kilométrages indicatifs</h2>
+      </div>
+      <div class="card-body"><pre style="white-space:pre-wrap">{{ c.kilometrages }}</pre></div>
+    </section>
+    {% endif %}
+
+    {% if c.prix_comprend or c.prix_ne_comprend_pas %}
+    <section class="card animate__animated animate__fadeIn" style="--delay:.21s">
+      <div class="card-header">
+        <h2 class="card-title">Le prix comprend / ne comprend pas</h2>
+      </div>
+      <div class="card-body">
+        {% if c.prix_comprend %}
+          <h3>Compris</h3>
+          <div class="description-text">{{ c.prix_comprend|linebreaks }}</div>
+        {% endif %}
+        {% if c.prix_ne_comprend_pas %}
+          <h3 style="margin-top:1rem">Non compris</h3>
+          <div class="description-text">{{ c.prix_ne_comprend_pas|linebreaks }}</div>
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if c.echeancier_texte %}
+    <section class="card animate__animated animate__fadeIn" style="--delay:.24s">
+      <div class="card-header">
+        <h2 class="card-title">Échéancier</h2>
+      </div>
+      <div class="card-body">
+        <div class="description-text">{{ c.echeancier_texte|linebreaks }}</div>
+      </div>
+    </section>
+    {% endif %}
+
+    
+    <!-- Section Options -->
+    <section class="card options-card animate__animated animate__fadeIn" style="--delay: 0.2s">
+      <div class="card-header">
+        <h2 class="card-title">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke="currentColor" fill="none"/>
+            <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" fill="none"/>
+            <path d="M16 10a4 4 0 0 1-8 0" stroke="currentColor" fill="none"/>
+          </svg>
+          Options disponibles
+        </h2>
+        <span class="card-badge">{{ c.options.all|length }}</span>
+      </div>
+      <div class="card-body">
+        {% if c.options.all %}
+          <div class="options-grid">
+            {% for o in c.options.all %}
+              <div class="option-item">
+                <div class="option-header">
+                  <h3 class="option-title">{{ o.intitule }}</h3>
+                  <span class="option-price">{{ o.prix_unitaire }} {{ c.devise }}</span>
+                </div>
+                <div class="option-meta">
+                  {% if o.categorie %}
+                    <span class="meta-tag">{{ o.get_categorie_display|default:o.categorie }}</span>
+                  {% endif %}
+                  {% if o.facture_par_personne %}
+                    <span class="meta-tag">Par personne</span>
+                  {% endif %}
+                  {% if o.quantite_variable %}
+                    <span class="meta-tag">
+                      Quantité: {{ o.quantite_min|default:"1" }} → {{ o.quantite_max|default:"∞" }}
+                    </span>
+                  {% endif %}
+                </div>
+                {% if o.description %}
+                  <div class="option-description">{{ o.description }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none"/>
+            </svg>
+            <p>Aucune option configurée</p>
+            <a href="{% url 'bo_circuit_edit' c.id %}" class="btn btn-add">
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" fill="none"/>
+                <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" fill="none"/>
+              </svg>
+              Ajouter une option
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Section Inscriptions récentes -->
+    <section class="card inscriptions-card animate__animated animate__fadeIn" style="--delay: 0.3s">
+      <div class="card-header">
+        <h2 class="card-title">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none"/>
+            <circle cx="8.5" cy="7" r="4" stroke="currentColor" fill="none"/>
+            <line x1="20" y1="8" x2="20" y2="14" stroke="currentColor" fill="none"/>
+            <line x1="23" y1="11" x2="17" y2="11" stroke="currentColor" fill="none"/>
+          </svg>
+          Dernières inscriptions
+        </h2>
+        <a href="{% url 'bo_inscription_list' %}?q={{ c.nom|urlencode }}" class="card-link">
+          Voir tout
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" fill="none"/>
+          </svg>
+        </a>
+      </div>
+      <div class="card-body">
+        {% if c.inscriptions.all %}
+          <div class="inscriptions-list">
+            {% for ins in c.inscriptions.all|slice:":5" %}
+              <div class="inscription-item">
+                <div class="inscription-main">
+                  <div class="inscription-names">
+                    <strong>{{ ins.pilote.prenom }} {{ ins.pilote.nom|upper }}</strong>
+                    {% if ins.passager %}
+                      <span class="passenger-name">+ {{ ins.passager.prenom }} {{ ins.passager.nom|upper }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="inscription-date">{{ ins.cree_le|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="inscription-id">{{ ins.id_public }}</div>
+                <a href="{% url 'inscription_edit_start' ins.id_public %}" class="inscription-link">
+                  <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M9 18l6-6-6-6" stroke="currentColor" fill="none"/>
+                  </svg>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none"/>
+              <circle cx="8.5" cy="7" r="4" stroke="currentColor" fill="none"/>
+              <line x1="18" y1="8" x2="23" y2="13" stroke="currentColor" fill="none"/>
+              <line x1="23" y1="8" x2="18" y2="13" stroke="currentColor" fill="none"/>
+            </svg>
+            <p>Aucune inscription pour le moment</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+</div>
+
+<style>
+  :root {
+    --primary: #3b82f6;
+    --primary-light: rgba(59, 130, 246, 0.1);
+    --primary-dark: #2563eb;
+    --secondary: #8b5cf6;
+    --accent: #10b981;
+    --text: #111827;
+    --text-light: #6b7280;
+    --bg: #ffffff;
+    --border: #e5e7eb;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  [data-theme="dark"] {
+    --primary: #60a5fa;
+    --primary-light: rgba(59, 130, 246, 0.15);
+    --primary-dark: #3b82f6;
+    --secondary: #a78bfa;
+    --text: #f9fafb;
+    --text-light: #9ca3af;
+    --bg: #1f2937;
+    --border: #4b5563;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Layout */
+  .circuit-detail-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* En-tête */
+  .circuit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-content {
+    flex: 1;
+    max-width: 800px;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+  }
+
+  .back-button:hover {
+    color: var(--primary);
+  }
+
+  .back-button svg {
+    transition: var(--transition);
+  }
+
+  .back-button:hover svg {
+    transform: translateX(-3px);
+  }
+
+  .circuit-titles {
+    margin-bottom: 1.5rem;
+  }
+
+  .circuit-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .circuit-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .circuit-code {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .circuit-dates {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+  }
+
+  /* Indicateurs clés */
+  .circuit-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .kpi-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: var(--transition);
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .kpi-card.accent {
+    border-left: 4px solid var(--primary);
+  }
+
+  .kpi-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    border-radius: var(--radius-sm);
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  .kpi-card.accent .kpi-icon {
+    background: rgba(59, 130, 246, 0.15);
+  }
+
+  .kpi-content {
+    flex: 1;
+  }
+
+  .kpi-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+  }
+
+  .kpi-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .kpi-progress {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transition: width 0.5s ease;
+  }
+
+  .kpi-percent {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-align: right;
+  }
+
+  /* Actions */
+  .circuit-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .btn-edit {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+  }
+
+  .btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+  }
+
+  .btn-view {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-view:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Illustration */
+  .header-illustration {
+    width: 300px;
+    flex-shrink: 0;
+    margin-left: 2rem;
+  }
+
+  .circuit-track {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Contenu principal */
+  .circuit-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .card-badge {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .card-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition);
+  }
+
+  .card-link:hover {
+    gap: 0.75rem;
+  }
+
+  .card-link svg {
+    transition: var(--transition);
+  }
+
+  .card-link:hover svg {
+    transform: translateX(3px);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  /* Section Description */
+  .description-text {
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .meeting-info {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--border);
+  }
+
+  .info-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .info-content {
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  /* Section Options */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .option-item {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+  }
+
+  .option-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .option-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text);
+  }
+
+  .option-price {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .option-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .meta-tag {
+    background: var(--secondary);
+    color: var(--text);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .option-description {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  /* Section Inscriptions */
+  .inscriptions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .inscription-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+  }
+
+  .inscription-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .inscription-main {
+    flex: 1;
+  }
+
+  .inscription-names {
+    margin-bottom: 0.25rem;
+  }
+
+  .passenger-name {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+
+  .inscription-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  .inscription-id {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin: 0 1.5rem;
+  }
+
+  .inscription-link {
+    color: var(--text-light);
+    transition: var(--transition);
+  }
+
+  .inscription-link:hover {
+    color: var(--primary);
+  }
+
+  .inscription-link svg {
+    transition: var(--transition);
+  }
+
+  .inscription-link:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* États vides */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .empty-state svg {
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+  }
+
+  .empty-state p {
+    color: var(--text-light);
+    margin: 0 0 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-add {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+  }
+
+  .btn-add:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  /* SVG gradients */
+  svg defs {
+    position: absolute;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .circuit-header {
+      flex-direction: column;
+    }
+    
+    .header-illustration {
+      width: 100%;
+      margin: 2rem 0 0;
+    }
+    
+    .circuit-content {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .circuit-detail-container {
+      padding: 1.5rem;
+    }
+    
+    .circuit-name {
+      font-size: 2rem;
+    }
+    
+    .circuit-kpis {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    .circuit-actions {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .circuit-kpis {
+      grid-template-columns: 1fr;
+    }
+    
+    .circuit-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .inscription-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .inscription-id {
+      margin: 0;
+    }
+  }
+</style>
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <linearGradient id="trackGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animation des cartes
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1 + 0.1}s`;
+    });
+    
+    // Initialisation des animations
+    setTimeout(() => {
+      document.body.classList.add('animations-loaded');
+    }, 300);
+    
+    // Gestion du formulaire de recherche d'inscription
+    function goToEdit() {
+      const ref = document.getElementById('ref').value.trim();
+      if (!ref) return;
+      window.location.href = `/inscription/${ref}/modifier/`;
+    }
+    
+  });
+</script>
+
+{% endblock %}

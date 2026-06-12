@@ -1,0 +1,153 @@
+{# templates/circuitMoto/admin/demande_balade_detail.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Inscrits par balade — Back-office{% endblock %}
+{% block body_class %}bo-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/balades_bo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bo-dashboard">
+
+  <section class="bo-hero reveal">
+    <div class="bo-hero__content">
+      <div class="bo-kicker">Back-office</div>
+      <h1 class="bo-hero__title">Personnes ayant choisi cette balade</h1>
+      <p class="bo-hero__text">
+        {% if balade.date_humaine %}{{ balade.date_humaine }}{% else %}{{ balade.date_debut|date:"d/m/Y" }}{% endif %}
+        — {{ balade.titre }}
+      </p>
+
+      <div class="bo-hero__chips">
+        <span class="hero-chip">{{ stats.total }} demande{{ stats.total|pluralize }}</span>
+        <span class="hero-chip">{{ stats.emails_uniques }} email{{ stats.emails_uniques|pluralize }} unique{{ stats.emails_uniques|pluralize }}</span>
+        <span class="hero-chip">{{ stats.non_traitees }} à traiter</span>
+        <span class="hero-chip">{{ stats.traitees }} traitée{{ stats.traitees|pluralize }}</span>
+      </div>
+    </div>
+
+    <div class="bo-hero__side">
+      <div class="hero-panel">
+        <div class="hero-panel__label">Guide</div>
+        <div class="hero-panel__value">{{ balade.guide|default:"libre" }}</div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel__label">Statut</div>
+        <div class="hero-panel__value">{% if balade.actif %}Active{% else %}Inactive{% endif %}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel reveal">
+    <div class="section-head section-head--space">
+      <div>
+        <h2>Liste des personnes</h2>
+        <p>Affichage exclusif des personnes ayant choisi cette balade.</p>
+      </div>
+      <a href="{% url 'bo_demande_balade_par_balade' %}" class="btn btn-outline-secondary">
+        ← Retour aux balades
+      </a>
+    </div>
+
+    <form method="get" class="bo-filters">
+      <div class="bo-filters__grid">
+        <div class="field">
+          <label>Recherche</label>
+          <input type="text" name="q" value="{{ q }}" class="form-control"
+                 placeholder="Nom, prénom, email, téléphone, commentaire...">
+        </div>
+
+        <div class="field">
+          <label>Statut</label>
+          <select name="traite" class="form-control">
+            <option value="" {% if not traite %}selected{% endif %}>Tous</option>
+            <option value="0" {% if traite == "0" %}selected{% endif %}>À traiter</option>
+            <option value="1" {% if traite == "1" %}selected{% endif %}>Traitées</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Trier par</label>
+          <select name="sort" class="form-control">
+            <option value="-date" {% if sort == "-date" %}selected{% endif %}>Plus récentes</option>
+            <option value="date" {% if sort == "date" %}selected{% endif %}>Plus anciennes</option>
+            <option value="nom" {% if sort == "nom" %}selected{% endif %}>Nom A → Z</option>
+            <option value="-nom" {% if sort == "-nom" %}selected{% endif %}>Nom Z → A</option>
+            <option value="email" {% if sort == "email" %}selected{% endif %}>Email A → Z</option>
+            <option value="-email" {% if sort == "-email" %}selected{% endif %}>Email Z → A</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bo-filters__actions">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="{% url 'bo_demande_balade_detail' balade.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      </div>
+    </form>
+
+    {% if page_obj.object_list %}
+      <div class="demandes-grid">
+        {% for d in page_obj.object_list %}
+          <article class="demande-card">
+            <div class="demande-card__head">
+              <div>
+                <h3>{{ d.prenom }} {{ d.nom }}</h3>
+                <p class="muted">{{ d.cree_le|date:"d/m/Y H:i" }}</p>
+              </div>
+
+              <span class="status-pill {% if d.traite %}is-success{% else %}is-warning{% endif %}">
+                {% if d.traite %}Traitée{% else %}À traiter{% endif %}
+              </span>
+            </div>
+
+            <div class="demande-card__identity">
+              <p><strong>Email :</strong> {{ d.email }}</p>
+              {% if d.telephone %}
+                <p><strong>Téléphone :</strong> {{ d.telephone }}</p>
+              {% endif %}
+            </div>
+
+            {% if d.commentaire %}
+              <div class="demande-card__section">
+                <div class="demande-card__label">Commentaire</div>
+                <div class="demande-card__comment">{{ d.commentaire|linebreaksbr }}</div>
+              </div>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination-wrap" aria-label="Pagination">
+          <div class="pagination">
+            {% if page_obj.has_previous %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.previous_page_number }}" class="page-link">←</a>
+            {% endif %}
+
+            <span class="page-current">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.next_page_number }}" class="page-link">→</a>
+            {% endif %}
+          </div>
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <p>Aucune personne n’a encore choisi cette balade.</p>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/dashboard.js' %}"></script>
+{% endblock %}

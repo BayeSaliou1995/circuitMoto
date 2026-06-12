@@ -1,0 +1,35 @@
+{# templates/circuitMoto/partials/_error_support.html #}
+<div class="err-support" role="note" aria-label="Assistance">
+  <div class="err-support__icon" aria-hidden="true">🛟</div>
+
+  <div class="err-support__content">
+    <div class="err-support__title">Besoin d’aide ?</div>
+    <p class="err-support__text">
+      {{ support.hint|default:"Si le problème persiste, contactez le support." }}
+    </p>
+
+    <div class="err-support__meta">
+      <span class="err-support__badge">{{ support.team|default:"Support" }}</span>
+      <span class="err-support__sep">•</span>
+      <span class="err-support__who">{{ support.dev_name|default:"Développeur" }}</span>
+    </div>
+
+    <div class="err-support__actions">
+      <a class="btn btn-secondary"
+         href="mailto:{{ support.email }}?subject={{ code }}%20-%20{{ title|urlencode }}&body=Bonjour%2C%0A%0AJ'ai%20rencontr%C3%A9%20une%20erreur%20(%23{{ code }})%20sur%20:%20{{ request_path|default_if_none:''|urlencode }}%0A%0AD%C3%A9tail%20:%20{{ message|urlencode }}%0A%0AMerci."
+      >
+        Contacter le support
+      </a>
+
+      <button class="btn btn-secondary" type="button"
+              onclick="navigator.clipboard && navigator.clipboard.writeText('Erreur {{ code }} — {{ title }} — {{ request_path }}'); this.innerText='Copié ✅';">
+        Copier les infos
+      </button>
+    </div>
+
+    <div class="err-support__mail">
+      <span class="err-muted">Email :</span>
+      <a class="err-support__email" href="mailto:{{ support.email }}">{{ support.email }}</a>
+    </div>
+  </div>
+</div>

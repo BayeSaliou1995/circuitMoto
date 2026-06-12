@@ -1,0 +1,641 @@
+{# templates/circuitMoto/base/_nav.html #}
+
+{% load static circuits_nav i18n %}
+
+{% with url_name=request.resolver_match.url_name|default:'' %}
+
+  {% get_current_language as CUR_LANG %}
+
+  <header class="site-nav-wrap" role="banner">
+
+    <nav class="site-nav" aria-label="{% trans 'Navigation principale' %}">
+      <!-- Brand -->
+      <div class="nav-left">
+        <a class="brand" href="{% url 'home' %}" aria-label="Pulsion Horizon">
+          {% comment %} <img src="https://senegal-travel-pulsion.com/favicon.ico" alt="" class="brand-logo" width="28" height="28" loading="lazy" decoding="async"> {% endcomment %}
+          <span class="brand-name">INSCRIPTION</span>
+        </a>
+      </div>
+
+      <!-- Liens desktop -->
+      <div class="nav-center desktop-only">
+        <a href="{% url 'home' %}"
+          class="nav-link {% if url_name == 'home' %}active{% endif %}"
+          {% if url_name == 'home' %}aria-current="page"{% endif %}>
+          <span class="nav-link-text">{% trans "Accueil" %}</span>
+        </a>
+
+        {% if request.user.is_superuser %}
+          <a href="{% url 'bo_inscription_list' %}"
+            class="nav-link {% if url_name == 'bo_inscription_list' %}active{% endif %}"
+            {% if url_name == 'bo_inscription_list' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">{% trans "Participants" %}</span>
+          </a>
+          <a href="{% url 'bo_circuit_list' %}"
+            class="nav-link {% if url_name == 'bo_circuit_list' %}active{% endif %}"
+            {% if url_name == 'bo_circuit_list' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">{% trans "Circuits" %}</span>
+          </a>
+          <!-- {% comment %} <a href="{% url 'bo_personne_create' %}"
+            class="nav-link {% if url_name == 'bo_personne_create' %}active{% endif %}"
+            {% if url_name == 'bo_personne_create' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">{% trans "Nouveau participant" %}</span>
+          </a> {% endcomment %} -->
+          <a href="{% url 'bo_circuit_create' %}"
+            class="nav-link {% if url_name == 'bo_circuit_create' %}active{% endif %}"
+            {% if url_name == 'bo_circuit_create' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">{% trans "Nouveau circuit" %}</span>
+          </a>
+          <a href="{% url 'bo_stats' %}"
+            class="nav-link {% if url_name == 'bo_stats' %}active{% endif %}"
+            {% if url_name == 'bo_stats' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">{% trans "Stats" %}</span>
+          </a>
+          <a href="{% url 'bo_programme_2027_interests' %}"
+            class="nav-link {% if url_name == 'bo_programme_2027_interests' or url_name == 'bo_programme_2027_by_circuit' or url_name == 'bo_programme_2027_circuit_detail' %}active{% endif %}"
+            {% if url_name == 'bo_programme_2027_interests' or url_name == 'bo_programme_2027_by_circuit' or url_name == 'bo_programme_2027_circuit_detail' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">Intérêts 2027</span>
+          </a>
+
+          <details class="nav-dd">
+            <summary class="nav-link" aria-haspopup="menu">
+              <!-- petite roue -->
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M19.4 15a7.9 7.9 0 0 0 .1-2l2-1.2-2-3.4-2.3.5a7.9 7.9 0 0 0-1.7-1L13.9 4h-3.8L9 7a7.9 7.9 0 0 0-1.7 1l-2.3-.5-2 3.4 2 1.2a7.9 7.9 0 0 0 0 2l-2 1.2 2 3.4 2.3-.5c.5.4 1.1.8 1.7 1l1.1 3h3.8l1.1-3c.6-.2 1.2-.6 1.7-1l2.3.5 2-3.4-2-1.2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+              <span class="nav-link-text">{% trans "Paramètres" %}</span>
+              <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </summary>
+
+            <div class="dd-menu" role="menu" aria-label="{% trans "Paramètres" %}">
+
+              <div class="dd-title">{% trans "Envois d’e-mails" %}</div>
+              <div class="dd-group">
+                <div class="dd-row">
+                  <span class="dd-label">{% trans "Pause globale" %}</span>
+                  <label class="switch">
+                    <input type="checkbox" class="email-flag" data-key="all" {% if email_flags.all %}checked{% endif %}>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="dd-row">
+                  <span class="dd-label">{% trans "Pilotes" %}</span>
+                  <label class="switch">
+                    <input type="checkbox" class="email-flag" data-key="pilote" {% if email_flags.pilote %}checked{% endif %}>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="dd-row">
+                  <span class="dd-label">{% trans "Passagers" %}</span>
+                  <label class="switch">
+                    <input type="checkbox" class="email-flag" data-key="passager" {% if email_flags.passager %}checked{% endif %}>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <hr class="dd-sep">
+
+
+              {% if perms.auth.add_user %}
+                <a class="dd-item" href="{% url 'bo_user_create' %}" role="menuitem">
+                  {% trans "Créer un utilisateur staff (complet)" %}
+                </a>
+              {% endif %}
+
+              <a class="dd-item" href="{% url 'bo_emailing' %}" role="menuitem">{% trans "Emailing" %}</a>
+              <a class="dd-item" href="{% url 'bo_newsletter_broadcast' %}" role="menuitem">{% trans "Newsletter" %}</a>
+
+              {% if request.user.is_authenticated %}
+                <a class="dd-item" href="{% url 'account_password_change' %}" role="menuitem">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M19 11V7a5 5 0 0 0-10 0v4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  {% trans "Changer mon mot de passe" %}
+                </a>
+              {% endif %}
+
+              {% if request.user.is_superuser %}
+                <button
+                  type="button"
+                  class="dd-item dd-item-danger js-open-backup-modal"
+                  data-backup-url="{% url 'bo_backup_download' %}"
+                  role="menuitem">
+                  Télécharger la sauvegarde complète
+                </button>
+              {% endif %}
+
+            </div>
+          </details>
+
+        {% else %}
+          {# Programmes → menu déroulant listant les circuits à venir #}
+          <details class="nav-dd">
+            <summary class="nav-link {% if url_name == 'circuit_detail' %}active{% endif %}" aria-haspopup="menu">
+              <span class="nav-link-text">{% trans "Programmes" %}</span>
+              <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </summary>
+
+            <div class="dd-menu" role="menu" aria-label="{% trans "Programmes à venir" %}">
+              {% upcoming_circuits as circuits_nav %}
+              {% if circuits_nav %}
+                {% for c in circuits_nav %}
+                  <a class="dd-item circuit-link" role="menuitem"
+                    data-code="{{ c.code }}" href="{{ c.get_absolute_url }}">
+                    <div style="display:flex;flex-direction:column;">
+                      <strong>{{ c.nom }}</strong>
+                      <small style="opacity:.8">
+                        {{ c.date_debut|date:"d/m" }} → {{ c.date_fin|date:"d/m/Y" }}
+                        {% if c.code %} • {{ c.code }}{% endif %}
+                      </small>
+                    </div>
+                  </a>
+                {% endfor %}
+              {% else %}
+                <div class="dd-item" aria-disabled="true" style="opacity:.6;cursor:not-allowed;">{% trans "Aucun circuit à venir" %}</div>
+              {% endif %}
+
+              <hr class="dd-sep">
+              <a class="dd-item" role="menuitem" href="{% url 'programme_2027' %}">
+                Pré Programme 2027
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'circuits_public' %}">{% trans "Tous les circuits" %}</a>
+            </div>
+          </details>
+
+          <details class="nav-dd">
+            <summary class="nav-link {% if url_name == 'balades_1_jour' or url_name == 'balades_1_jour_success' or url_name == 'balades_email_landing' or url_name == 'balades_1_jour_lien' %}active{% endif %}" aria-haspopup="menu">
+              <span class="nav-link-text">Balades 1 jour</span>
+              <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </summary>
+
+            <div class="dd-menu" role="menu" aria-label="Balades 1 jour">
+              <div class="dd-title">Balades détail</div>
+
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'moto-zenith-huy-namur-le-condroz' %}">
+                Moto Zenith Huy
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'zone-rouge' %}">
+                Zone Rouge
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'ducati-sambreville-le-namurois' %}">
+                Ducati Sambreville
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'jl-selection-neufchateau-ardennes' %}">
+                JL Selection Neufchateau
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'moto-casu-mons-vers-leaux-dheure' %}">
+                Moto Casu Mons
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'harley-liege-le-liegeois' %}">
+                Harley Liège
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour_lien' 'xm-moto-namur-ardennes' %}">
+                XM Moto
+              </a>
+
+              <hr class="dd-sep">
+
+              <a class="dd-item" role="menuitem" href="{% url 'balades_email_landing' %}">
+                Balade sélection
+              </a>
+              <a class="dd-item" role="menuitem" href="{% url 'balades_1_jour' %}">
+                Balade
+              </a>
+            </div>
+          </details>
+
+          <a href="{% url 'inscription_lookup' %}"
+            class="nav-link {% if url_name == 'inscription_lookup' %}active{% endif %}">
+            <span class="nav-link-text">{% trans "Déjà inscrit ?" %}</span>
+          </a>
+
+          {% comment %} {# NEW — seulement visiteurs #} {% endcomment %}
+          {% if not request.user.is_authenticated %}
+            {% comment %} <a href="{% url 'circuits_public' %}"
+              class="nav-link {% if url_name == 'circuits_public' %}active{% endif %}">
+              <span class="nav-link-text">{% trans "Nos circuits" %}</span>
+            </a> {% endcomment %}
+            <a href="{% url 'inscription_create_start' %}" class="nav-link nav-cta">
+              <span class="nav-link-text">{% trans "S’inscrire" %}</span>
+            </a>
+          {% endif %}
+
+        {% endif %}
+      </div>
+
+      <!-- Actions à droite -->
+      <div class="nav-right">
+
+        <!-- Actions desktop (login/back-office) -->
+        <div class="desktop-only nav-actions">
+          {% if not request.resolver_match or request.resolver_match.url_name != 'login' %}
+            {% if request.user.is_authenticated %}
+              {% if request.user.is_staff %}
+                <a href="{% url 'bo_dashboard' %}" class="nav-link nav-cta">
+                  <span class="nav-link-text">{% trans "Back-office" %}</span>
+                </a>
+              {% endif %}
+              <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'home' %}">
+                <button type="submit" class="nav-link danger">
+                  <span class="nav-link-text">{% trans "Déconnexion" %}</span>
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="nav-link nav-cta">
+                <span class="nav-link-text">{% trans "Connexion" %}</span>
+              </a>
+            {% endif %}
+          {% endif %}
+        </div>
+        
+        <button
+          id="theme-toggle"
+          class="nav-theme-toggle desktop-only"
+          type="button"
+          aria-label="{% trans 'Basculer le thème' %}"
+          aria-pressed="false"
+          title="{% trans 'Basculer le thème' %}">
+          <span class="theme-toggle__icon theme-toggle__sun" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+
+          <span class="theme-toggle__icon theme-toggle__moon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+            </svg>
+          </span>
+        </button>        
+
+        <form action="{% url 'set_language' %}" method="post" class="lang-form desktop-only" style="display:flex;gap:.4rem">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button type="submit" name="language" value="fr"
+                  class="nav-link {% if CUR_LANG == 'fr' %}active{% endif %}">{% trans "FR" %}</button>
+          <button type="submit" name="language" value="en"
+                  class="nav-link {% if CUR_LANG == 'en' %}active{% endif %}">{% trans "EN" %}</button>
+        </form>
+
+        <!-- Burger toujours visible sur mobile -->
+        <button class="menu-toggle" aria-expanded="false" aria-controls="mobileMenu">
+          <span class="sr-only">{% trans "Ouvrir le menu" %}</span>
+          <div class="hamburger">
+            <span class="hamburger-line hamburger-line-1"></span>
+            <span class="hamburger-line hamburger-line-2"></span>
+            <span class="hamburger-line hamburger-line-3"></span>
+          </div>
+        </button>
+
+      </div>
+
+    </nav>
+
+  </header>
+  
+  <!-- Overlay + panneau mobile -->
+  <div class="nav-overlay"></div>
+  <div id="mobileMenu" class="mobile-panel">
+    <div class="mobile-panel-content">
+      <div class="mobile-group">
+        <a href="{% url 'home' %}" class="mobile-link {% if url_name == 'home' %}active{% endif %}" {% if url_name == 'home' %}aria-current="page"{% endif %}>
+          <span>{% trans "Accueil" %}</span>
+        </a>
+        
+        {% if request.user.is_superuser %}
+          <a href="{% url 'bo_inscription_list' %}" class="mobile-link {% if url_name == 'bo_inscription_list' %}active{% endif %}" {% if url_name == 'bo_inscription_list' %}aria-current="page"{% endif %}>
+            <span>{% trans "Participants" %}</span>
+          </a>
+
+          <a href="{% url 'bo_circuit_list' %}" class="mobile-link {% if url_name == 'bo_circuit_list' %}active{% endif %}" {% if url_name == 'bo_circuit_list' %}aria-current="page"{% endif %}>
+            <span>{% trans "Circuits" %}</span>
+          </a>
+          <!-- {% comment %} <a href="{% url 'bo_personne_create' %}" class="mobile-link {% if url_name == 'bo_personne_create' %}active{% endif %}" {% if url_name == 'bo_personne_create' %}aria-current="page"{% endif %}>
+            <span>{% trans "Nouveau participant" %}</span>
+          </a> {% endcomment %} -->
+          <a href="{% url 'bo_circuit_create' %}" class="mobile-link {% if url_name == 'bo_circuit_create' %}active{% endif %}" {% if url_name == 'bo_circuit_create' %}aria-current="page"{% endif %}>
+            <span>{% trans "Nouveau circuit" %}</span>
+          </a>
+          <a href="{% url 'bo_stats' %}" class="mobile-link {% if url_name == 'bo_stats' %}active{% endif %}" {% if url_name == 'bo_stats' %}aria-current="page"{% endif %}>
+            <span>{% trans "Statistiques" %}</span>
+          </a>
+        {% else %}
+          <details class="mobile-dd">
+            <summary class="mobile-link">
+              <span>{% trans "Programmes" %}</span>
+              <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </summary>
+
+            <div class="mobile-dd-menu" role="menu" aria-label="{% trans "Programmes à venir" %}">
+              {% upcoming_circuits as circuits_nav_mobile %}
+              {% if circuits_nav_mobile %}
+                {% for c in circuits_nav_mobile %}
+                  <a href="{{ c.get_absolute_url }}" class="mobile-link circuit-link"
+                    data-code="{{ c.code }}">
+                    <span>{{ c.nom }}</span>
+                    <small style="margin-left:auto;opacity:.75">
+                      {{ c.date_debut|date:"d/m" }} → {{ c.date_fin|date:"d/m/Y" }}
+                    </small>
+                  </a>
+                {% endfor %}
+              {% else %}
+                <div class="mobile-link" aria-disabled="true" style="opacity:.6;cursor:not-allowed;">
+                  {% trans "Aucun circuit à venir" %}
+                </div>
+              {% endif %}
+
+              <a href="{% url 'circuits_public' %}" class="mobile-link">
+                <span>{% trans "Tous les circuits" %}</span>
+              </a>
+            </div>
+          </details>
+
+          <a href="{% url 'inscription_lookup' %}" class="mobile-link {% if url_name == 'inscription_lookup' %}active{% endif %}">
+            <span>{% trans "Déjà inscrit ?" %}</span>
+          </a>
+
+
+          <details class="mobile-dd">
+            <summary class="mobile-link {% if url_name == 'balades_1_jour' or url_name == 'balades_1_jour_success' or url_name == 'balades_email_landing' or url_name == 'balades_1_jour_lien' %}active{% endif %}">
+              <span>Balades 1 jour</span>
+              <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </summary>
+
+            <div class="mobile-dd-menu" role="menu" aria-label="Balades 1 jour">
+              <div class="mobile-title">Balades détail</div>
+
+              <a href="{% url 'balades_1_jour_lien' 'moto-zenith-huy-namur-le-condroz' %}" class="mobile-link">
+                <span>Moto Zenith Huy</span>
+              </a>
+              <a href="{% url 'balades_1_jour_lien' 'zone-rouge' %}" class="mobile-link">
+                <span>Zone Rouge</span>
+              </a>
+              <a href="{% url 'balades_1_jour_lien' 'ducati-sambreville-le-namurois' %}" class="mobile-link">
+                <span>Ducati Sambreville</span>
+              </a>
+              <a href="{% url 'balades_1_jour_lien' 'jl-selection-neufchateau-ardennes' %}" class="mobile-link">
+                <span>JL Selection Neufchateau</span>
+              </a>
+              <a href="{% url 'balades_1_jour_lien' 'moto-casu-mons-vers-leaux-dheure' %}" class="mobile-link">
+                <span>Moto Casu Mons</span>
+              </a>
+              <a href="{% url 'balades_1_jour_lien' 'harley-liege-le-liegeois' %}" class="mobile-link">
+                <span>Harley Liège</span>
+              </a>
+              <a href="{% url 'balades_1_jour_lien' 'xm-moto-namur-ardennes' %}" class="mobile-link">
+                <span>XM Moto</span>
+              </a>
+
+              <div class="mobile-title" style="margin-top:.5rem;">Pages</div>
+
+              <a href="{% url 'balades_email_landing' %}" class="mobile-link">
+                <span>Balade sélection</span>
+              </a>
+              <a href="{% url 'balades_1_jour' %}" class="mobile-link">
+                <span>Balade</span>
+              </a>
+            </div>
+          </details>
+
+          {# NEW — seulement visiteurs #}
+          {% if not request.user.is_authenticated %}
+            {% comment %} <a href="{% url 'circuits_public' %}" class="mobile-link {% if url_name == 'circuits_public' %}active{% endif %}">
+              <span>{% trans "Nos circuits" %}</span>
+            </a> {% endcomment %}
+            <a href="{% url 'inscription_create_start' %}" class="mobile-link cta">
+              <span>{% trans "S’inscrire" %}</span>
+            </a>
+          {% endif %}
+
+        {% endif %}
+      </div>
+
+
+      <div class="mobile-group mobile-theme-group">
+        <button
+          id="theme-toggle-mobile"
+          class="mobile-theme-toggle"
+          type="button"
+          aria-label="{% trans 'Basculer le thème' %}"
+          aria-pressed="false">
+          <span class="mobile-theme-toggle__icon mobile-theme-toggle__sun" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+
+          <span class="mobile-theme-toggle__label">{% trans "Changer le thème" %}</span>
+
+          <span class="mobile-theme-toggle__icon mobile-theme-toggle__moon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <details class="mobile-dd">
+        <summary class="mobile-link">
+          <span>{% trans "Langue" %}</span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </summary>
+        <div class="mobile-dd-menu" role="menu" aria-label="{% trans "Langue" %}">
+          <form action="{% url 'set_language' %}" method="post" class="mobile-lang-form" style="display:grid;gap:.5rem">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" name="language" value="fr"
+                    class="mobile-link {% if CUR_LANG == 'fr' %}active{% endif %}">
+              <span>{% trans "Français" %}</span>
+            </button>
+            <button type="submit" name="language" value="en"
+                    class="mobile-link {% if CUR_LANG == 'en' %}active{% endif %}">
+              <span>{% trans "English" %}</span>
+            </button>
+          </form>
+        </div>
+      </details>
+
+
+      {% if request.user.is_authenticated and request.user.is_staff %}
+        <details class="mobile-dd">
+          <summary class="mobile-link">
+            <span>{% trans "Paramètres" %}</span>
+            <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </summary>
+
+          <div class="mobile-dd-menu" role="menu" aria-label="{% trans "Paramètres" %}">
+            <div class="dd-title">{% trans "Envois d’e-mails" %}</div>
+            <div class="dd-group">
+
+              <div class="dd-row">
+                <span class="dd-label">{% trans "Pause globale" %}</span>
+                <label class="switch">
+                  <input type="checkbox" class="email-flag" data-key="all" {% if email_flags.all %}checked{% endif %}>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="dd-row">
+                <span class="dd-label">{% trans "Pilotes" %}</span>
+                <label class="switch">
+                  <input type="checkbox" class="email-flag" data-key="pilote" {% if email_flags.pilote %}checked{% endif %}>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="dd-row">
+                <span class="dd-label">{% trans "Passagers" %}</span>
+                <label class="switch">
+                  <input type="checkbox" class="email-flag" data-key="passager" {% if email_flags.passager %}checked{% endif %}>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+            </div>
+
+            <hr class="dd-sep">
+
+            {% if perms.auth.add_user %}
+              <a href="{% url 'bo_user_create' %}" class="mobile-link" role="menuitem">
+                {% trans "Créer un utilisateur staff (complet)" %}
+              </a>
+            {% endif %}
+
+            <a href="{% url 'bo_emailing' %}" class="mobile-link" role="menuitem">
+              {% trans "Emailing" %}
+            </a>
+
+            <a href="{% url 'bo_newsletter_broadcast' %}" class="mobile-link" role="menuitem">
+              {% trans "Newsletter" %}
+            </a>
+
+            <a class="mobile-link" href="{% url 'account_password_change' %}" role="menuitem">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M19 11V7a5 5 0 0 0-10 0v4" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              {% trans "Changer mon mot de passe" %}
+            </a>
+
+            {% if request.user.is_superuser %}
+              <button
+                type="button"
+                class="mobile-link mobile-link-danger js-open-backup-modal"
+                data-backup-url="{% url 'bo_backup_download' %}">
+                {% trans "Télécharger la sauvegarde complète" %}
+              </button>
+            {% endif %}
+
+          </div>
+
+        </details>
+      {% endif %}
+
+      {% if not request.resolver_match or request.resolver_match.url_name != 'login' %}
+        <div class="mobile-group">
+          {% if request.user.is_authenticated %}
+            {% if request.user.is_staff %}
+              <a href="{% url 'bo_dashboard' %}" class="mobile-link">
+                <span>{% trans "Back-office" %}</span>
+              </a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}" class="logout-form mobile-logout">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'home' %}">
+              <button type="submit" class="mobile-link danger">
+                <span>{% trans "Déconnexion" %}</span>
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="mobile-link cta">
+              <span>{% trans "Connexion" %}</span>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+
+  {% if request.user.is_superuser %}
+  <div class="backup-modal" id="backupModal" aria-hidden="true">
+    <div class="backup-modal__backdrop js-close-backup-modal"></div>
+
+    <div class="backup-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="backupModalTitle">
+      <button type="button" class="backup-modal__close js-close-backup-modal" aria-label="{% trans 'Fermer' %}">
+        ×
+      </button>
+
+      <div class="backup-modal__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <path d="M7 10l5 5 5-5"/>
+          <path d="M12 15V3"/>
+        </svg>
+      </div>
+
+      <h3 class="backup-modal__title" id="backupModalTitle">
+        {% trans "Télécharger la sauvegarde complète ?" %}
+      </h3>
+
+      <p class="backup-modal__text">
+        {% trans "Cette action va générer une archive sécurisée contenant la base de données et les fichiers médias du site." %}
+      </p>
+
+      <ul class="backup-modal__list">
+        <li>{% trans "Base PostgreSQL complète" %}</li>
+        <li>{% trans "Documents, signatures, images et autres fichiers média" %}</li>
+        <li>{% trans "Archive ZIP prête à conserver en lieu sûr" %}</li>
+      </ul>
+
+      <div class="backup-modal__warning">
+        {% trans "Conservez ce fichier dans un emplacement sécurisé. Il contient des données sensibles du site." %}
+      </div>
+
+      <form method="post" action="{% url 'bo_backup_download' %}" class="backup-modal__actions">
+        {% csrf_token %}
+        <button type="button" class="backup-btn backup-btn--ghost js-close-backup-modal">
+          {% trans "Annuler" %}
+        </button>
+        <button type="submit" class="backup-btn backup-btn--primary" id="backupConfirmBtn">
+          {% trans "Oui, télécharger la sauvegarde" %}
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endif %}  
+
+{% endwith %}

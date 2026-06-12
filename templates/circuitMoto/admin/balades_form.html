@@ -1,0 +1,116 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}{{ title_page }}{% endblock %}
+{% block body_class %}bo-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/balades_bo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bo-dashboard">
+  <section class="bo-hero reveal">
+    <div class="bo-hero__content">
+      <div class="bo-kicker">Back-office</div>
+      <h1 class="bo-hero__title">{{ title_page }}</h1>
+      <p class="bo-hero__text">
+        Renseignez les informations de la balade avec une présentation claire, propre et facile à maintenir.
+      </p>
+    </div>
+
+    <div class="bo-hero__side">
+      <div class="hero-panel">
+        <div class="hero-panel__label">Mode</div>
+        <div class="hero-panel__value">{% if mode == "edit" %}Édition{% else %}Création{% endif %}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel reveal">
+    <div class="section-head section-head--space">
+      <div>
+        <h2>Informations de la balade</h2>
+        <p>Les champs ci-dessous déterminent l’affichage public et l’ordre de tri.</p>
+      </div>
+      <a href="{% url 'bo_balade_list' %}" class="btn btn-outline-secondary">← Retour à la liste</a>
+    </div>
+
+    <form method="post" class="bo-form" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">
+          {% for err in form.non_field_errors %}
+            <div class="form-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="bo-form-grid">
+        <div class="field">
+          <label for="{{ form.date_debut.id_for_label }}">{{ form.date_debut.label }}</label>
+          {{ form.date_debut }}
+          {% if form.date_debut.help_text %}<small class="help-text">{{ form.date_debut.help_text }}</small>{% endif %}
+          {% for err in form.date_debut.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.date_fin.id_for_label }}">{{ form.date_fin.label }}</label>
+          {{ form.date_fin }}
+          {% if form.date_fin.help_text %}<small class="help-text">{{ form.date_fin.help_text }}</small>{% endif %}
+          {% for err in form.date_fin.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field field--full">
+          <label for="{{ form.date_affichage.id_for_label }}">{{ form.date_affichage.label }}</label>
+          {{ form.date_affichage }}
+          {% if form.date_affichage.help_text %}<small class="help-text">{{ form.date_affichage.help_text }}</small>{% endif %}
+          {% for err in form.date_affichage.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field field--full">
+          <label for="{{ form.titre.id_for_label }}">{{ form.titre.label }}</label>
+          {{ form.titre }}
+          {% for err in form.titre.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.guide.id_for_label }}">{{ form.guide.label }}</label>
+          {{ form.guide }}
+          {% for err in form.guide.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.ordre.id_for_label }}">{{ form.ordre.label }}</label>
+          {{ form.ordre }}
+          {% if form.ordre.help_text %}<small class="help-text">{{ form.ordre.help_text }}</small>{% endif %}
+          {% for err in form.ordre.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field field--full">
+          <label class="check-row">
+            {{ form.actif }}
+            <span>{{ form.actif.label }}</span>
+          </label>
+          {% for err in form.actif.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+        </div>
+      </div>
+
+      <div class="bo-form-actions">
+        <a href="{% url 'bo_balade_list' %}" class="btn btn-outline-secondary">Annuler</a>
+        <button type="submit" class="btn btn-primary">
+          {% if mode == "edit" %}Enregistrer les modifications{% else %}Créer la balade{% endif %}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/dashboard.js' %}"></script>
+{% endblock %}

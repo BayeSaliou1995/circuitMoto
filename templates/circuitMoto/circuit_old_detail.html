@@ -1,0 +1,2499 @@
+{# templates/circuitMoto/circuit_detail.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+
+{% load i18n %}
+
+{% block extra_head %}
+
+  {# ——— Font luxe (scopé à la page) ——— #}
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+
+      /* ===============================
+        PULSION HORIZON — Circuit detail (scopé)
+        =============================== */
+
+    :root{
+      --primary:#3b82f6;--primary-dark:#2563eb;--primary-light:#dbeafe;
+      --secondary:#8b5cf6;--accent:#06b6d4;
+      --success:#10b981;--warning:#f59e0b;--error:#ef4444;
+      --text-primary:#1f2937;--text-secondary:#6b7280;--text-muted:#9ca3af;
+      --bg-primary:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;
+      --border:#e5e7eb;--border-light:#f1f5f9;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+      --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+      --shadow-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
+      --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+      --shadow-xl:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04);
+      --radius:12px;--radius-lg:16px;--radius-xl:20px;
+      --transition:all .3s cubic-bezier(.4,0,.2,1);
+      --transition-slow:all .5s cubic-bezier(.4,0,.2,1);
+      --nav-height:70px; /* nav globale du site */
+    }
+
+    html{ scroll-behavior:smooth; scroll-padding-top: calc(var(--nav-height) + 12px); }
+
+    /* Scope page */
+    .circuit-detail{
+      --font-sans: "Plus Jakarta Sans","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      line-height: 1.6;
+      font-size: clamp(15px, 1.05vw + 0.2rem, 16.5px);
+    }
+
+    /* Dark */
+    [data-theme="dark"] .circuit-detail{
+      --bg-primary:#1f2937;--bg-secondary:#0f172a;--bg-tertiary:#111827;
+      --text-primary:#f8fafc;--text-secondary:#cbd5e1;--text-muted:#94a3b8;
+      --border:#243043;--border-light:#1e293b;
+    }
+
+    /* Animations clés */
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    @keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+    @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(59,130,246,0.3)}50%{box-shadow:0 0 30px rgba(59,130,246,0.6)}}
+
+    /* Helpers */
+    .circuit-detail .interactive-card{transition:var(--transition);cursor:pointer}
+    .circuit-detail .interactive-card:hover{transform:translateY(-5px) scale(1.01);box-shadow:var(--shadow-xl)}
+    .circuit-detail .pulse-animation{animation:pulse 2.2s infinite}
+    .circuit-detail .glow-animation{animation:glow 3s ease-in-out infinite}
+
+    /* ========== HERO PREMIUM ========== */
+    .circuit-detail .circuit-hero{
+      position:relative; 
+      min-height:calc(100vh - var(--nav-height));
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+      background-size: 300% 300%, 200% 200%, 200% 200%, 300% 300%;
+      animation: gradientShift 18s ease infinite;
+      display: flex; 
+      align-items: center; 
+      overflow: hidden; 
+      isolation: isolate;
+    }
+
+    .circuit-detail .hero-overlay{
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at center, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.8) 100%),
+        linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.6) 40%, rgba(15,23,42,0.3) 100%);
+    }
+
+    .circuit-detail .hero-particles{
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.3) 50%, transparent 100%),
+        radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.3) 50%, transparent 100%),
+        radial-gradient(2px 2px at 60% 20%, rgba(255,255,255,0.3) 50%, transparent 100%),
+        radial-gradient(2px 2px at 80% 50%, rgba(255,255,255,0.3) 50%, transparent 100%);
+      background-size: 200px 200px;
+      animation: float 20s infinite linear;
+    }
+
+    .circuit-detail .hero-shapes{
+      position: absolute;
+      inset: 0;
+      opacity: 0.1;
+    }
+
+    .circuit-detail .hero-shapes .shape{
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+      backdrop-filter: blur(20px);
+      transition: var(--transition-slow);
+      filter: blur(1px);
+    }
+
+    .circuit-detail .shape-1{width: 400px; height: 400px; top: -200px; right: -150px; animation: float 15s ease-in-out infinite}
+    .circuit-detail .shape-2{width: 300px; height: 300px; bottom: -120px; left: 8%; animation: float 18s ease-in-out infinite reverse}
+    .circuit-detail .shape-3{width: 200px; height: 200px; top: 22%; left: 5%; animation: float 12s ease-in-out infinite}
+
+    .circuit-detail .hero-container{
+      position: relative;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      width: 100%;
+    }
+
+    .circuit-detail .hero-content{
+      color: #fff;
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Header Premium */
+    .circuit-detail .hero-header{
+      margin-bottom: 2rem;
+    }
+
+    .circuit-detail .circuit-badges{
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .circuit-detail .badge-code{
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      backdrop-filter: blur(20px);
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .circuit-detail .badge-code::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .circuit-detail .badge-code:hover::before{
+      left: 100%;
+    }
+
+    .circuit-detail .availability-indicator{
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .circuit-detail .availability-dot{
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .circuit-detail .availability-dot::after{
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .circuit-detail .low-demand{background: var(--success)}
+    .circuit-detail .low-demand::after{background: var(--success); opacity: 0.4;}
+    .circuit-detail .medium-demand{background: var(--warning)}
+    .circuit-detail .medium-demand::after{background: var(--warning); opacity: 0.4;}
+    .circuit-detail .high-demand{background: var(--error)}
+    .circuit-detail .high-demand::after{background: var(--error); opacity: 0.4;}
+
+    /* Titre Principal Premium */
+    .circuit-detail .circuit-title{
+      font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 1rem 0 2rem;
+      background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #c7d2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .circuit-detail .circuit-title::after{
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+
+    /* Grille Meta Premium */
+    .circuit-detail .circuit-meta-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .circuit-detail .meta-item{
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: var(--transition);
+    }
+
+    .circuit-detail .meta-item:hover{
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-5px);
+    }
+
+    .circuit-detail .meta-icon{
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .circuit-detail .meta-content{
+      flex: 1;
+    }
+
+    .circuit-detail .meta-label{
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .circuit-detail .meta-value{
+      font-weight: 800;
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .circuit-detail .meta-sub{
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    /* Performance Grid Premium */
+    .circuit-detail .performance-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .circuit-detail .performance-item{
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .circuit-detail .performance-item::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .circuit-detail .performance-item:hover{
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .circuit-detail .performance-value{
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff, #e0f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .circuit-detail .performance-label{
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .circuit-detail .performance-bar{
+      height: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .circuit-detail .performance-fill{
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--accent));
+      border-radius: 10px;
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .circuit-detail .performance-fill::after{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    /* Actions Hero Premium */
+    .circuit-detail .hero-actions{
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .circuit-detail .btn{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      border: 2px solid transparent;
+      border-radius: 50px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1rem;
+      line-height: 1;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .circuit-detail .btn::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .circuit-detail .btn:hover::before{
+      left: 100%;
+    }
+
+    .circuit-detail .btn-primary{
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .circuit-detail .btn-primary:hover{
+      background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.6);
+    }
+
+    .circuit-detail .btn-secondary{
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255,255,255,0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    .circuit-detail .btn-secondary:hover{
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+    }
+
+    /* Scroll Indicator Premium */
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: rotate(45deg) translateY(0);
+      }
+      40% {
+        transform: rotate(45deg) translateY(-10px);
+      }
+      60% {
+        transform: rotate(45deg) translateY(-5px);
+      }
+    }
+
+    /* Hero Seam Premium */
+    .circuit-detail .hero-seam{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 40px;
+      pointer-events: none;
+      background: 
+        linear-gradient(180deg, 
+          transparent 0%, 
+          rgba(255,255,255,0.1) 20%,
+          rgba(255,255,255,0.05) 40%,
+          transparent 100%);
+      backdrop-filter: blur(5px);
+    }
+
+    /* ---------- NAV STICKY (scopée) ---------- */
+    .circuit-detail .detail-nav{
+      position: sticky;
+      top: calc(var(--nav-height) + max(0px, env(safe-area-inset-top)));
+      background: rgba(255,255,255,.94);
+      -webkit-backdrop-filter: saturate(180%) blur(18px);
+      backdrop-filter: saturate(180%) blur(18px);
+      border-bottom:1px solid var(--border);
+      z-index:2990; transition: background .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    [data-theme="dark"] .circuit-detail .detail-nav{ background: rgba(17,24,39,.84); }
+    .circuit-detail .detail-nav.is-scrolled{ box-shadow:0 8px 24px rgba(0,0,0,.08); }
+
+    .circuit-detail .nav-container{max-width:1200px;margin:0 auto;padding:0 2rem;height:70px;display:flex;align-items:center;gap:.75rem}
+    .circuit-detail .nav-scroll{position:relative;flex:1 1 auto;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scroll-snap-type:x mandatory;scroll-padding-inline:16px}
+    .circuit-detail .nav-links{display:flex;gap:.6rem;padding:.75rem 0;width:max-content}
+    .circuit-detail .nav-actions{flex:0 0 auto}
+    .circuit-detail .detail-nav .nav-link{
+      display:flex;align-items:center;gap:.5rem;text-decoration:none;
+      color: color-mix(in oklab, var(--text-primary) 78%, transparent);
+      font-weight:800;padding:.56rem .95rem;border-radius:999px;border:1px solid transparent;scroll-snap-align:start;line-height:1;
+      transition:color .15s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .circuit-detail .detail-nav .nav-link:hover{
+      color:var(--primary);
+      background: color-mix(in oklab, var(--primary-light) 64%, transparent);
+      border-color: color-mix(in oklab, var(--primary) 22%, transparent);
+    }
+    .circuit-detail .detail-nav .nav-link.active{
+      color:#fff; background:linear-gradient(135deg,var(--primary),var(--secondary)); box-shadow:var(--shadow-sm);
+    }
+
+    .circuit-detail .nav-scroll::before,.circuit-detail .nav-scroll::after{
+      content:'';position:absolute;top:0;bottom:0;width:28px;pointer-events:none;z-index:2
+    }
+    .circuit-detail .nav-scroll::before{left:0;background:linear-gradient(to right,var(--bg-primary),transparent)}
+    .circuit-detail .nav-scroll::after{right:0;background:linear-gradient(to left,var(--bg-primary),transparent)}
+    [data-theme="dark"] .circuit-detail .nav-scroll::before{background:linear-gradient(to right,var(--bg-secondary),transparent)}
+    [data-theme="dark"] .circuit-detail .nav-scroll::after{background:linear-gradient(to left,var(--bg-secondary),transparent)}
+    .circuit-detail .detail-nav .scroll-progress{position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));transform-origin:left;transform:scaleX(0)}
+
+    /* ---------- LAYOUT ---------- */
+    .circuit-detail .detail-content{max-width:1200px;margin:0 auto;padding:2.5rem 2rem}
+    .circuit-detail .content-grid{display:grid;grid-template-columns:1fr 380px;gap:2.2rem}
+    .circuit-detail .content-section{margin-bottom:3rem;animation:fadeInUp .6s ease-out;scroll-margin-top: calc(var(--nav-height) + 76px)}
+    .circuit-detail .section-header{margin-bottom:1.8rem}
+    .circuit-detail .section-header h2{font-size:clamp(1.6rem,1.6vw + .8rem,2.1rem);font-weight:800;letter-spacing:-.015em}
+    .circuit-detail .section-decoration{width:60px;height:4px;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;margin-top:.6rem}
+    .circuit-detail .section-subtitle{margin-top:.4rem}
+    .circuit-detail .badge-info{background:var(--primary-light);color:var(--primary);padding:.4rem .8rem;border-radius:999px;font-size:.85rem;font-weight:700}
+
+    .circuit-detail .rich-text{line-height:1.7;font-size:1.05rem}
+    .circuit-detail .rich-text p{margin-bottom:1.25rem}
+
+    /* Timeline */
+    .circuit-detail .timeline-modern{position:relative}
+    .circuit-detail .timeline-modern::before{content:'';position:absolute;left:40px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:1px}
+    .circuit-detail .timeline-day{display:flex;gap:1.3rem;margin-bottom:2rem}
+    .circuit-detail .timeline-marker{display:flex;flex-direction:column;align-items:center;width:80px;flex-shrink:0}
+    .circuit-detail .day-number{
+      background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;
+      width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.12rem;box-shadow:var(--shadow-lg)
+    }
+    .circuit-detail .timeline-content{
+      flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-lg);
+      padding:1.6rem;box-shadow:var(--shadow);transition:var(--transition)
+    }
+    .circuit-detail .timeline-content:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+    .circuit-detail .day-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+    .circuit-detail .day-header h3{font-size:1.25rem;font-weight:700}
+    .circuit-detail .day-badge{background:var(--primary-light);color:var(--primary);padding:.4rem .8rem;border-radius:999px;font-size:.85rem;font-weight:800;margin-left:.5rem}
+    .circuit-detail .day-description{color:var(--text-secondary);font-size:1rem}
+
+    /* Sidebar + cartes */
+    .circuit-detail .sidebar{display:flex;flex-direction:column;gap:1rem}
+    .circuit-detail .action-card{
+      background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:var(--radius-lg);padding:1.4rem;box-shadow:var(--shadow-lg)
+    }
+    .circuit-detail .action-footer{display:flex;justify-content:space-between;align-items:center;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.22);font-size:.9rem}
+    .circuit-detail .availability-info{display:flex;align-items:center;gap:.4rem}
+
+    .circuit-detail .info-card,.circuit-detail .inclusion-card,.circuit-detail .exclusion-card,.circuit-detail .pricing-sidebar{
+      background:var(--bg-primary);border:1px solid color-mix(in oklab, var(--border) 85%, transparent);border-radius:var(--radius);padding:1.2rem;box-shadow:var(--shadow)
+    }
+    .circuit-detail .info-card h4,.circuit-detail .inclusion-card h4,.circuit-detail .exclusion-card h4{font-size:1.05rem;font-weight:800;margin-bottom:.8rem;display:flex;gap:.5rem;align-items:center}
+    .circuit-detail .inclusion-list,.circuit-detail .exclusion-list{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+    .circuit-detail .inclusion-list li,.circuit-detail .exclusion-list li{padding:.4rem 0;border-bottom:1px solid var(--border-light)}
+    .circuit-detail .inclusion-list li:last-child,.circuit-detail .exclusion-list li:last-child{border-bottom:none}
+    .circuit-detail .info-grid{display:flex;flex-direction:column;gap:.65rem}
+    .circuit-detail .info-item{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--border-light)}
+    .circuit-detail .info-item:last-child{border-bottom:none}
+    .circuit-detail .info-label{color:var(--text-secondary);font-size:.9rem}
+    .circuit-detail .info-value{font-weight:800;color:var(--text-primary);text-align:right}
+
+    /* Pricing (compact) */
+    .circuit-detail .pricing-sidebar>h4{margin-bottom:.6rem;font-size:1.05rem;font-weight:800}
+    .circuit-detail .pricing-sidebar .pricing-cards{display:grid;grid-template-columns:1fr;gap:.6rem;margin-bottom:.6rem}
+    .circuit-detail .pricing-sidebar .pricing-card{padding:1rem;border:1px solid var(--border);border-radius:var(--radius)}
+    .circuit-detail .pricing-sidebar .pricing-card.featured{border-color:var(--primary)}
+    .circuit-detail .pricing-sidebar .pricing-header{display:flex;justify-content:space-between;align-items:baseline}
+    .circuit-detail .pricing-sidebar .price-amount{font-size:1.7rem;font-weight:800;color:var(--primary)}
+    .circuit-detail .pricing-sidebar .price-currency{font-size:1rem;color:var(--text-secondary)}
+    .circuit-detail .pricing-features{list-style:none;margin-top:.5rem}
+    .circuit-detail .pricing-features li{padding:.45rem 0 .45rem 1.15rem;border-bottom:1px solid var(--border-light);position:relative}
+    .circuit-detail .pricing-features li:last-child{border-bottom:none}
+    .circuit-detail .pricing-features li:before{content:"✓";position:absolute;left:0;color:var(--success);font-weight:800}
+
+    .circuit-detail .options-compact h5{font-size:.95rem;font-weight:800;margin:.4rem 0 .6rem}
+    .circuit-detail .option-category h6{font-size:.85rem;color:var(--text-secondary);margin:.4rem 0;text-transform:uppercase;letter-spacing:.5px}
+    .circuit-detail .option-item{
+      display:flex;justify-content:space-between;gap:.8rem;align-items:flex-start;
+      padding:.75rem;border:1px solid var(--border);border-radius:var(--radius);transition:var(--transition)
+    }
+    .circuit-detail .option-item:hover{border-color:var(--primary);box-shadow:var(--shadow-md)}
+    .circuit-detail .option-name{font-weight:700}
+    .circuit-detail .option-description{font-size:.85rem;color:var(--text-secondary)}
+    .circuit-detail .option-side{display:flex;flex-direction:column;align-items:flex-end;gap:.35rem}
+    .circuit-detail .option-badge{background:var(--bg-tertiary);color:var(--text-secondary);padding:.2rem .45rem;border-radius:6px;font-size:.75rem;font-weight:700}
+    .circuit-detail .option-price{font-weight:800;font-size:1.05rem}
+
+    /* Full-row sous la sidebar */
+    .circuit-detail .full-row{grid-column:1 / -1}
+
+    /* Responsive */
+    @media (max-width:1024px){
+      .circuit-detail .content-grid{grid-template-columns:1fr;gap:1.6rem}
+      .circuit-detail .hero-container,.circuit-detail .nav-container,.circuit-detail .detail-content{padding:0 1rem}
+      .circuit-detail .detail-content{padding:2rem 1rem}
+    }
+    @media (max-width:768px){
+      .circuit-detail .nav-links{gap:.5rem}
+      .circuit-detail .detail-nav .nav-link{padding:.5rem .75rem;font-size:.9rem}
+      .circuit-detail .timeline-modern::before{left:30px}
+      .circuit-detail .timeline-marker{width:60px}
+      .circuit-detail .day-number{width:60px;height:60px;font-size:.95rem}
+      .circuit-detail .day-header{flex-direction:column;gap:.4rem}
+      .circuit-detail .day-badge{align-self:flex-start;margin-left:0}
+    }
+
+    /* Confort visuel */
+    @media (prefers-reduced-motion:reduce){
+      .circuit-detail *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+      .circuit-detail .circuit-hero{animation:none}
+    }
+
+    /* Justification + césure douce */
+    .circuit-detail .rich-text,
+    .circuit-detail .day-description,
+    .circuit-detail .option-description {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+    }
+
+    /* (optionnel) un poil plus de confort sur les paragraphes longs */
+    .circuit-detail .rich-text p { margin-bottom: 1.1rem; }
+
+    /* Justifier le bloc Rendez-vous dans Infos pratiques */
+    .circuit-detail .info-value.rich-text{
+      font-weight: 500;                /* pas de bold sur un pavé long */
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;                   /* césure élégante */
+      white-space: normal;             /* s’assure que ça peut revenir à la ligne */
+    }
+
+    /* === 1) Seam (jonction propre) HERO -> NAV === */
+    .circuit-detail .hero-seam{
+      position:absolute; left:0; right:0; bottom:-1px; height:22px; pointer-events:none;
+      background:
+        radial-gradient(120% 18px at 50% 100%, rgba(0,0,0,.18), transparent 68%),
+        linear-gradient(180deg, rgba(255,255,255,.08), transparent);
+      filter: blur(4px);
+      opacity:.75;
+    }
+    [data-theme="dark"] .circuit-detail .hero-seam{
+      background:
+        radial-gradient(120% 18px at 50% 100%, rgba(0,0,0,.45), transparent 70%),
+        linear-gradient(180deg, rgba(0,0,0,.25), transparent);
+    }
+
+    /* === 2) Thème dynamique pour la NAV (phase HERO vs CONTENU) === */
+    .circuit-detail .detail-nav{
+      /* couleurs par défaut = phase HERO */
+      --phase-start: var(--primary);
+      --phase-end:   var(--secondary);
+      --scrollbar-bg: color-mix(in oklab, var(--bg-primary) 78%, transparent);
+    }
+    .circuit-detail .detail-nav[data-phase="content"]{
+      /* quand on a quitté le hero */
+      --phase-start: var(--accent);
+      --phase-end:   var(--primary-dark);
+      --scrollbar-bg: color-mix(in oklab, var(--bg-tertiary) 64%, transparent);
+    }
+
+    /* Progress rail + barre multicolore (s’appuie sur les vars ci-dessus) */
+    .circuit-detail .detail-nav::after{
+      content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+      background: color-mix(in oklab, var(--border) 70%, transparent);
+    }
+    .circuit-detail .detail-nav .scroll-progress{
+      height:3px; bottom:0; left:0; right:0; position:absolute; transform-origin:left;
+      background: linear-gradient(90deg, var(--phase-start), var(--phase-end));
+      border-radius:0 2px 2px 0; box-shadow:0 0 10px color-mix(in oklab, var(--phase-start) 30%, transparent);
+    }
+
+    /* === 3) Scrollbar horizontale du menu (nav-scroll) stylée === */
+    .circuit-detail .nav-scroll{
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in oklab, var(--phase-start) 55%, var(--phase-end) 45%) var(--scrollbar-bg);
+    }
+    .circuit-detail .nav-scroll::-webkit-scrollbar{ height:8px }
+    .circuit-detail .nav-scroll::-webkit-scrollbar-track{
+      background: var(--scrollbar-bg); border-radius:999px;
+    }
+    .circuit-detail .nav-scroll::-webkit-scrollbar-thumb{
+      background: linear-gradient(90deg, var(--phase-start), var(--phase-end));
+      border-radius:999px; border:2px solid var(--bg-primary);
+    }
+    [data-theme="dark"] .circuit-detail .nav-scroll::-webkit-scrollbar-thumb{
+      border-color: var(--bg-secondary);
+    }
+
+    /* Petites touches fun */
+    .circuit-detail .detail-nav .nav-link.active{
+      position:relative; color:#fff;
+      background: linear-gradient(135deg, var(--phase-start), var(--phase-end));
+    }
+    .circuit-detail .detail-nav .nav-link.active::after{
+      content:""; position:absolute; inset:-3px; border-radius:999px; z-index:-1;
+      background: radial-gradient(60% 60% at 50% 50%, color-mix(in oklab, var(--phase-end) 40%, transparent), transparent 70%);
+      filter: blur(6px); opacity:.7;
+    }
+
+    /* ==== Premium gap & barre flottante ====
+      - Ajoute un léger espace entre le HERO et la NAV
+      - NAV "carte" arrondie au-dessus du contenu
+      - Quand elle colle (is-scrolled), elle s’élargit en plein écran et perd ses arrondis
+    */
+    :root { --hero-nav-gap: clamp(12px, 2.2vh, 22px); }
+
+    .circuit-detail .circuit-hero{
+      padding-bottom: calc(var(--hero-nav-gap) * .4); /* confort visuel, sans casser le seam */
+    }
+
+    .circuit-detail .detail-nav{
+      margin: var(--hero-nav-gap) auto 0;
+      width: min(1200px, calc(100% - 2rem));
+      border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 12px 24px -12px rgba(0,0,0,.18);
+      overflow: clip; /* arrondis propres pour le progress et la scrollbar */
+      transition:
+        margin .25s ease, width .25s ease, border-radius .25s ease,
+        box-shadow .25s ease, background .25s ease, border-color .25s ease;
+    }
+
+    /* Contenu un peu plus aéré dans l’état flottant */
+    .circuit-detail .detail-nav .nav-container{ padding-inline: 1rem; }
+
+    /* État sticky (quand .is-scrolled est posé par ton JS) */
+    .circuit-detail .detail-nav.is-scrolled{
+      margin-top: 0;
+      width: 100%;
+      border-radius: 0;
+      border-left: none; border-right: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    /* Reprend l’ancienne largeur de contenu quand sticky */
+    .circuit-detail .detail-nav.is-scrolled .nav-container{
+      max-width: 1200px; margin: 0 auto; padding-inline: 2rem;
+    }
+
+    /* Soulignement doux sous la "carte" flottante (non sticky) */
+    .circuit-detail .detail-nav:not(.is-scrolled)::before{
+      content:""; position:absolute; inset:auto 10px 0 10px; height:10px;
+      background: radial-gradient(40% 60% at 50% 0%, rgba(0,0,0,.18), transparent 70%);
+      filter: blur(6px); opacity:.55; pointer-events:none;
+    }
+
+    /* Progress bar un peu plus premium (plus visible dans l’état flottant) */
+    .circuit-detail .detail-nav .scroll-progress{
+      height: 3px;
+      box-shadow: 0 0 12px color-mix(in oklab, var(--phase-start) 28%, transparent);
+    }
+    .circuit-detail .detail-nav.is-scrolled .scroll-progress{
+      height: 2px; /* plus discret en sticky */
+    }
+
+    /* Pills du menu un poil plus "souples" */
+    .circuit-detail .detail-nav .nav-link{
+      padding: .58rem .98rem;
+    }
+    @media (max-width: 768px){
+      .circuit-detail .detail-nav .nav-link{ padding: .5rem .8rem; }
+    }
+
+    /* L’onglet actif avec un léger sheen (discret, pas de JS) */
+    @keyframes sheen {
+      0% { background-position: 0% 50%; }
+      100%{ background-position: 200% 50%; }
+    }
+    .circuit-detail .detail-nav .nav-link.active{
+      background-image:
+        linear-gradient(135deg, var(--phase-start), var(--phase-end)),
+        linear-gradient(90deg, rgba(255,255,255,.22), rgba(255,255,255,0), rgba(255,255,255,.22));
+      background-size: auto, 200% 100%;
+      background-blend-mode: overlay;
+      animation: sheen 8s linear infinite;
+    }
+
+    /* Scrollbar horizontale du menu un poil plus basse pour ne pas coller au bord */
+    .circuit-detail .nav-scroll{
+      padding-bottom: 4px; /* dégage la thumb, visuel plus doux */
+    }
+
+    /* === HERO — textes justifiés === */
+    .circuit-detail .hero-content .meta-value,
+    .circuit-detail .hero-content .meta-sub,
+    .circuit-detail .hero-pricing p,
+    .circuit-detail .hero-pricing li{
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+    }
+
+    /* === HERO — Tarifs & Options (compact, “glass”) === */
+    .circuit-detail .hero-pricing{
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    }
+
+    .circuit-detail .hero-pricing .hp-head{
+      display:flex; align-items:baseline; justify-content:space-between; gap:.75rem;
+      margin-bottom:.5rem;
+    }
+    .circuit-detail .hero-pricing .hp-head h3{
+      margin:0; font-size:1.05rem; font-weight:800; color:#fff;
+    }
+    .circuit-detail .hero-pricing .hp-link{
+      color:#fff; opacity:.85; text-decoration:none; font-weight:700; font-size:.9rem;
+    }
+    .circuit-detail .hero-pricing .hp-link:hover{ opacity:1; text-decoration:underline; }
+
+    .circuit-detail .hero-pricing .hp-grid{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:.8rem;
+    }
+
+    .circuit-detail .hero-pricing .hp-card{
+      position:relative; overflow:hidden;
+      background: rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .circuit-detail .hero-pricing .hp-card::before{
+      content:""; position:absolute; left:0; right:0; top:0; height:3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    .circuit-detail .hero-pricing .hp-card-title{
+      font-weight:800; margin-bottom:.35rem;
+    }
+    .circuit-detail .hero-pricing .hp-price{
+      display:flex; align-items:baseline; gap:.4rem; margin-bottom:.4rem;
+    }
+    .circuit-detail .hero-pricing .hp-amount{
+      font-size:1.55rem; font-weight:900;
+      background: linear-gradient(135deg,#fff,#e0f2fe);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .circuit-detail .hero-pricing .hp-currency{ opacity:.9; }
+
+    .circuit-detail .hero-pricing .hp-features{
+      list-style:none; margin:.2rem 0 0; padding:0;
+    }
+    .circuit-detail .hero-pricing .hp-features li{
+      position:relative; padding-left:1.05rem; margin:.28rem 0;
+      font-size:.95rem; opacity:.95;
+    }
+    .circuit-detail .hero-pricing .hp-features li::before{
+      content:"✓"; position:absolute; left:0; top:0; font-weight:800; color:var(--success);
+    }
+
+    /* Options chips */
+    .circuit-detail .hero-pricing .hp-options{
+      margin-top:.6rem; display:flex; flex-wrap:wrap; gap:.4rem .5rem; align-items:center;
+    }
+    .circuit-detail .hero-pricing .hp-options-title{ font-weight:800; font-size:.95rem; }
+    .circuit-detail .hero-pricing .hp-chip{
+      background: rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.28);
+      padding:.18rem .5rem; border-radius:999px; font-size:.82rem; font-weight:700;
+    }
+
+    /* ——— Espace entre Tarifs (hero-pricing) et KPIs (performance-grid) ——— */
+    :root{ --stack-gap: clamp(16px, 1.4vw, 26px); }
+
+    .circuit-detail .hero-pricing{
+      margin-block-end: var(--stack-gap);  /* marge sous le bloc Tarifs & Options */
+    }
+
+    .circuit-detail .hero-pricing + .performance-grid{
+      margin-top: 0; /* pas de marge doublon côté KPIs */
+    }
+
+    /* ——— Justification des textes (HERO) ——— */
+    .circuit-detail .circuit-meta-grid .meta-content p,
+    .circuit-detail .hero-pricing p,
+    .circuit-detail .hero-pricing li{
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      margin: 0 0 .65rem; /* rythme vertical doux */
+    }
+
+    /* ——— Harmonisation du style “glass” (Tarifs & KPIs) ——— */
+    .circuit-detail{
+      --glass-bg: rgba(255,255,255,.14);
+      --glass-border: rgba(255,255,255,.26);
+      --glass-blur: 14px;
+    }
+
+    .circuit-detail .hero-pricing,
+    .circuit-detail .performance-item{
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+
+    /* ——— Espace visuel en haut du HERO (entre l'image et .hero-header) ——— */
+    :root{ --hero-top-gap: clamp(24px, 6vh, 96px); }
+
+    .circuit-detail .hero-container{
+      /* crée un vrai padding haut dans le hero */
+      padding-top: calc(var(--hero-top-gap) + env(safe-area-inset-top, 0px));
+    }
+
+    /* Option (au besoin) : un léger amorti local au bloc badges */
+    .circuit-detail .hero-header{ margin-top: .25rem; }
+
+    /* Sur petits écrans tu peux réduire un peu l'espace */
+    @media (max-width: 768px){
+      :root{ --hero-top-gap: clamp(16px, 4.5vh, 56px); }
+    }
+
+    /* ====== Uniformisation du bloc .circuit-meta-grid ====== */
+
+    /* Centre le header (label + value + sub) et harmonise l'espacement */
+    .circuit-detail .circuit-meta-grid .meta-item{
+      text-align: center;
+    }
+    .circuit-detail .circuit-meta-grid .meta-content > * + *{
+      margin-top: .45rem;               /* rythme vertical identique */
+    }
+
+    /* Label : même gras partout */
+    .circuit-detail .circuit-meta-grid .meta-label{
+      font-weight: 800;
+      letter-spacing: .2px;
+      opacity: .95;
+    }
+
+    /* Value : même taille/gras partout (supprime les styles inline) */
+    .circuit-detail .circuit-meta-grid .meta-value{
+      font-size: clamp(1.15rem, 1vw + .6rem, 1.55rem);
+      font-weight: 800;
+      margin-bottom: .25rem;
+    }
+
+    /* Sous-ligne (duree) : cohérente et un peu adoucie */
+    .circuit-detail .circuit-meta-grid .meta-sub{
+      font-size: .95rem;
+      font-weight: 600;
+      opacity: .95;
+    }
+
+    /* Texte long (descriptions, échéancier…) : justifié partout */
+    .circuit-detail .circuit-meta-grid .meta-desc{
+      max-width: 66ch;                  /* largeur de lecture confortable */
+      margin: .35rem auto 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      font-weight: 500;                 /* pas de gras sur le pavé */
+      line-height: 1.65;
+    }
+
+    /* Option : rend les deux cartes visuellement encore plus jumelles */
+    .circuit-detail .circuit-meta-grid .meta-item{
+      padding: 1.4rem 1.6rem;
+    }
+
+    /* Prix inline au-dessus du titre "Modalités de paiement" */
+    .circuit-detail .meta-inline-prices{
+      display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom:.75rem; justify-content:flex-start;
+    }
+    .circuit-detail .mini-price{
+      background:var(--bg-primary);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:.6rem .9rem;
+    }
+    .circuit-detail .mini-price .mini-label{
+      font-size:.8rem; color:var(--text-secondary); font-weight:700; text-transform:uppercase; letter-spacing:.3px;
+    }
+    .circuit-detail .mini-price .mini-amount{
+      font-size:1.2rem; font-weight:900; color:var(--primary); line-height:1;
+    }
+    .circuit-detail .mini-price .mini-amount span{
+      font-size:.9rem; color:var(--text-secondary); font-weight:700;
+    }
+    /* Titres des listes ajoutées sous l'échéancier */
+    .circuit-detail .meta-content h5.subhead{
+      margin:1rem 0 .5rem; font-size:1rem; font-weight:800;
+    }
+
+    /* ====== Conformité & justification dans "Modalités de paiement" ====== */
+
+    /* La carte meta est centrée par défaut : on force la justif sur les zones texte */
+    .circuit-detail .circuit-meta-grid .meta-item .meta-desc,
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list,
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list li,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list li {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+    }
+
+    /* Largeur de lecture uniforme (identique à .meta-desc) */
+    .circuit-detail .circuit-meta-grid .meta-item .meta-desc,
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list {
+      width: min(66ch, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Rythme vertical/espacement cohérent */
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list li,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list li {
+      line-height: 1.65;
+      padding: .75rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list li:last-child,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* Sous-titres "Le prix comprend / ne comprend pas" : centrés mais colonnes justifiées */
+    .circuit-detail .circuit-meta-grid .meta-item h5.subhead {
+      text-align: center;
+      margin: 1rem auto .5rem;
+      width: min(66ch,100%);
+    }
+
+    /* Les petits blocs prix en haut restent compacts mais non centrés au milieu du texte */
+    .circuit-detail .meta-inline-prices {
+      width: min(66ch, 100%);
+      margin-left: auto;
+      margin-right: auto;
+      justify-content: flex-start;
+    }
+
+    /* --- Fix indentation dans la carte "Modalités de paiement" --- */
+    .circuit-detail #echeancier .rich-text ul,
+    .circuit-detail #echeancier .inclusion-list,
+    .circuit-detail #echeancier .exclusion-list{
+      list-style: none;      /* pas de puces */
+      padding-left: 0;       /* supprime l'espace à gauche */
+      margin-left: 0;        /* supprime la marge navigateur */
+    }
+
+    /* Confort + séparateurs homogènes */
+    .circuit-detail #echeancier .rich-text li{
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      line-height: 1.65;
+      padding: .7rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .circuit-detail #echeancier .rich-text li:last-child{ border-bottom: none; }
+
+    /* Titre "Le prix comprend / ne comprend pas" sans décalage */
+    .circuit-detail #echeancier h5,
+    .circuit-detail #echeancier .subhead{
+      margin: 1.1rem 0 .6rem;
+      text-align: center;
+    }
+    /* ===== Fix: aligner "Le prix comprend / ne comprend pas" (carte meta) ===== */
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list{
+      list-style: none;      /* retire les puces */
+      padding-left: 0;       /* supprime l'indentation */
+      margin-left: 0;        /* supprime la marge navigateur */
+      width: min(66ch, 100%);/* même largeur de lecture que l'échéancier */
+      margin-inline: auto;   /* centré dans la carte */
+    }
+
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list li,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list li{
+      text-align: justify;       /* même justification que l’échéancier */
+      text-justify: inter-word;
+      hyphens: auto;
+      line-height: 1.65;
+      padding: .7rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .circuit-detail .circuit-meta-grid .meta-item .inclusion-list li:last-child,
+    .circuit-detail .circuit-meta-grid .meta-item .exclusion-list li:last-child{
+      border-bottom: none;
+    }
+
+    /* Sous-titres centrés, sans décalage */
+    .circuit-detail .circuit-meta-grid .meta-item h5.subhead{
+      margin: 1.1rem auto .6rem;
+      text-align: center;
+      width: min(66ch, 100%);
+    }
+
+    /* Bloc compact pour "Infos pratiques & Rendez-vous" INSIDE la carte meta */
+    .circuit-detail .meta-info-compact{
+      width: min(66ch, 100%);
+      margin: .6rem auto 0;
+    }
+
+    .circuit-detail .meta-info-rows{
+      list-style: none;
+      padding: 0;
+      margin: 0 0 .6rem;
+    }
+    .circuit-detail .meta-info-rows li{
+      display: flex;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .45rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .circuit-detail .meta-info-rows li:last-child{ border-bottom: none; }
+    .circuit-detail .meta-info-rows .label{
+      color: #FFFFFF;
+      font-size: .9rem;
+      font-weight: 500;
+    }
+    .circuit-detail .meta-info-rows .value{
+      font-weight: 800;
+      text-align: right;
+    }
+    @media (max-width: 520px){
+      .circuit-detail .meta-info-rows li{ flex-direction: column; align-items: flex-start; }
+      .circuit-detail .meta-info-rows .value{ text-align: left; }
+    }
+
+    /* Styles pour le carrousel des autres circuits */
+    .other-circuits-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .circuit-card {
+      position: relative;
+    }
+
+    .circuit-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .circuit-card:hover .circuit-image img {
+      transform: scale(1.05);
+    }
+
+    .circuits-carousel-container::before,
+    .circuits-carousel-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .circuits-carousel-container::before {
+      left: 0;
+
+    }
+
+    .circuits-carousel-container::after {
+      right: 0;
+      
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .circuit-card {
+        flex: 0 0 calc(50% - 1rem) !important;
+        min-width: 280px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .circuit-card {
+        flex: 0 0 calc(100% - 1rem) !important;
+        min-width: 280px !important;
+      }
+      
+      .other-circuits-section {
+        padding: 2rem 0 !important;
+      }
+    }
+
+    /* Animation de chargement */
+    @keyframes slideInFromBottom {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .other-circuits-section {
+      animation: slideInFromBottom 0.8s ease-out;
+    }    
+
+    /* 1) Applique un masque qui est 100% opaque au centre et transparent sur 48px aux bords */
+    .circuits-carousel-container{
+      /* bord de fondu réglable */
+      --edge-fade: 48px;
+
+      /* Chrome/Safari */
+      -webkit-mask-image: linear-gradient(to right,
+        transparent 0, #000 var(--edge-fade),
+        #000 calc(100% - var(--edge-fade)), transparent 100%);
+      -webkit-mask-repeat: no-repeat;
+
+      /* Firefox & co */
+      mask-image: linear-gradient(to right,
+        transparent 0, #000 var(--edge-fade),
+        #000 calc(100% - var(--edge-fade)), transparent 100%);
+      mask-repeat: no-repeat;
+    }
+
+    /* 2) On coupe les pseudo-éléments qui posaient le voile */
+    .circuits-carousel-container::before,
+    .circuits-carousel-container::after{
+      display: none !important;
+    }
+
+    /* (facultatif) réduire le fondu sur mobile */
+    @media (max-width: 768px){
+      .circuits-carousel-container{ --edge-fade: 24px; }
+    }
+
+    /* Neutralisation 100% du fondu sur les bords */
+    .circuits-carousel-container {
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    /* Coupe aussi toute tentative de voile via ::before/::after */
+    .other-circuits-section .circuits-carousel-container::before,
+    .other-circuits-section .circuits-carousel-container::after{
+      content: none !important;
+      display: none !important;
+      background: none !important;
+      width: 0 !important;
+    }
+
+    /* ===== NB banner (avant la NAV) ===== */
+    .circuit-detail .nb-banner{
+      width: min(1200px, calc(100% - 2rem));
+      margin: clamp(10px, 1.8vh, 20px) auto 0;
+    }
+    .circuit-detail .nb-inner{
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: start;
+      gap: .85rem .9rem;
+      padding: .95rem 1.1rem;
+      background: rgba(255,255,255,.86);
+      border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+      border-radius: var(--radius-xl);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 24px -12px rgba(0,0,0,.18);
+    }
+    [data-theme="dark"] .circuit-detail .nb-inner{
+      background: rgba(17,24,39,.76);
+      border-color: color-mix(in oklab, var(--border) 45%, transparent);
+    }
+
+    /* Liseré gradient premium à gauche */
+    .circuit-detail .nb-inner::before{
+      content:"";
+      position:absolute; inset:0 auto 0 0;
+      width:4px; border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      box-shadow: 0 0 10px color-mix(in oklab, var(--primary) 30%, transparent);
+    }
+
+    .circuit-detail .nb-icon{
+      font-size: 1.05rem;
+      line-height: 1;
+      margin-top: .2rem;
+    }
+    .circuit-detail .nb-text{
+      margin: 0;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: .98rem;
+      text-align: justify; text-justify: inter-word; hyphens: auto;
+    }
+    [data-theme="dark"] .circuit-detail .nb-text{ color: var(--text-secondary); }
+
+    .circuit-detail .nb-close{
+      appearance: none; border: none; cursor: pointer;
+      font-size: 1.2rem; line-height: 1; padding: .1rem .35rem;
+      background: transparent; color: color-mix(in oklab, var(--text-primary) 80%, transparent);
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+    .circuit-detail .nb-close:hover{
+      background: color-mix(in oklab, var(--primary-light) 55%, transparent);
+      color: var(--primary);
+    }
+
+    /* Aligne visuellement avec la NAV “carte” quand non-sticky */
+    @media (max-width:1024px){
+      .circuit-detail .nb-banner{ width: calc(100% - 1rem); }
+    }
+
+    /* === Autres circuits — fit 3/2/1 colonnes sans rognage === */
+    .circuit-detail .circuits-carousel-track{
+      --gap: 1.5rem;             /* doit refléter le gap réel du track */
+      display: flex;
+      gap: var(--gap);
+    }
+
+    .circuit-detail .circuit-card{
+      /* 3 colonnes = 100% - 2 gaps / 3, sans min-width qui casse */
+      flex: 0 0 calc((100% - (2 * var(--gap))) / 3);
+      max-width: calc((100% - (2 * var(--gap))) / 3);
+      min-width: 0;              /* clé : autorise le shrink exact */
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 1024px){
+      .circuit-detail .circuit-card{
+        /* 2 colonnes = 100% - 1 gap / 2 */
+        flex-basis: calc((100% - var(--gap)) / 2);
+        max-width: calc((100% - var(--gap)) / 2);
+      }
+    }
+    @media (max-width: 768px){
+      .circuit-detail .circuit-card{
+        flex-basis: 100%;
+        max-width: 100%;
+      }
+    }
+
+    /* === Placeholder propre quand pas d'image === */
+    .circuit-detail .circuit-image--placeholder{
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex; align-items: center; justify-content: center;
+      color:#fff; font-weight: 900; text-align: center; padding: 0 1rem;
+    }
+
+    /* === Badge code compacte réutilisable (même ADN que dans le HERO) === */
+    .circuit-detail .badge-code.badge-compact{
+      padding:.35rem .7rem;
+      font-size:.78rem;
+      text-transform: uppercase;
+      letter-spacing:.3px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      opacity:.95;
+    }
+
+
+    /* Fix affichage codes trop longs (Laos, etc.) */
+    .circuit-detail .badge-code {
+      display: inline-block;
+      max-width: 100%;
+      white-space: nowrap;      /* une seule ligne */
+      overflow: hidden;         /* coupe le surplus */
+      text-overflow: ellipsis;  /* affiche "..." */
+    }
+
+    /* On peut limiter encore un peu la largeur dans les petits badges */
+    .circuit-detail .badge-code.badge-compact {
+      max-width: 180px;         /* ajuste si tu veux plus/moins large */
+    }
+
+
+  </style>
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="circuit-detail" id="circuitDetail">
+
+    <!-- HERO PREMIUM -->
+    <header class="circuit-hero" id="heroSection">
+      <div class="hero-overlay"></div>
+      <div class="hero-particles" id="heroParticles"></div>
+      <div class="hero-shapes">
+        <div class="shape shape-1" data-speed="0.2"></div>
+        <div class="shape shape-2" data-speed="0.1"></div>
+        <div class="shape shape-3" data-speed="0.3"></div>
+      </div>
+
+      <div class="hero-container">
+        <div class="hero-content">
+
+          <div class="hero-header">
+            <div class="circuit-badges">
+              <span class="badge-code pulse-animation">{{ circuit.code }}</span>
+              <div class="availability-indicator">
+                <span class="availability-dot {% if pct >= 80 %}high-demand{% elif pct >= 50 %}medium-demand{% else %}low-demand{% endif %}"></span>
+                <span>
+                  {% if pct >= 90 %}
+                    {% trans "Presque complet" %}
+                  {% elif pct >= 70 %}
+                    {% trans "Peu de places" %}
+                  {% else %}
+                    {% trans "Disponible" %}
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <h1 class="circuit-title" id="circuitTitle">{{ circuit.nom }}</h1>
+
+          <div class="circuit-meta-grid">
+
+            <div class="meta-item" data-aos="fade-up" data-aos-delay="100">
+              <div class="meta-content">
+                <div class="meta-label">{% trans "Dates du circuit" %}</div>
+                <div class="meta-value">{{ circuit.date_debut|date:"d/m/Y" }} – {{ circuit.date_fin|date:"d/m/Y" }}</div>
+                <div class="meta-desc">
+                  {{ circuit.description|default:"Description à venir…"|linebreaks }}
+                </div>
+              </div>
+            </div>
+
+            {% if echeancier_texte %}
+              <div class="meta-item" data-aos="fade-up" data-aos-delay="250">
+                <div class="meta-content">
+
+                  {# Prix en haut, d'abord Passager puis Pilote #}
+                  <div class="meta-inline-prices">
+                    {% if circuit.prix_passager_unitaire %}
+
+
+                    <div class="mini-price">
+                      <div class="mini-label">{% trans "Prix Pilote" %}</div>
+                      <div class="mini-amount">
+                        {{ circuit.prix_pilote_unitaire }} <span>{{ circuit.devise }}</span>
+                      </div>
+                    </div>
+
+                    {% endif %}
+
+                    <div class="mini-price">
+                      <div class="mini-label">{% trans "Prix Passager" %}</div>
+                      <div class="mini-amount">
+                        {{ circuit.prix_passager_unitaire }} <span>{{ circuit.devise }}</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="meta-label">{% trans "Modalités de paiement" %}</div>
+                  <div class="meta-desc">
+                    {{ echeancier_texte|linebreaksbr }}
+                  </div>
+
+                  {# En bas : Le prix comprend / ne comprend pas #}
+                  {% if comprend_items %}
+                    <h5 class="subhead">{% trans "Le prix comprend" %}</h5>
+                    <ul class="inclusion-list">
+                      {% for li in comprend_items %}
+                        <li>{{ li }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+
+                  {% if ne_comprend_pas_items %}
+                    <h5 class="subhead">{% trans "Le prix ne comprend pas" %}</h5>
+                    <ul class="exclusion-list">
+                      {% for li in ne_comprend_pas_items %}
+                        <li>{{ li }}</li>
+                      {% endfor %}
+
+                      {% comment %} {# ... après la liste ne_comprend_pas_items ... #}
+
+                      {% if circuit.devise or duree_jours or circuit.capacite or circuit.infos_rdv %}
+                        <h5 class="subhead">Infos pratiques &amp; Rendez-vous</h5>
+
+                        <div class="meta-info-compact">
+                          <ul class="meta-info-rows">
+                            {% if circuit.devise %}
+                              <li><span class="label">Devise</span><span class="value">{{ circuit.devise }}</span></li>
+                            {% endif %}
+                            <li><span class="label">Dates</span>
+                                <span class="value">{{ circuit.date_debut|date:"d/m/Y" }} → {{ circuit.date_fin|date:"d/m/Y" }}</span></li>
+                            {% if duree_jours %}
+                              <li><span class="label">Durée</span><span class="value">{{ duree_jours }} jours</span></li>
+                            {% endif %}
+                            {% if circuit.capacite %}
+                              <li><span class="label">Capacité</span><span class="value">{{ circuit.capacite }} places</span></li>
+                            {% endif %}
+                          </ul>
+
+                          {% if circuit.infos_rdv %}
+                            <div class="meta-desc rdv-text">
+                              {{ circuit.infos_rdv|linebreaks }}
+                            </div>
+                          {% endif %}
+                        </div>
+                      {% endif %} {% endcomment %}
+
+
+
+                    </ul>
+                  {% endif %}
+
+                </div>
+              </div>
+            {% endif %}
+
+
+          </div>
+
+          
+          <div class="hero-pricing" aria-labelledby="hp-title" data-aos="fade-up" data-aos-delay="320">
+            <div class="hp-head">
+              <h3 id="hp-title">{% trans "Tarifs & Options" %}</h3>
+              <a href="#tarifs" class="hp-link">{% trans "Voir le détail" %}</a>
+            </div>
+
+            {% if options_grouped and options_grouped.0.items %}
+              <div class="hp-options">
+                <div class="hp-options-title">{% trans "Options" %}&nbsp;:</div>
+                {# on montre 4 options max pour rester compact #}
+                {% for block in options_grouped %}
+                  {% for o in block.items|slice:":4" %}
+                    <span class="hp-chip">{{ o.intitule }}</span>
+                  {% endfor %}
+                {% endfor %}
+                <a href="#tarifs" class="btn btn-secondary magnetic" data-strength="0.2" style="margin-left:auto">
+                  {% trans "Tout voir" %}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="performance-grid">
+            {% comment %} <div class="performance-item" data-aos="zoom-in" data-aos-delay="300">
+              <div class="performance-value" id="inscriptionsCount">{{ circuit.nb_inscriptions|default:0 }}/{{ circuit.capacite }}</div>
+              <div class="performance-label">{% trans "Places réservées" %}</div>
+              <div class="performance-bar"><div class="performance-fill" id="performanceFill" style="width: {{ pct|default:0 }}%"></div></div>
+            </div> {% endcomment %}
+            <div class="performance-item" data-aos="zoom-in" data-aos-delay="400">
+              <div class="performance-value">{{ circuit.prix_pilote_unitaire }} {{ circuit.devise }}</div>
+              <div class="performance-label">{% trans "Tarif pilote" %}</div>
+            </div>
+            {% if circuit.prix_passager_unitaire %}
+            <div class="performance-item" data-aos="zoom-in" data-aos-delay="500">
+              <div class="performance-value">{{ circuit.prix_passager_unitaire }} {{ circuit.devise }}</div>
+              <div class="performance-label">{% trans "Tarif passager" %}</div>
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="hero-actions">
+            
+            <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}" class="btn btn-primary magnetic" data-strength="0.5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              {% trans "Réserver ma place" %}
+            </a>
+
+            <button class="btn btn-secondary magnetic" data-strength="0.3" onclick="scrollToSection('programme')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6v20h12V8zM14 2v6h6"/>
+              </svg>
+              {% trans "Voir le programme" %}
+            </button>
+
+            <button class="btn btn-secondary magnetic" data-strength="0.3" onclick="shareCircuit()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/>
+              </svg>
+              {% trans "Partager" %}
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="hero-seam" aria-hidden="true"></div>
+    </header>
+
+
+    <!-- NB — Avertissement tarifs (avant la NAV) -->
+    <div class="nb-banner" id="nbBanner" role="note" aria-label="{% trans 'Information tarifaire' %}">
+      <div class="nb-inner">
+        <span class="nb-icon" aria-hidden="true">ℹ️</span>
+        <p class="nb-text">
+          {% blocktrans %}
+          Tous nos prix sont communiqués sous réserve de modifications : ils tiennent compte des informations et tarifs en notre possession à ce jour (vols et taxes d’aéroport, prestations des fournisseurs, taux de change, …). Ils peuvent donc être sujets à modification lors de la commande.
+          {% endblocktrans %}
+        </p>
+        <button class="nb-close" type="button" aria-label="{% trans 'Masquer ce message' %}"></button>
+      </div>
+    </div>
+
+    <!-- NAV STICKY -->
+    <nav class="detail-nav" id="detailNav">
+      <div class="nav-container">
+        <div class="nav-scroll">
+          <div class="nav-links">
+            <a href="#presentation" class="nav-link active magnetic" data-strength="0.2">{% trans "Présentation" %}</a>
+            <a href="#programme" class="nav-link magnetic" data-strength="0.2">{% trans "Programme" %}</a>
+            <a href="#tarifs" class="nav-link magnetic" data-strength="0.2">{% trans "Tarifs & Options" %}</a>
+            <a href="#infos" class="nav-link magnetic" data-strength="0.2">{% trans "Infos pratiques" %}</a>
+            {% if kms_struct or circuit.kilometrages %}
+              <a href="#kilometrages" class="nav-link magnetic" data-strength="0.2">{% trans "Kilométrages" %}</a>
+            {% endif %}
+            <a href="#echeancier" class="nav-link magnetic" data-strength="0.2">{% trans "Modalités de paiement" %}</a>
+          </div>
+        </div>
+        <div class="nav-actions">
+          <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}" class="btn btn-primary pulse-animation magnetic" data-strength="0.3">{% trans "S’inscrire" %}</a>
+        </div>
+        <div class="scroll-progress"></div>
+      </div>
+    </nav>
+
+    <!-- CONTENU -->
+    <main class="detail-content">
+      <div class="content-grid">
+        <div class="main-content">
+          <!-- Présentation -->
+          <section id="presentation" class="content-section">
+            <div class="section-header">
+              <h2 data-aos="fade-up">{% trans "Découvrez ce circuit exceptionnel" %}</h2>
+              <div class="section-decoration" data-aos="fade-up" data-aos-delay="200"></div>
+            </div>
+            <div class="rich-text" data-aos="fade-up" data-aos-delay="300">
+              {{ circuit.description|default:"Description à venir…"|linebreaks }}
+            </div>
+          </section>
+
+          <!-- Programme (timeline) -->
+          <section id="programme" class="content-section">
+            <div class="section-header">
+              <h2 data-aos="fade-up">{% trans "Road-book détaillé" %}</h2>
+              <div class="section-subtitle" data-aos="fade-up" data-aos-delay="120">
+                <span class="badge-info">{% trans "Road-book & fichiers GPS fournis avant le départ" %}</span>
+              </div>
+            </div>
+
+            {% if programme_items %}
+
+              {% if programme_intro %}
+                <div class="interactive-card" data-aos="fade-up" data-aos-delay="80"
+                    style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:1rem">
+                  <div class="day-header" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem">
+                    <h3 style="font-size:1.15rem;font-weight:800;margin:0">{% trans "Programme" %}</h3>
+                  </div>
+                  <div class="day-description">{{ programme_intro|linebreaks }}</div>
+                </div>
+              {% endif %}
+
+
+              <div class="timeline-modern">
+                {% for it in programme_items %}
+                  <div class="timeline-day" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                    <div class="timeline-marker">
+                      <div class="day-number">J{{ forloop.counter }}</div>
+                    </div>
+                    <div class="timeline-content interactive-card">
+                      <div class="day-header">
+                        <h3>{{ it.title }}</h3>
+                        <div class="day-badge">{% trans "Jour" %} {{ forloop.counter }}</div>
+                      </div>
+                      {% if it.body %}<div class="day-description">{{ it.body|linebreaks }}</div>{% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+            <div class="interactive-card" style="padding:1.5rem;border-radius:var(--radius);border:1px dashed var(--border);background:var(--bg-primary);text-align:center;color:var(--text-secondary)">
+              🗓️ {% trans "Programme en cours de finalisation — contactez-nous pour plus d’infos." %}
+            </div>
+            {% endif %}
+          </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="action-card interactive-card" data-aos="fade-left">
+            <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}" class="btn btn-primary btn-full magnetic" data-strength="0.3">{% trans "Réserver maintenant" %}</a>
+            <div class="action-footer">
+              <div>
+                <div>
+                  <span class="badge-code badge-compact">
+                    {{ circuit.code }}
+                  </span>
+                </div>
+              </div>
+              <div class="availability-info">
+                <span class="availability-dot {% if pct >= 80 %}high-demand{% elif pct >= 50 %}medium-demand{% else %}low-demand{% endif %}"></span>
+                {% comment %} <span id="sidebarInscriptions">{{ circuit.nb_inscriptions|default:0 }}</span>/{{ circuit.capacite }} places {% endcomment %}
+              </div>
+            </div>
+          </div>
+
+          <div id="tarifs" class="pricing-sidebar content-section interactive-card" data-aos="fade-left" data-aos-delay="120">
+            <h4>💰 {% trans "Tarifs & Options" %}</h4>
+            <div class="pricing-cards">
+              <div class="pricing-card featured">
+                <div class="pricing-header">
+                  <h4>{% trans "Forfait Pilote" %}</h4>
+                  <div><span class="price-amount">{{ circuit.prix_pilote_unitaire }}</span> <span class="price-currency">{{ circuit.devise }}</span></div>
+                </div>
+              </div>
+
+              {% if circuit.prix_passager_unitaire %}
+              <div class="pricing-card">
+                <div class="pricing-header">
+                  <h4>{% trans "Forfait Passager" %}</h4>
+                  <div><span class="price-amount">{{ circuit.prix_passager_unitaire }}</span> <span class="price-currency">{{ circuit.devise }}</span></div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+
+            {% if options_grouped and options_grouped.0.items %}
+            <div class="options-compact">
+              <h5>{% trans "Options additionnelles" %}</h5>
+              {% for block in options_grouped %}
+              <div class="option-category">
+                <h6>{{ block.categorie }}</h6>
+                <div class="option-list">
+                  {% for o in block.items %}
+                  <div class="option-item">
+                    <div class="option-main">
+                      <div class="option-name">{{ o.intitule }}</div>
+                      {% if o.description %}<div class="option-description">{{ o.description }}</div>{% endif %}
+                    </div>
+                    <div class="option-side">
+                      <div class="option-badges">
+                        {% if o.facture_par_personne %}<span class="option-badge">{% trans "par personne" %}</span>{% endif %}
+                        {% if o.quantite_variable %}<span class="option-badge">{% trans "quantité variable" %}</span>{% endif %}
+                      </div>
+                      <div class="option-price">{{ o.prix_unitaire }} {{ circuit.devise }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <section id="infos" class="info-card interactive-card content-section" data-aos="fade-left" data-aos-delay="180">
+            <h4>📋 {% trans "Infos pratiques & Rendez-vous" %}</h4>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">{% trans "Devise" %}</span>
+                <span class="info-value">{{ circuit.devise }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{% trans "Dates" %}</span>
+                <span class="info-value">{{ circuit.date_debut|date:"d/m/Y" }} → {{ circuit.date_fin|date:"d/m/Y" }}</span>
+              </div>
+              {% if duree_jours %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Durée" %}</span>
+                  <span class="info-value">{{ duree_jours }} {% trans "jours" %}</span>
+                </div>
+              {% endif %}
+              <div class="info-item">
+                <span class="info-label">{% trans "Capacité" %}</span>
+                <span class="info-value">{{ circuit.capacite }} {% trans "places" %}</span>
+              </div>
+              {% if circuit.infos_rdv %}
+                <div class="info-item">
+                  <span class="info-value rich-text">{{ circuit.infos_rdv|linebreaks }}</span>
+                </div>
+              {% endif %}
+
+            </div>
+          </section>
+
+          {# --- juste après le bloc #infos --- #}
+
+          {% if kms_struct %}
+          <section id="kilometrages"
+                  class="info-card interactive-card content-section"
+                  data-aos="fade-left" data-aos-delay="240">
+            <h4>🛣️ {% trans "Kilométrages indicatifs" %}</h4>
+
+            <div class="performance-grid">
+              {% for it in kms_struct %}
+                <div class="interactive-card"
+                    data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00"
+                    style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center">
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary)"
+                      data-counter="{{ it.km|default:0 }}">0</div>
+                  <div style="color:var(--text-secondary);font-size:.9rem">
+                    {{ it.label }}
+                    {% if it.is_option %}<span class="option-badge">{% trans "Option" %}</span>{% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            {% if kms_totals %}
+            <div class="info-grid" style="margin-top:1rem">
+              <div class="info-item">
+                <span class="info-label">{% trans "Total (base)" %}</span>
+                <span class="info-value">{{ kms_totals.base }} {% trans "km" %}</span>
+              </div>
+              {% if kms_totals.with_options > kms_totals.base %}
+              {% comment %} <div class="info-item">
+                <span class="info-label">{% trans "Total avec options" %}</span>
+                <span class="info-value">{{ kms_totals.with_options }} {% trans "km" %}</span>
+              </div> {% endcomment %}
+              {% endif %}
+            </div>
+            {% endif %}
+          </section>
+
+          {% elif c.kilometrages %}
+          <section id="kilometrages"
+                  class="info-card interactive-card content-section"
+                  data-aos="fade-left" data-aos-delay="240">
+            <h4>🛣️ {% trans "Kilométrages indicatifs" %}</h4>
+            <pre style="white-space:pre-wrap">{{ c.kilometrages }}</pre>
+          </section>
+          {% endif %}
+
+
+          {% comment %} 
+          
+          {# --- Kilométrages (drop-in) --- #}
+          
+            {% if kms_struct %}
+            <section id="kilometrages"
+                    class="info-card interactive-card content-section"
+                    data-aos="fade-left" data-aos-delay="240">
+              <h4>🛣️ {% trans "Kilométrages indicatifs" %}</h4>
+
+              <div class="performance-grid">
+                {% for it in kms_struct %}
+                  <div class="interactive-card"
+                      data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00"
+                      style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center">
+                    <div style="font-size:1.6rem;font-weight:800;color:var(--primary)">
+                      {{ it.km|default:0 }}
+                    </div>
+                    <div style="color:var(--text-secondary);font-size:.9rem">
+                      {{ it.label }}
+                      {% if it.is_option %}
+                        <span class="option-badge">{% trans "Option" %}</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              {% if kms_totals %}
+              <div class="info-grid" style="margin-top:1rem">
+                <div class="info-item">
+                  <span class="info-label">{% trans "Total (base, hors options)" %}</span>
+                  <span class="info-value">{{ kms_totals.base }} {% trans "km" %}</span>
+                </div>
+                {% if kms_totals.with_options > kms_totals.base %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Total avec options" %}</span>
+                  <span class="info-value">{{ kms_totals.with_options }} {% trans "km" %}</span>
+                </div>
+                {% endif %}
+              </div>
+              {% endif %}
+            </section>
+
+            {% elif c.kilometrages %}
+            <section id="kilometrages"
+                    class="info-card interactive-card content-section"
+                    data-aos="fade-left" data-aos-delay="240">
+              <h4>🛣️ {% trans "Kilométrages indicatifs" %}</h4>
+              <pre style="white-space:pre-wrap">{{ c.kilometrages }}</pre>
+            </section>
+            {% endif %}
+
+          
+          {% endcomment %}
+
+
+          <section id="echeancier"
+                  class="info-card interactive-card content-section"
+                  data-aos="fade-left" data-aos-delay="300">
+            <h4>💳 {% trans "Modalités de paiement" %}</h4>
+
+            {% if echeancier_texte %}
+              <div class="rich-text">{{ echeancier_texte|linebreaks }}</div>
+            {% endif %}
+          </section>
+
+
+        </aside>
+
+      </div>
+    </main>
+
+    <!-- Modal partage -->
+    <div class="modal" id="shareModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(5px);z-index:10000;align-items:center;justify-content:center">
+      <div class="modal-content" style="background:var(--bg-primary);border-radius:var(--radius-lg);padding:1.6rem;max-width:500px;width:92%;box-shadow:var(--shadow-xl);transform:scale(.96)">
+        <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h3 style="font-weight:800">{% trans "Partager ce circuit" %}</h3>
+          <button class="modal-close" onclick="closeModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-secondary)">&times;</button>
+        </div>
+        <div class="share-options" style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+          <button class="share-option" onclick="shareSocial('facebook')" style="display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-primary)">📘 {% trans "Facebook" %}</button>
+          <button class="share-option" onclick="shareSocial('twitter')" style="display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-primary)">🐦 {% trans "Twitter" %}</button>
+          <button class="share-option" onclick="shareSocial('linkedin')" style="display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-primary)">💼 {% trans "LinkedIn" %}</button>
+          <button class="share-option" onclick="copyShareLink()" style="display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-primary)">📋 {% trans "Copier le lien" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Section Autres Circuits -->
+  <section class="other-circuits-section" style="margin-top: 4rem; padding: 3rem 0; background: var(--bg-secondary);">
+    <div class="detail-content">
+      <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+        <h2 style="font-size: clamp(1.8rem, 2vw + 1rem, 2.5rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+          {% trans "Découvrez nos autres circuits" %}
+        </h2>
+        <div class="section-decoration" style="width: 80px; height: 4px; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; margin: 0.5rem auto;"></div>
+        <p style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 1rem;">
+          {% trans "Des aventures tout aussi exceptionnelles vous attendent" %}
+        </p>
+      </div>
+
+      <!-- Carrousel Container -->
+      <div class="circuits-carousel-container" style="position: relative; overflow: hidden;">
+        <div class="circuits-carousel-track" 
+            id="circuitsCarouselTrack"
+            style="display: flex; gap: 1.5rem; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);">
+          
+          {% for other_circuit in autres_circuits %}
+          <div class="circuit-card">
+            
+            <!-- Image du circuit -->
+            <div class="circuit-image" style="position: relative; height: 200px; overflow: hidden;">
+              {% if other_circuit.image %}
+                <img src="{{ other_circuit.image.url }}" 
+                    alt="{{ other_circuit.nom }}"
+                    style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease;">
+              {% else %}
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">
+                  {% comment %} {{ other_circuit.code }} {% endcomment %}
+
+
+                  {% if other_circuit.pct_remplissage >= 90 %}
+                    
+                  {% elif other_circuit.pct_remplissage >= 70 %}
+                   
+                  {% else %}
+                    {% trans "Disponible" %}
+                  {% endif %}
+
+                </div>
+              {% endif %}
+              
+              <!-- Badges overlay -->
+              <div style="position: absolute; top: 1rem; left: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                {% if other_circuit.est_nouveau %}
+                <span class="badge-new" style="background: var(--accent); color: white; padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 800; backdrop-filter: blur(10px);">
+                  {% trans "Nouveau" %}
+                </span>
+                {% endif %}
+                
+                <span class="badge-code badge-compact">
+                  {% comment %} {{ other_circuit.code }} {% endcomment %}
+                </span> 
+
+              </div>
+              
+              <!-- Availability indicator -->
+              {# Afficher l’indicateur SEULEMENT si remplissage ≥ 70% #}
+              {% if other_circuit.pct_remplissage >= 70 %}
+                <div style="position: absolute; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.9); padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700;">
+                  <span class="availability-dot {% if other_circuit.pct_remplissage >= 90 %}high-demand{% else %}medium-demand{% endif %}"
+                        style="width: 8px; height: 8px; border-radius: 50%;"></span>
+                  <span>
+                    {% if other_circuit.pct_remplissage >= 90 %}
+                      {% trans "Presque complet" %}
+                    {% else %}
+                      {% trans "Peu de places" %}
+                    {% endif %}
+                  </span>
+                </div>
+              {% endif %}
+
+            </div>
+            
+            <!-- Card Content -->
+            <div class="circuit-content" style="padding: 1.5rem;">
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.3;">
+                {{ other_circuit.nom }}
+              </h3>
+              
+              <!-- Dates et durée -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                <span>📅 {{ other_circuit.date_debut|date:"d/m/Y" }}</span>
+                {% if other_circuit.duree_jours %}
+                <span style="color: var(--border);">•</span>
+                <span>{{ other_circuit.duree_jours }} {% trans "jours" %}</span>
+                {% endif %}
+              </div>
+              
+              <!-- Kilométrage -->
+              {% if other_circuit.kilometrage_total %}
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                <span>🛣️ {{ other_circuit.kilometrage_total }} km</span>
+              </div>
+              {% endif %}
+              
+              <!-- Progress bar -->
+              <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                  {% comment %} <span>{% trans "Places réservées" %}</span>
+                  <span>{{ other_circuit.nb_inscr|default:0 }}/{{ other_circuit.capacite }}</span> {% endcomment %}
+                </div>
+                <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                  <div style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; width: {{ other_circuit.pct_remplissage|default:0 }}%; transition: width 1s ease;"></div>
+                </div>
+              </div>
+              
+              <!-- Prix -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                  <div style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">
+                    {{ other_circuit.prix_pilote_unitaire }} {{ other_circuit.devise }}
+                  </div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                    {% trans "Pilote" %}
+                  </div>
+                </div>
+                {% if other_circuit.prix_passager_unitaire %}
+                <div style="text-align: right;">
+                  <div style="font-size: 1.1rem; font-weight: 800; color: var(--secondary);">
+                    {{ other_circuit.prix_passager_unitaire }} {{ other_circuit.devise }}
+                  </div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                    {% trans "Passager" %}
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+              
+              <!-- CTA Button -->
+              <a href="{{ other_circuit.get_absolute_url }}" 
+                class="btn btn-primary" 
+                style="display: block; text-align: center; padding: 0.75rem 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-decoration: none; border-radius: var(--radius); font-weight: 700; transition: var(--transition);">
+                {% trans "Découvrir" %}
+              </a>
+            </div>
+          </div>
+          {% empty %}
+          <div style="text-align: center; padding: 2rem; color: var(--text-secondary); grid-column: 1 / -1;">
+            <p>{% trans "Aucun autre circuit disponible pour le moment." %}</p>
+          </div>
+          {% endfor %}
+          
+        </div>
+      </div>
+      
+      <!-- Navigation discrète (visuellement cachée mais accessible) -->
+      <div class="carousel-nav" style="display: none;">
+        <button class="carousel-prev" aria-label="{% trans 'Circuits précédents' %}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <button class="carousel-next" aria-label="{% trans 'Circuits suivants' %}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  {# --- JSON-LD (SEO Event) --- #}
+  <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"Event",
+      "name": {{ circuit.nom|default:"Circuit moto"|escapejs }},
+      "startDate": "{{ circuit.date_debut|date:'c' }}",
+      "endDate": "{{ circuit.date_fin|date:'c' }}",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      {% if circuit.infos_rdv %}"location": {"@type":"Place","name": {{ circuit.infos_rdv|escapejs }} },{% endif %}
+      {% if circuit.image %}"image": ["{{ circuit.image.url }}"],{% endif %}
+      "offers": {
+        "@type":"AggregateOffer",
+        "priceCurrency":"{{ circuit.devise|default:'EUR' }}",
+        "lowPrice":"{{ circuit.prix_pilote_unitaire }}",
+        "highPrice":"{% if circuit.prix_passager_unitaire %}{{ circuit.prix_passager_unitaire }}{% else %}{{ circuit.prix_pilote_unitaire }}{% endif %}",
+        "availability": "{% if pct >= 90 %}https://schema.org/LimitedAvailability{% else %}https://schema.org/InStock{% endif %}"
+      }
+    }
+  </script>
+
+{% endblock %}
+
+{% block scripts %}
+
+  <script id="circuit-detail-script">
+    (() => {
+      // ===== Config & helpers =====
+      const CONFIG = { magneticStrength: .3, aosDuration: 600, particles: 16 };
+      const AOS_MAP = { 'fade-up':'fadeInUp', 'fade-right':'slideInRight', 'zoom-in':'fadeInUp' };
+
+      const $ = (sel,ctx=document) => ctx.querySelector(sel);
+      const $$= (sel,ctx=document) => Array.from(ctx.querySelectorAll(sel));
+
+      // ===== UX basics =====
+      function showNotification(message, type='info'){
+        const n = document.createElement('div');
+        n.textContent = message;
+        n.style.cssText = `
+          position:fixed;top:18px;right:18px;z-index:10000;
+          background:${type==='success'?'#10b981':'#3b82f6'};color:#fff;
+          padding:12px 14px;border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+          animation: slideInRight .28s ease; font-weight:800; font-family: var(--font-sans, system-ui);
+        `;
+        document.body.appendChild(n);
+        setTimeout(() => { n.style.opacity='0'; n.style.transform='translateX(10px)'; setTimeout(()=>n.remove(),180)}, 2400);
+      }
+
+      // ===== Global actions used in HTML =====
+      window.scrollToSection = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({behavior:'smooth', block:'start'}); };
+      window.shareCircuit = () => { const m = $('#shareModal'); if (m) {m.style.display='flex'; requestAnimationFrame(()=>m.classList.add('show'));} };
+      window.closeModal   = () => { const m = $('#shareModal'); if (m) {m.classList.remove('show'); setTimeout(()=>m.style.display='none',150);} };
+      window.copyShareLink = () => { navigator.clipboard.writeText(location.href).then(()=>showNotification('Lien copié !','success')); };
+      window.shareSocial = (platform) => {
+        const url = encodeURIComponent(location.href);
+        const title = encodeURIComponent(document.title);
+        const map = {
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+          twitter:  `https://twitter.com/intent/tweet?text=${title}&url=${url}`,
+          linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`
+        };
+        if (map[platform]) window.open(map[platform],'_blank','width=600,height=420');
+      };
+
+
+      // Carousel automatique pour les autres circuits
+      class CircuitsCarousel {
+        constructor() {
+          this.track = document.getElementById('circuitsCarouselTrack');
+          if (!this.track) return;
+          this.container = this.track.parentElement;
+          this.currentIndex = 0;
+          this.isPaused = false;
+          this.timer = null;
+
+          this.setup();
+        }
+
+        setup() {
+          this.cards = Array.from(this.track.children);
+          if (!this.cards.length) return;
+
+          // Assure assez d’items pour défiler, même si on n’en a que 2–3
+          const minTotal = Math.max(this.cards.length * 2, 8);
+          const originals = [...this.cards];
+          while (this.track.children.length < minTotal) {
+            originals.forEach(c => this.track.appendChild(c.cloneNode(true)));
+          }
+          this.cards = Array.from(this.track.children);
+
+          this.measure();
+          this.start();
+          this.bind();
+        }
+
+        measure() {
+          const cs = getComputedStyle(this.track);
+          const gap = parseFloat(cs.columnGap || cs.gap || '0') || 0;
+          const first = this.cards[0];
+          const rect = first.getBoundingClientRect();
+          this.step = Math.round(rect.width + gap);
+          this.visible = Math.max(
+            1,
+            Math.round(this.container.getBoundingClientRect().width / Math.max(1, this.step))
+          );
+          // Recalage de départ
+          this.track.style.transition = 'none';
+          this.track.style.transform = 'translateX(0)';
+        }
+
+        start() {
+          this.stop();
+          this.timer = setInterval(() => {
+            if (!this.isPaused) this.next();
+          }, 3500);
+        }
+
+        stop() {
+          if (this.timer) clearInterval(this.timer);
+        }
+
+        next() {
+          if (!this.step) this.measure();
+          this.currentIndex++;
+          const max = this.cards.length;
+
+          this.track.style.transition = 'transform 0.8s cubic-bezier(0.4,0,0.2,1)';
+          this.track.style.transform = `translateX(-${this.currentIndex * this.step}px)`;
+
+          // Reset doux avant la fin pour garder une “page” d’avance
+          if (this.currentIndex >= max - this.visible) {
+            setTimeout(() => {
+              this.track.style.transition = 'none';
+              this.currentIndex = 0;
+              this.track.style.transform = 'translateX(0)';
+            }, 820);
+          }
+        }
+
+        bind() {
+          const pause = () => (this.isPaused = true);
+          const play  = () => (this.isPaused = false);
+
+          // Pause au survol / focus / touch
+          ['mouseenter', 'focusin', 'touchstart'].forEach(e =>
+            this.container.addEventListener(e, pause, { passive: true })
+          );
+          ['mouseleave', 'focusout', 'touchend'].forEach(e =>
+            this.container.addEventListener(e, play, { passive: true })
+          );
+
+          // Re-mesure au resize
+          window.addEventListener('resize', () => this.measure(), { passive: true });
+        }
+      }
+
+
+      // Initialisation
+      document.addEventListener('DOMContentLoaded', () => {
+        const cc = new CircuitsCarousel();
+
+        // NB banner close + mémoire session
+        const nb = document.getElementById('nbBanner');
+        if (nb) {
+          if (sessionStorage.getItem('nbBannerClosed') === '1') {
+            nb.remove();
+          } else {
+            const btn = nb.querySelector('.nb-close');
+            btn && btn.addEventListener('click', () => {
+              nb.remove();
+              sessionStorage.setItem('nbBannerClosed', '1');
+            });
+          }
+        }
+
+
+      });
+
+      // ===== Class animator =====
+      class CircuitAnimator {
+        constructor(){
+          this.initMagnetic();
+          this.initAOS();
+          this.initParallax();
+          this.initParticles();
+          this.initAnchors();
+          this.initNavState();
+          this.initProgressBar();
+          this.initCounters();
+          this.fixHashOnLoad();
+          this.renumberRoadbook();
+        }
+
+        initMagnetic(){
+          $$('.magnetic').forEach(el=>{
+            let af=null; const s = parseFloat(el.dataset.strength)||CONFIG.magneticStrength;
+            const onMove = (e)=>{
+              const r = el.getBoundingClientRect();
+              const x = e.clientX - r.left - r.width/2;
+              const y = e.clientY - r.top  - r.height/2;
+              if (af) cancelAnimationFrame(af);
+              af = requestAnimationFrame(()=>{ el.style.transform = `translate(${x*s}px, ${y*s}px)`; });
+            };
+            el.addEventListener('mousemove', onMove, {passive:true});
+            el.addEventListener('mouseleave', ()=>{ if (af) cancelAnimationFrame(af); el.style.transform='translate(0,0)'; });
+          });
+        }
+
+        initAOS(){
+          const els = $$('[data-aos]');
+          if (!els.length) return;
+
+          const io = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+              if (!e.isIntersecting) return;
+              const el = e.target;
+              const key   = (el.dataset.aos||'').toLowerCase();
+              const anim  = AOS_MAP[key] || 'fadeInUp';
+              const delay = parseInt(el.dataset.aosDelay,10) || 0;
+
+              setTimeout(()=>{ el.style.animation = `${anim} ${CONFIG.aosDuration}ms ease-out forwards`; }, delay);
+              io.unobserve(el);
+            });
+          }, { threshold: 0.12 });
+
+          els.forEach(el=>io.observe(el));
+        }
+
+        initParallax(){
+          const parts = $$('[data-speed]');
+          if (!parts.length) return;
+          let ticking=false;
+          const update=()=>{
+            const y = window.scrollY||document.documentElement.scrollTop||0;
+            parts.forEach(el=>{ const s=parseFloat(el.dataset.speed)||0; el.style.transform = `translateY(${-(y*s)}px)`; });
+            ticking=false;
+          };
+          const onScroll=()=>{ if (!ticking){ ticking=true; requestAnimationFrame(update);} };
+          window.addEventListener('scroll', onScroll, {passive:true}); update();
+        }
+
+        initParticles(){
+          const c = $('#heroParticles'); if(!c) return;
+          const n = CONFIG.particles;
+          for (let i=0;i<n;i++){
+            const p = document.createElement('div'); p.className='particle';
+            const size = Math.random()*18+6; const posX=Math.random()*100; const posY=Math.random()*100;
+            const d = Math.random()*10+12;
+            p.style.cssText = `width:${size}px;height:${size}px;left:${posX}%;top:${posY}%;animation:float ${d}s ease-in-out ${Math.random()*2}s infinite`;
+            c.appendChild(p);
+          }
+        }
+
+        initAnchors(){
+          $$('a[href^="#"]').forEach(a=>{
+            a.addEventListener('click', (e)=>{
+              const id = a.getAttribute('href'); if(!id||id==='#') return;
+              const target = document.querySelector(id); if(!target) return;
+              e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'});
+            });
+          });
+          // hashchange smooth
+          window.addEventListener('hashchange', ()=>{
+            const el = document.querySelector(location.hash); if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+          }, {passive:true});
+        }
+
+        initNavState(){
+          const nav  = $('#detailNav');
+          const hero = $('#heroSection');
+          if(!(nav && hero)) return;
+
+          const navH = parseInt(getComputedStyle(document.documentElement)
+                        .getPropertyValue('--nav-height')) || 70;
+
+          const heroObs = new IntersectionObserver(([entry])=>{
+            const inHero = entry.isIntersecting;
+            nav.classList.toggle('is-scrolled', !inHero);
+            // >>> phase dynamique pour couleurs (progress + active + scrollbar)
+            nav.dataset.phase = inHero ? 'hero' : 'content';
+          }, { rootMargin:`-${navH}px 0px 0px 0px`, threshold:0.01 });
+
+          heroObs.observe(hero);
+
+          // ==== Scroll-spy (inchangé) ====
+          const links = $$('.detail-nav .nav-link');
+          const map   = new Map(links.map(a=>[a.getAttribute('href').replace('#',''), a]));
+          const targets  = $$('.content-section').filter(s=>map.has(s.id));
+          const scroller = $('.nav-scroll');
+
+          const ensureVisible=(link)=>{
+            if(!(scroller&&link)) return;
+            const s = scroller.getBoundingClientRect();
+            const l = link.getBoundingClientRect();
+            const pad = 16;
+            if (l.left < s.left) scroller.scrollBy({left: l.left - s.left - pad, behavior:'smooth'});
+            else if (l.right > s.right) scroller.scrollBy({left: l.right - s.right + pad, behavior:'smooth'});
+          };
+
+          const spy = new IntersectionObserver((entries)=>{
+            let best=null, ratio=0;
+            for (const e of entries) if (e.intersectionRatio>ratio){ ratio=e.intersectionRatio; best=e; }
+            if (best && best.isIntersecting){
+              links.forEach(a=>{a.classList.remove('active'); a.removeAttribute('aria-current');});
+              const a = map.get(best.target.id);
+              if (a){ a.classList.add('active'); a.setAttribute('aria-current','page'); ensureVisible(a); }
+            }
+          }, { root:null, rootMargin:'-20% 0px -58% 0px', threshold:[0.01,0.25,0.5,0.75] });
+
+          targets.forEach(t=>spy.observe(t));
+
+          // (optionnel) feedback immédiat au clic
+          links.forEach(l=>{
+            l.addEventListener('click', ()=>{
+              links.forEach(a=>{a.classList.remove('active'); a.removeAttribute('aria-current');});
+              l.classList.add('active'); l.setAttribute('aria-current','page');
+              setTimeout(()=>ensureVisible(l),0);
+            });
+          });
+        }
+
+        initProgressBar(){
+          const nav = $('#detailNav'); if(!nav) return;
+          const bar = nav.querySelector('.scroll-progress'); if(!bar) return;
+          let ticking=false;
+          const update=()=>{
+            const doc=document.documentElement; const max=Math.max(1, doc.scrollHeight - innerHeight);
+            const p = Math.min(1, (scrollY||doc.scrollTop)/max);
+            bar.style.transform = `scaleX(${p})`; ticking=false;
+          };
+          const onScroll=()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update);} };
+          update(); window.addEventListener('scroll', onScroll, {passive:true});
+        }
+
+        initCounters(){
+          const counters = $$('[data-counter]'); if(!counters.length) return;
+          const animate=(el)=>{
+            const target = parseInt(el.dataset.counter,10)||0;
+            const start = performance.now(); const dur=900;
+            const tick=(now)=>{ const p=Math.min(1,(now-start)/dur); el.textContent = Math.floor(target*p); if(p<1) requestAnimationFrame(tick); else el.textContent = target; };
+            requestAnimationFrame(tick);
+          };
+          const io = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{ if(e.isIntersecting){ animate(e.target); io.unobserve(e.target);} });
+          }, {threshold: .55});
+          counters.forEach(c=>io.observe(c));
+        }
+
+        fixHashOnLoad(){
+          if (location.hash.length<2) return;
+          const el = document.querySelector(location.hash);
+          if (!el) return;
+          setTimeout(()=>el.scrollIntoView({behavior:'smooth', block:'start'}), 140);
+        }
+
+        renumberRoadbook(){
+          $$('#programme .timeline-day').forEach(dayEl=>{
+            const title = (dayEl.querySelector('.day-header h3')?.textContent || '').trim();
+            const bubble = dayEl.querySelector('.day-number');
+            const badge  = dayEl.querySelector('.day-badge');
+            // capture 1, 10, 1A, 12B (lettre(s) optionnelles) et met en MAJ
+            const m = /^\s*Jour\s+(\d+[A-Za-z]{0,2})\b/i.exec(title);
+            if (m){
+              const n = m[1].toUpperCase();
+              if (bubble) bubble.textContent = `J${n}`;
+              if (badge)  badge.textContent  = `Jour ${n}`;
+            }
+          });
+        }
+
+
+      }
+
+      // ===== Boot =====
+      document.addEventListener('DOMContentLoaded', ()=>{
+        new CircuitAnimator();
+        const pf = document.getElementById('performanceFill');
+        if (pf) setTimeout(()=>{ pf.style.transition='width 1.5s ease-out'; }, 250);
+        // mobile vh fix
+        const setVH=()=>document.documentElement.style.setProperty('--vh', (innerHeight*0.01)+'px');
+        window.addEventListener('resize', setVH, {passive:true}); setVH();
+        // close modal backdrop
+        const modal = document.getElementById('shareModal');
+        if (modal) modal.addEventListener('click', (e)=>{ if(e.target.id==='shareModal') window.closeModal(); });
+      });
+
+    })();
+
+  </script>
+
+{% endblock %}

@@ -1,0 +1,2678 @@
+{# templates/circuitMoto/home.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load i18n static version_static %}
+
+
+{% block extra_head %}
+
+  <!-- Styles CSS modernes -->
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: rgba(67, 97, 238, 0.1);
+      --primary-dark: #3a56d4;
+      --secondary: #8b5cf6;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      
+      --text: #2d3436;
+      --text-light: #636e72;
+      --text-lighter: #b2bec3;
+      
+      --bg: #ffffff;
+      --bg-card: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.8);
+      --border: #dfe6e9;
+      --border-light: rgba(223, 230, 233, 0.5);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --transition-slow: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    [data-theme="dark"] {
+      --primary: #5e72e4;
+      --primary-light: rgba(94, 114, 228, 0.15);
+      --primary-dark: #4d5fd0;
+      --secondary: #a78bfa;
+      --text: #edf2f7;
+      --text-light: #a0aec0;
+      --text-lighter: #718096;
+      --bg: #1a202c;
+      --bg-card: #2d3748;
+      --bg-glass: rgba(45, 55, 72, 0.8);
+      --border: #4a5563;
+      --border-light: rgba(74, 85, 99, 0.5);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Layout principal */
+    .circuit-list-container {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition-slow);
+    }
+
+    /* Section Hero */
+    .hero-section {
+      position: relative;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary-light) 0%, transparent 100%);
+    }
+
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .floating-elements {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      opacity: 0.1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .element-1 {
+      width: 200px;
+      height: 200px;
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .element-2 {
+      width: 150px;
+      height: 150px;
+      top: 60%;
+      right: 10%;
+      animation-delay: 2s;
+    }
+
+    .element-3 {
+      width: 100px;
+      height: 100px;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-text {
+      animation: slideInLeft 1s ease-out;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .title-main {
+      display: block;
+      color: var(--text);
+    }
+
+    .title-gradient {
+      display: block;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 200% auto;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-visual {
+      animation: slideInRight 1s ease-out;
+    }
+
+    .moto-animation {
+      position: relative;
+      height: 200px;
+    }
+
+    .track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      transform: translateY(-50%);
+    }
+
+    .moto {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      animation: ride 3s ease-in-out infinite;
+    }
+
+    .moto-body {
+      width: 40px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .moto-wheel {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--text);
+      border-radius: 50%;
+      bottom: -6px;
+    }
+
+    .moto-wheel.front { left: 4px; }
+    .moto-wheel.back { right: 4px; }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-arrow {
+      width: 2px;
+      height: 30px;
+      background: var(--text-light);
+      position: relative;
+    }
+
+    .scroll-arrow::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--text-light);
+      border-bottom: 2px solid var(--text-light);
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    /* Sections communes */
+    .filters-section,
+    .circuits-section,
+    .existing-registration-section {
+      padding: 0 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .filters-section {
+      margin-bottom: 3rem;
+    }
+
+    .circuits-section {
+      margin-bottom: 4rem;
+    }
+
+    .existing-registration-section {
+      margin-bottom: 4rem;
+    }
+
+    /* Cartes avec effet glassmorphism */
+    .glass-effect {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-light);
+    }
+
+    .filter-card {
+      padding: 2rem;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+    }
+
+    .filter-card:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-2px);
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .filter-title-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .filter-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .filter-title-section h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 0.25rem;
+    }
+
+    .filter-subtitle {
+      color: var(--text-light);
+      margin: 0;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-container {
+      position: relative;
+    }
+
+    .filter-input,
+    .registration-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .filter-input:focus,
+    .registration-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .input-focus-border {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: var(--transition);
+      transform: translateX(-50%);
+    }
+
+    .filter-input:focus ~ .input-focus-border,
+    .registration-input:focus ~ .input-focus-border {
+      width: 100%;
+    }
+
+    .floating-label {
+      position: absolute;
+      top: 1rem;
+      left: 3rem;
+      color: var(--text-light);
+      pointer-events: none;
+      transition: var(--transition);
+      background: var(--bg);
+      padding: 0 0.25rem;
+    }
+
+    .filter-input:focus + .floating-label,
+    .filter-input:not(:placeholder-shown) + .floating-label,
+    .registration-input:focus + .floating-label,
+    .registration-input:not(:placeholder-shown) + .floating-label {
+      transform: translateY(-1.75rem) scale(0.85);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+
+    .filter-input:focus ~ .input-icon,
+    .registration-input:focus ~ .input-icon {
+      color: var(--primary);
+    }
+
+    .active-filters {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .active-filters-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* Grille des circuits */
+    .circuit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .circuit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      animation: cardEntrance 0.6s ease-out;
+      animation-fill-mode: both;
+      animation-delay: calc(var(--card-delay, 0) * 0.1s);
+    }
+
+    .circuit-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-2xl);
+      border-color: var(--primary);
+    }
+
+    .circuit-media {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .circuit-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 3;
+      box-shadow: var(--shadow-md);
+    }
+
+    .circuit-status {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 3;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-available {
+      background: var(--success);
+      color: white;
+    }
+
+    .status-low {
+      background: var(--warning);
+      color: white;
+    }
+
+    .status-full {
+      background: var(--danger);
+      color: white;
+    }
+
+    .circuit-image {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary-light), transparent);
+    }
+
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+    }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .circuit-media:hover .image-overlay {
+      opacity: 1;
+    }
+
+    .quick-view-btn {
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quick-view-btn:hover {
+      background: white;
+      transform: translateY(-2px);
+    }
+
+    .circuit-content {
+      padding: 1.5rem;
+    }
+
+    .circuit-header {
+      margin-bottom: 1rem;
+    }
+
+    .circuit-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      line-height: 1.3;
+    }
+
+    .circuit-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .circuit-description {
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .circuit-stats {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .stat-progress {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      border-radius: 3px;
+      position: relative;
+      transition: width 1s ease-in-out;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-glow {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: wave 2s linear infinite;
+    }
+
+    .price-display {
+      text-align: center;
+    }
+
+    .price-label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-bottom: 0.25rem;
+    }
+
+    .price-amount {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .price-note {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .circuit-options {
+      margin-bottom: 1.5rem;
+    }
+
+    .options-toggle {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--primary-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .options-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .accordion-arrow {
+      transition: var(--transition);
+    }
+
+    .options-toggle[aria-expanded="true"] .accordion-arrow {
+      transform: rotate(180deg);
+    }
+
+    .options-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .options-toggle[aria-expanded="true"] + .options-content {
+      max-height: 200px;
+    }
+
+    .option-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .option-item:last-child {
+      border-bottom: none;
+    }
+
+    .option-name {
+      color: var(--text);
+    }
+
+    .option-price {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .circuit-actions {
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    /* Boutons */
+    .btn {
+      position: relative;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+      border: none;
+      text-decoration: none;
+      overflow: hidden;
+    }
+
+    /* Effet ripple correct (ne modifie pas le layout) */
+    .btn { position: relative; overflow: hidden; } /* tu l’as déjà, on confirme */
+    .btn .ripple{
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple-burst 600ms linear;
+      opacity: .25;              /* intensité du ripple */
+      background: currentColor;  /* se teinte comme le texte/bordure */
+      pointer-events: none;      /* ne capte pas les clics */
+    }
+    @keyframes ripple-burst{
+      to { transform: scale(4); opacity: 0; }
+    }
+
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-glow {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: var(--transition);
+    }
+
+    .btn:hover .btn-glow {
+      left: 100%;
+    }
+
+    .btn-animate:hover .btn-icon {
+      transform: translateX(4px);
+    }
+
+    .btn-icon {
+      transition: var(--transition);
+    }
+
+
+    .filter-header{ align-items:center; }
+    .filter-actions{ margin-left:auto; }
+
+    .btn-reset{
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.375rem .5rem;
+      font-size:.9rem; font-weight:600;
+      color:var(--text-light);
+      background:transparent; border:0; border-radius:var(--radius-sm);
+      transition:var(--transition);
+    }
+    .btn-reset:hover{ color:var(--primary); background:var(--primary-light); }
+    .btn-reset:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(67,97,238,.15); }
+    .btn-reset[disabled], .btn-reset[aria-disabled="true"]{ opacity:.5; pointer-events:none; }
+
+    .icon-16{ width:16px; height:16px; }
+    @media (max-width:768px){
+      .filter-header{ flex-wrap:wrap; }
+      .filter-actions{ width:100%; margin-left:0; margin-top:.5rem; display:flex; justify-content:flex-end; }
+    }
+
+    .filter-actions { position: relative; z-index: 2; pointer-events: auto; }
+
+    /* État vide */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-animation {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      color: var(--primary);
+      opacity: 0.5;
+    }
+
+    .empty-ripple {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      animation: ripple 2s linear infinite;
+      opacity: 0;
+    }
+
+    .empty-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .empty-content p {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+
+
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .page-numbers {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .page-link {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .page-link:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .page-link.current {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-color: transparent;
+    }
+
+    .page-link.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Section déjà inscrit */
+    .existing-registration-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      padding: 3rem;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .registration-header {
+      margin-bottom: 2rem;
+    }
+
+    .registration-header h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .registration-header p {
+      color: var(--text-light);
+      margin: 0;
+    }
+
+    .registration-form {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .registration-form .input-container {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .registration-visual {
+      width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .visual-animation {
+      position: relative;
+      width: 100%;
+      height: 120px;
+    }
+
+    .rider-silhouette {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 50%;
+      transform: translateY(-50%);
+      animation: rideHorizontal 3s ease-in-out infinite;
+    }
+
+    .road-line {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+
+    /* Modal */
+    .quick-view-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .quick-view-modal[data-active="true"] {
+      display: flex;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      position: relative;
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-2xl);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      animation: modalEnter 0.3s ease-out;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      z-index: 2;
+    }
+
+    .modal-close:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 2rem;
+      max-height: calc(90vh - 4rem);
+      overflow-y: auto;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+      40% { transform: translateY(-10px) translateX(-50%); }
+      60% { transform: translateY(-5px) translateX(-50%); }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes ride {
+      0% { left: 0; }
+      50% { left: 100%; }
+      100% { left: 0; }
+    }
+
+    @keyframes rideHorizontal {
+      0%, 100% { left: 0; transform: translateY(-50%); }
+      50% { left: calc(100% - 40px); transform: translateY(-50%); }
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes ripple {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+      }
+      100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+      }
+    }
+
+    @keyframes modalEnter {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 2rem;
+      }
+      
+      .hero-stats {
+        justify-content: center;
+      }
+      
+      .circuit-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      }
+      
+      .existing-registration-card {
+        grid-template-columns: 1fr;
+      }
+      
+      .registration-visual {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .filters-section,
+      .circuits-section,
+      .existing-registration-section {
+        padding: 0 1rem;
+      }
+      
+      .hero-content {
+        padding: 2rem 1rem;
+      }
+      
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .registration-form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .pagination {
+        flex-wrap: wrap;
+      }
+      
+      .modal-content {
+        margin: 1rem;
+      }
+    }
+
+      @media (max-width: 480px) {
+        .circuit-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .hero-stats {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        .filter-card,
+        .existing-registration-card {
+          padding: 1.5rem;
+        }
+        
+        .quick-view-modal {
+          padding: 1rem;
+        }
+      }
+
+      /* Quick-view content */
+      .quick-view-content { display: grid; gap: 1.25rem; }
+      .qv-header { border-bottom: 1px solid var(--border-light); padding-bottom: .5rem; }
+      .qv-title { margin: 0; font-size: 1.25rem; font-weight: 800; }
+      .qv-sub { color: var(--text-light); font-size: .95rem; }
+
+      .qv-grid { display: grid; gap: 1rem; }
+      .qv-section h4 { margin: 0 0 .5rem; font-size: 1rem; font-weight: 700; color: var(--text); }
+      .qv-text { color: var(--text); line-height: 1.6; }
+      .qv-list { margin: 0; padding-left: 1.25rem; }
+      .qv-list li { margin: .25rem 0; }
+
+      .qv-prices .qv-prices-grid{
+        display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+      .qv-price { padding: .75rem 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-md); }
+      .qv-price-label { display: block; font-size: .85rem; color: var(--text-light); }
+      .qv-price-amount { display: block; font-weight: 800; font-size: 1.1rem; color: var(--primary); }
+
+      .quick-view-loading{ display:flex; flex-direction:column; align-items:center; gap:.75rem; padding:2rem 0; }
+      .loading-spinner{
+        width:28px; height:28px; border-radius:50%;
+        border:3px solid var(--border); border-top-color: var(--primary);
+        animation: qvspin 1s linear infinite;
+      }
+      @keyframes qvspin { to { transform: rotate(360deg); } }
+
+      /* ===== Quick-view Pro (amélioré) ===== */
+      .qv-header.pro { position: relative; padding-bottom: .75rem; margin-bottom: 1rem; }
+      .qv-header-line {
+        position: absolute; inset-inline: 0; top: -2px; height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 999px;
+      }
+      .qv-header-top{ display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; }
+      .qv-code-badge{
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color:#fff; font-weight:700; font-size:.8rem; padding:.35rem .6rem; border-radius:999px;
+        box-shadow: var(--shadow-md);
+      }
+      .qv-chips{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.5rem; }
+      .qv-chip{
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.4rem .6rem; border-radius:999px; font-size:.85rem;
+        background: var(--primary-light); color: var(--text);
+        border:1px solid var(--border-light);
+      }
+      .qv-chip svg{ opacity:.75; }
+      .qv-chip-price{ background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.25); }
+
+      .qv-grid.pro{
+        display:grid; gap:1rem;
+        grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      }
+      @media (max-width: 840px){ .qv-grid.pro{ grid-template-columns: 1fr; } }
+
+      .qv-card{
+        background: var(--bg-glass); border:1px solid var(--border-light);
+        border-radius: var(--radius-md); padding:1rem;
+        box-shadow: var(--shadow-sm);
+      }
+      .qv-callout{
+        border:1px dashed var(--border); border-radius: var(--radius-md);
+        padding:1rem; background: linear-gradient(180deg, rgba(67,97,238,.06), transparent);
+      }
+
+      .qv-h4{ margin:0 0 .5rem; font-weight:800; font-size:1rem; display:flex; align-items:center; gap:.5rem; }
+      .qv-h4 svg{ opacity:.7; }
+
+      .qv-prices .qv-prices-grid{ display:grid; gap:.75rem; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); }
+      .qv-price{
+        padding:.85rem 1rem; border:1px solid var(--border-light); border-radius: var(--radius-md);
+        background: var(--bg-card);
+      }
+      .qv-price-label{ display:block; font-size:.85rem; color: var(--text-light); }
+      .qv-price-amount{ display:block; font-weight:800; font-size:1.15rem; color: var(--primary); }
+
+      /* Actions sticky dans le modal */
+      .qv-actions{
+        position: sticky; bottom: 0; z-index: 1;
+        display:grid; grid-template-columns: 1fr 1fr; gap:.75rem;
+        padding: 1rem; margin-top:.5rem;
+        background: linear-gradient(180deg, transparent, var(--bg-card) 35%, var(--bg-card) 100%);
+        border-top: 1px solid var(--border-light);
+      }
+      @media (max-width: 520px){ .qv-actions{ grid-template-columns: 1fr; } }
+
+      /* Rangée de boutons au pied de la carte */
+      .btn-row{ display:grid; grid-template-columns: 1fr 1fr; gap:.75rem; }
+      @media (max-width: 420px){ .btn-row{ grid-template-columns: 1fr; } }
+
+
+              /* ===== QUICK-VIEW PREMIUM - Styles améliorés ===== */
+              .quick-view-content.qv-premium {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                background: var(--bg-card);
+                position: relative;
+                overflow: hidden;
+              }
+
+              /* Header avec gradient animé */
+              .qv-header.premium {
+                position: relative;
+                padding: 2rem 2rem 1.5rem;
+                background: linear-gradient(135deg, var(--primary-light) 0%, transparent 100%);
+                border-bottom: 1px solid var(--border-light);
+              }
+
+              .qv-header-gradient {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+                background-size: 200% 100%;
+                animation: gradientShift 3s ease infinite;
+              }
+
+              .qv-header-content {
+                position: relative;
+                z-index: 1;
+              }
+
+              .qv-header-top {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 1rem;
+              }
+
+              .qv-title-section {
+                flex: 1;
+                min-width: 0;
+              }
+
+              .qv-code-badge.pulse-glow {
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 50px;
+                font-weight: 800;
+                font-size: 0.9rem;
+                box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+                animation: pulse-glow 2s ease-in-out infinite;
+              }
+
+              @keyframes pulse-glow {
+                0%, 100% { box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3); }
+                50% { box-shadow: 0 4px 25px rgba(67, 97, 238, 0.6); }
+              }
+
+              .qv-title {
+                margin: 0 0 0.5rem;
+                font-size: 1.5rem;
+                font-weight: 800;
+                line-height: 1.2;
+                color: var(--text);
+                background: linear-gradient(135deg, var(--text), var(--primary));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              }
+
+              .qv-availability {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+              }
+
+              .availability-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                position: relative;
+              }
+
+              .availability-dot::after {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                border-radius: 50%;
+                animation: pulse 2s infinite;
+              }
+
+              .low-demand { background: var(--success); }
+              .low-demand::after { background: var(--success); opacity: 0.4; }
+              .medium-demand { background: var(--warning); }
+              .medium-demand::after { background: var(--warning); opacity: 0.4; }
+              .high-demand { background: var(--error); }
+              .high-demand::after { background: var(--error); opacity: 0.4; }
+
+              .availability-text {
+                font-size: 0.85rem;
+                color: var(--text-light);
+                font-weight: 600;
+              }
+
+              /* Chips améliorés */
+              .qv-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+              }
+
+              .qv-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                padding: 0.5rem 0.75rem;
+                border-radius: 50px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                background: var(--bg-glass);
+                border: 1px solid var(--border-light);
+                color: var(--text);
+                transition: var(--transition);
+                backdrop-filter: blur(10px);
+              }
+
+              .qv-chip:hover {
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-sm);
+              }
+
+              .qv-chip svg {
+                opacity: 0.7;
+              }
+
+              .qv-chip-price {
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(67, 97, 238, 0.1));
+                border-color: rgba(16, 185, 129, 0.3);
+                color: var(--success);
+              }
+
+              /* Grid layout amélioré */
+              .qv-grid.premium {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                padding: 1.5rem 2rem;
+                flex: 1;
+                overflow-y: auto;
+              }
+
+              .qv-column {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+              }
+
+              @media (max-width: 768px) {
+                .qv-grid.premium {
+                  grid-template-columns: 1fr;
+                  padding: 1rem;
+                }
+              }
+
+              /* Sections avec animations */
+              .qv-section {
+                position: relative;
+              }
+
+              .qv-card {
+                background: var(--bg-glass);
+                border: 1px solid var(--border-light);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                backdrop-filter: blur(10px);
+                box-shadow: var(--shadow-sm);
+                transition: var(--transition);
+              }
+
+              .qv-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+                border-color: var(--primary-light);
+              }
+
+              .qv-callout {
+                background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(139, 92, 246, 0.05));
+                border: 1px dashed var(--primary-light);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+              }
+
+              /* En-têtes de section */
+              .qv-section-header {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+              }
+
+              .qv-icon-wrapper {
+                width: 40px;
+                height: 40px;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                flex-shrink: 0;
+              }
+
+              .qv-h4 {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--text);
+              }
+
+              /* Texte avec défilement progressif */
+              .qv-text.scroll-fade {
+                line-height: 1.6;
+                color: var(--text);
+                position: relative;
+              }
+
+              .qv-text.scroll-fade::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 40px;
+                background: linear-gradient(transparent, var(--bg-card));
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+              }
+
+              .qv-text.scroll-fade.scrolled::after {
+                opacity: 1;
+              }
+
+              /* Grille de prix améliorée */
+              .qv-prices-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              }
+
+              .qv-price {
+                background: var(--bg-card);
+                border: 2px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 1.25rem;
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+              }
+
+              .qv-price::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                transition: left 0.6s ease;
+              }
+
+              .qv-price:hover::before {
+                left: 100%;
+              }
+
+              .qv-price:hover {
+                border-color: var(--primary);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+              }
+
+              .qv-price-content {
+                position: relative;
+                z-index: 1;
+              }
+
+              .qv-price-label {
+                display: block;
+                font-size: 0.9rem;
+                color: var(--text-light);
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+              }
+
+              .qv-price-amount {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--primary);
+                line-height: 1;
+              }
+
+              .qv-price-badge {
+                position: absolute;
+                top: 0.75rem;
+                right: 0.75rem;
+                background: linear-gradient(135deg, var(--success), var(--accent));
+                color: white;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.7rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              }
+
+              /* Liste améliorée */
+              .qv-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+              }
+
+              .qv-list-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                background: var(--bg-card);
+                border-radius: var(--radius-md);
+                border: 1px solid var(--border-light);
+                transition: var(--transition);
+              }
+
+              .qv-list-item:hover {
+                border-color: var(--primary-light);
+                transform: translateX(4px);
+              }
+
+              .qv-list-marker {
+                width: 24px;
+                height: 24px;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 0.8rem;
+                font-weight: 800;
+                flex-shrink: 0;
+              }
+
+              .qv-list-text {
+                flex: 1;
+                color: var(--text);
+                line-height: 1.4;
+              }
+
+              .qv-list-note {
+                display: block;
+                font-size: 0.8rem;
+                color: var(--text-light);
+                margin-top: 0.25rem;
+              }
+
+              /* Actions avec effet glass */
+              .qv-actions-glass {
+                position: sticky;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--bg-glass);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid var(--border-light);
+                padding: 1.5rem 2rem;
+                z-index: 10;
+              }
+
+              .qv-actions-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                max-width: 400px;
+                margin: 0 auto;
+              }
+
+              @media (max-width: 480px) {
+                .qv-actions-content {
+                  grid-template-columns: 1fr;
+                }
+              }
+
+              /* Animations d'entrée */
+              .slide-in {
+                opacity: 0;
+                transform: translateY(20px);
+                animation: slideInUp 0.6s ease forwards;
+              }
+
+              @keyframes slideInUp {
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
+              }
+
+              /* Délais d'animation pour chaque élément */
+              .slide-in[data-delay="100"] { animation-delay: 0.1s; }
+              .slide-in[data-delay="200"] { animation-delay: 0.2s; }
+              .slide-in[data-delay="300"] { animation-delay: 0.3s; }
+              .slide-in[data-delay="400"] { animation-delay: 0.4s; }
+
+              /* Effets de focus et d'interaction */
+              .magnetic {
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+              }
+
+              /* Scrollbar personnalisée */
+              .qv-grid.premium::-webkit-scrollbar {
+                width: 6px;
+              }
+
+              .qv-grid.premium::-webkit-scrollbar-track {
+                background: var(--border-light);
+                border-radius: 3px;
+              }
+
+              .qv-grid.premium::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                border-radius: 3px;
+              }
+
+              .qv-grid.premium::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+              }
+
+              /* États de chargement améliorés */
+              .quick-view-loading {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 3rem 2rem;
+                gap: 1rem;
+              }
+
+              .loading-spinner {
+                width: 40px;
+                height: 40px;
+                border: 3px solid var(--border-light);
+                border-top: 3px solid var(--primary);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+              }
+
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+
+              /* Adaptation dark mode */
+              [data-theme="dark"] .qv-card {
+                background: rgba(45, 55, 72, 0.6);
+              }
+
+              [data-theme="dark"] .qv-callout {
+                background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(139, 92, 246, 0.1));
+              }
+
+              [data-theme="dark"] .qv-actions-glass {
+                background: rgba(45, 55, 72, 0.8);
+              }
+
+
+              /* Machine à écrire - Styles */
+              .typewriter-container {
+                position: relative;
+                display: inline-block;
+              }
+
+              .typewriter-text {
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                background-size: 200% auto;
+                animation: gradientShift 3s ease-in-out infinite;
+              }
+
+              .typewriter-cursor {
+                display: inline-block;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                margin-left: 2px;
+                animation: 
+                  blink 1s infinite,
+                  gradientShift 3s ease-in-out infinite;
+              }
+
+              /* Animation du curseur */
+              @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+              }
+
+              /* Effet de lueur sur le texte */
+              .typewriter-text {
+                position: relative;
+              }
+
+              .typewriter-text::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                opacity: 0;
+                animation: textGlow 2s ease-in-out infinite;
+              }
+
+              @keyframes textGlow {
+                0%, 100% { 
+                  opacity: 0;
+                  filter: blur(0px);
+                }
+                50% { 
+                  opacity: 0.3;
+                  filter: blur(8px);
+                }
+              }
+
+              /* Animation d'entrée spectaculaire */
+              .hero-title .typewriter-container {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+                animation: 
+                  titleEntrance 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards,
+                  floatSubtle 6s ease-in-out infinite 1.5s;
+              }
+
+              @keyframes titleEntrance {
+                to {
+                  opacity: 1;
+                  transform: translateY(0) scale(1);
+                }
+              }
+
+              @keyframes floatSubtle {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                33% { transform: translateY(-3px) rotate(0.5deg); }
+                66% { transform: translateY(2px) rotate(-0.5deg); }
+              }
+
+
+              /* Conteneur des particules */
+              .typewriter-container {
+                position: relative;
+                display: inline-block;
+                overflow: visible;
+              }
+
+              /* Particules flottantes */
+              .title-particle {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: -1;
+                animation: particleFloat 8s ease-in-out infinite;
+              }
+
+              @keyframes particleFloat {
+                0%, 100% {
+                  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+                  opacity: 0.3;
+                }
+                25% {
+                  transform: translate(-50%, -50%) rotate(90deg) scale(1.1);
+                  opacity: 0.6;
+                }
+                50% {
+                  transform: translate(-50%, -50%) rotate(180deg) scale(0.9);
+                  opacity: 0.4;
+                }
+                75% {
+                  transform: translate(-50%, -50%) rotate(270deg) scale(1.05);
+                  opacity: 0.7;
+                }
+              }
+
+              /* Adaptation responsive */
+              @media (max-width: 768px) {
+                .typewriter-container {
+                  display: block;
+                  text-align: center;
+                }
+                
+                .title-particle {
+                  display: none; /* Masquer les particules sur mobile pour les performances */
+                }
+                
+                .typewriter-cursor {
+                  animation: blink 1s infinite;
+                }
+              }
+
+              /* Effet de surbrillance au survol */
+              .typewriter-container:hover .typewriter-text {
+                animation: gradientShift 1s ease-in-out infinite, textPulse 0.5s ease;
+              }
+
+              .typewriter-container:hover .typewriter-cursor {
+                animation: cursorPulse 0.3s ease, blink 0.7s infinite;
+              }
+
+              @keyframes textPulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+                100% { transform: scale(1); }
+              }
+
+              @keyframes cursorPulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.3); }
+                100% { transform: scale(1); }
+              }
+
+              .typewriter-cursor{
+                color: var(--text);           /* rend le | toujours visible */
+                background: none !important;  /* on annule le gradient du curseur */
+                -webkit-text-fill-color: initial;
+              }
+
+
+  </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="circuit-list-container" data-controller="circuit-list">
+
+    <!-- En-tête héro avec animation 3D -->
+    <header class="hero-section">
+
+      <div class="hero-background">
+        <div class="floating-elements">
+          <div class="floating-element element-1"></div>
+          <div class="floating-element element-2"></div>
+          <div class="floating-element element-3"></div>
+        </div>
+      </div>
+      
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            <span class="title-main">{% trans "Circuits Moto" %}</span>
+            <!-- Par ce code : -->
+            <span class="title-gradient typewriter-container">
+              <span class="typewriter-text"></span>
+              <span class="typewriter-cursor">|</span>
+              <script type="application/json" class="typewriter-data">
+                ["{% trans "L'aventure vous attend" %}",
+                "{% trans "Découvrez l'exceptionnel" %}",
+                "{% trans "Vivez l'intensité" %}",
+                "{% trans "Roulez vers l'inconnu" %}"]
+              </script>
+            </span>
+
+          </h1>
+          <p class="hero-subtitle">{% trans "Choisissez votre aventure et inscrivez-vous en quelques clics" %}</p>
+          
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number" data-counter="true" data-target="{{ circuits_total_upcoming }}">0</span>
+              <span class="stat-label">{% trans "Circuits disponibles" %}</span>
+            </div>
+
+            <div class="stat">
+              <span class="stat-number" data-counter="true" data-target="{{ total_inscrits }}">0</span>
+              <span class="stat-label">{% trans "Inscriptions" %}</span>
+            </div>
+
+          </div>
+        </div>
+        
+        <div class="hero-visual">
+          <div class="moto-animation">
+            <div class="track">
+              <div class="moto" data-moto-animation="true">
+                <div class="moto-body"></div>
+                <div class="moto-wheel front"></div>
+                <div class="moto-wheel back"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="scroll-indicator">
+        <div class="scroll-arrow"></div>
+      </div>
+
+    </header>
+
+    {% if circuits %}
+      <!-- Filtres avancés avec design glassmorphism -->
+      <section class="filters-section" data-filters-section="true">
+        <div class="filter-card glass-effect" data-tilt="true">
+          <div class="filter-header">
+            <div class="filter-title-section">
+              <div class="filter-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div>
+                <h3>{% trans "Filtres avancés" %}</h3>
+                <p class="filter-subtitle">{% trans "Affinez votre recherche" %}</p>
+              </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="button"
+                        class="btn-reset"
+                        data-reset-filters="true"
+                        title="{% trans 'Réinitialiser les filtres' %}"
+                        disabled
+                        aria-disabled="true">
+                  <svg class="icon-16" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M3 3v5h5" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  <span>{% trans "Réinitialiser" %}</span>
+                </button>
+              </div>
+
+          </div>
+          
+          <form id="filters" class="filter-grid">
+            <div class="filter-group">
+              <div class="input-container" data-input-container="true">
+                <input type="text" id="q" placeholder=" " class="filter-input" data-search-input="true">
+                <label for="q" class="floating-label">{% trans "Nom, code ou lieu" %}</label>
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <div class="input-focus-border"></div>
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <div class="input-container" data-input-container="true">
+                <input type="date" id="fromDate" class="filter-input" placeholder=" "
+                  min="{{ today|date:'Y-m-d' }}" value="{{ today|date:'Y-m-d' }}" data-date-filter="true">
+                <label for="fromDate" class="floating-label">{% trans "À partir du" %}</label>
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <div class="input-focus-border"></div>
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <div class="input-container" data-input-container="true">
+                <select id="sort" class="filter-input" data-sort-select="true">
+                  <option value="date">{% trans "Date (plus proche)" %}</option>
+                  <option value="price_asc">{% trans "Prix (croissant)" %}</option>
+                  <option value="price_desc">{% trans "Prix (décroissant)" %}</option>
+                  <option value="capacity">{% trans "Places disponibles" %}</option>
+                </select>
+                <label for="sort" class="floating-label">{% trans "Trier par" %}</label>
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/>
+                </svg>
+                <div class="input-focus-border"></div>
+              </div>
+            </div>
+          </form>
+          
+          <div class="active-filters" data-active-filters="true" hidden>
+            <span class="active-filters-label">{% trans "Filtres actifs:" %}</span>
+            <div class="filter-chips"></div>
+          </div>
+        </div>
+      </section>
+    {% endif %}
+
+    <!-- Liste des circuits avec masonry layout -->
+    <section class="circuits-section">
+
+      <div id="circuits" class="circuit-grid" data-circuit-grid="true">
+
+        {% for c in circuits %}
+          <article class="circuit-card" 
+                  data-circuit="true"
+                  data-name="{{ c.nom|lower }} {{ c.code|lower }} {{ c.infos_rdv|default:''|lower }}"
+                  data-date="{{ c.date_debut|date:'Y-m-d' }}"
+                  data-price="{{ c.prix_pilote_unitaire }}"
+                  data-capacity="{{ c.capacite }}"
+                  data-available="{{ c.nb_inscriptions|default:0 }}"
+                  data-sort-date="{{ c.date_debut|date:'Y-m-d' }}"
+                  style="--card-delay: {{ forloop.counter0 }}">
+
+            <!-- Media avec effet parallax -->
+            <div class="circuit-media" data-media-parallax="true">
+              <!-- <span class="circuit-badge">{{ c.code }}</span> -->
+              
+              <!-- Indicateur de statut -->
+              <div class="circuit-status">
+                {% with seats=c.capacite|default_if_none:0 inscrits=c.nb_inscriptions|default_if_none:0 %}
+                  {% widthratio seats 10 8 as low %}
+                  {% if inscrits >= seats %}
+                    <span class="status-badge status-full">{% trans "Complet" %}</span>
+                  {% elif inscrits >= low %}
+                    <span class="status-badge status-low">{% trans "Peu de places" %}</span>
+                  {% else %}
+                    <span class="status-badge status-available">{% trans "Disponible" %}</span>
+                  {% endif %}
+                {% endwith %}
+              </div>
+
+
+
+
+              <!-- Image avec placeholder animé -->
+              <div class="circuit-image">
+                <div class="image-placeholder">
+                  <svg viewBox="0 0 100 60" class="circuit-illustration">
+                    <path d="M10 30 Q30 10 50 30 T90 30" stroke="url(#circuitGradient)" stroke-width="2" fill="none"/>
+                    <animate attributeName="stroke-dashoffset" from="0" to="20" dur="2s" repeatCount="indefinite"/>
+                  </svg>
+                </div>
+                <div class="image-overlay">
+                  <button class="quick-view-btn" data-quick-view="true" data-circuit-id="{{ c.id }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    {% trans "Aperçu rapide" %}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contenu principal -->
+            <div class="circuit-content">
+              <header class="circuit-header">
+                <h3 class="circuit-title">{{ c.nom }}</h3>
+                <div class="circuit-meta">
+                  <span class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    {{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}
+                  </span>
+                  {% if c.infos_rdv %}
+                  <span class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {{ c.infos_rdv }}
+                  </span>
+                  {% endif %}
+                </div>
+              </header>
+
+              <p class="circuit-description">{{ c.description|default:"" | truncatewords:22 }}</p>
+
+              <!-- Statistiques avec animations -->
+              <div class="circuit-stats">
+                <div class="stat-item">
+                  <div class="stat-header">
+                    <span class="stat-label">{% trans "Places disponibles" %}</span>
+                    <span class="stat-value" data-capacity-display="true">
+                      {{ c.nb_inscriptions|default_if_none:0 }}/{{ c.capacite|default_if_none:0 }}
+                    </span>
+
+                  </div>
+                  <div class="stat-progress">
+                    <div class="progress-bar" data-progress="true" 
+                        data-percent="{% if c.capacite %}{% widthratio c.nb_inscriptions c.capacite 100 %}{% else %}0{% endif %}">
+                      <div class="progress-fill">
+                        <div class="progress-glow"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="stat-item">
+                  <div class="price-display">
+                    <span class="price-label">{% trans "À partir de" %}</span>
+                    <span class="price-amount">
+                      {{ c.prix_pilote_unitaire }} {{ c.devise }}
+                    </span>
+                    {% if c.prix_passager_unitaire %}
+                    <span class="price-note">+ {{ c.prix_passager_unitaire }} {{ c.devise }} {% trans "passager" %}</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Options avec accordéon -->
+              {% with opts=c.options.all %}
+              {% if opts %}
+              <div class="circuit-options" data-accordion="true">
+                <button type="button" class="options-toggle" aria-expanded="false" data-accordion-trigger="true">
+                  <span class="options-text">
+                    {% trans "Options disponibles" %} ({{ opts|length }})
+                  </span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="accordion-arrow">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+                <div class="options-content" data-accordion-content="true">
+                  {% for o in opts %}
+                  <div class="option-item">
+                    <span class="option-name">{{ o.intitule }}</span>
+                    <span class="option-price">{{ o.prix_unitaire }} {{ c.devise }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+              {% endwith %}
+            </div>
+
+            <!-- Actions avec hover effects -->
+            <footer class="circuit-actions">
+              <a href="{{ c.get_absolute_url }}" class="btn btn-primary btn-animate" data-ripple="true">
+                <span class="btn-text">{% trans "Explorer et s'inscrire" %}</span>
+                <span class="btn-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </span>
+                <span class="btn-glow"></span>
+              </a>
+            </footer>
+
+            {# --- Quick-view template (hidden) — version premium améliorée --- #}
+            <template id="qv-{{ c.id }}">
+              <div class="quick-view-content qv-premium">
+                <!-- Header avec gradient animé -->
+                <header class="qv-header premium">
+                  <div class="qv-header-gradient"></div>
+                  <div class="qv-header-content">
+                    <div class="qv-header-top">
+                      <!-- <span class="qv-code-badge pulse-glow">{{ c.code }}</span> -->
+                      <div class="qv-title-section">
+                        <h3 class="qv-title">{{ c.nom }}</h3>
+                        <div class="qv-availability">
+                          <span class="availability-dot {% if pct >= 80 %}high-demand{% elif pct >= 50 %}medium-demand{% else %}low-demand{% endif %}"></span>
+                          <span class="availability-text">
+                            {% if pct >= 90 %}
+                              {% trans "Presque complet" %}
+                            {% elif pct >= 70 %}
+                              {% trans "Peu de places" %}
+                            {% else %}
+                              {% trans "Disponible" %}
+                            {% endif %}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="qv-chips">
+                      <span class="qv-chip magnetic" data-strength="0.1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/>
+                          <line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        {{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}
+                      </span>
+                      {% if c.infos_rdv %}
+                      <span class="qv-chip magnetic" data-strength="0.1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                          <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        {{ c.infos_rdv }}
+                      </span>
+                      {% endif %}
+                      <span class="qv-chip qv-chip-price magnetic" data-strength="0.1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M12 1v22M5 6h14M5 12h14M5 18h14"/>
+                        </svg>
+                        {% trans "À partir de" %} {{ c.prix_pilote_unitaire }} {{ c.devise }}
+                      </span>
+                    </div>
+                  </div>
+                </header>
+
+                <!-- Contenu principal avec layout amélioré -->
+                <div class="qv-grid premium">
+                  <!-- Colonne gauche -->
+                  <div class="qv-column">
+                    <section class="qv-section qv-card slide-in" data-delay="0">
+                      <div class="qv-section-header">
+                        <div class="qv-icon-wrapper">
+                          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="M7 9h10M7 13h10M7 17h6" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </div>
+                        <h4 class="qv-h4">{% trans "Description" %}</h4>
+                      </div>
+                      <div class="qv-text scroll-fade">{{ c.description|default:""|linebreaksbr }}</div>
+                    </section>
+
+                    {% if c.programme %}
+                    <section class="qv-section qv-card slide-in" data-delay="100">
+                      <div class="qv-section-header">
+                        <div class="qv-icon-wrapper">
+                          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </div>
+                        <h4 class="qv-h4">{% trans "Programme" %}</h4>
+                      </div>
+                      <div class="qv-text scroll-fade">{{ c.programme|linebreaksbr }}</div>
+                    </section>
+                    {% endif %}
+                  </div>
+
+                  <!-- Colonne droite -->
+                  <div class="qv-column">
+                    <section class="qv-section qv-card qv-prices slide-in" data-delay="200">
+                      <div class="qv-section-header">
+                        <div class="qv-icon-wrapper">
+                          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 1v22M5 6h14M5 12h14M5 18h14" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </div>
+                        <h4 class="qv-h4">{% trans "Tarifs" %}</h4>
+                      </div>
+
+                      <div class="qv-prices-grid">
+                        <div class="qv-price magnetic" data-strength="0.05">
+                          <div class="qv-price-content">
+                            <span class="qv-price-label">{% trans "Pilote" %}</span>
+                            <span class="qv-price-amount">{{ c.prix_pilote_unitaire }} {{ c.devise }}</span>
+                          </div>
+                          <div class="qv-price-badge">{% trans "Populaire" %}</div>
+                        </div>
+                        {% if c.prix_passager_unitaire %}
+                        <div class="qv-price magnetic" data-strength="0.05">
+                          <div class="qv-price-content">
+                            <span class="qv-price-label">{% trans "Passager" %}</span>
+                            <span class="qv-price-amount">{{ c.prix_passager_unitaire }} {{ c.devise }}</span>
+                          </div>
+                        </div>
+                        {% endif %}
+                      </div>
+                    </section>
+
+                    <section class="qv-section qv-callout slide-in" data-delay="300">
+                      <div class="qv-section-header">
+                        <div class="qv-icon-wrapper">
+                          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M2 12h20M12 2v20" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </div>
+                        <h4 class="qv-h4">{% trans "Modalités de paiement" %}</h4>
+                      </div>
+                      {% if c.echeancier_texte %}
+                        <div class="qv-text scroll-fade">{{ c.echeancier_texte|linebreaksbr }}</div>
+                      {% else %}
+                        <ul class="qv-list">
+                          <li class="qv-list-item">
+                            <span class="qv-list-marker">①</span>
+                            <span class="qv-list-text">
+                              <strong>{% trans "Acompte 1" %}:</strong> {{ c.acompte1_par_personne }} {{ c.devise }} / {% trans "personne à l'inscription" %}
+                              <span class="qv-list-note">({% trans "option valable" %} {{ c.delai_option_jours }} {% trans "jours" %})</span>
+                            </span>
+                          </li>
+                          <li class="qv-list-item">
+                            <span class="qv-list-marker">②</span>
+                            <span class="qv-list-text">
+                              <strong>{% trans "Acompte 2" %}:</strong> {{ c.acompte2_par_personne }} {{ c.devise }} / {% trans "personne à J" %}-{{ c.delai_acompte2_jours }}
+                            </span>
+                          </li>
+                          <li class="qv-list-item">
+                            <span class="qv-list-marker">③</span>
+                            <span class="qv-list-text">
+                              <strong>{% trans "Solde" %}:</strong> {% trans "à J" %}-{{ c.delai_solde_jours }}
+                            </span>
+                          </li>
+                        </ul>
+                      {% endif %}
+                    </section>
+
+                    {% if c.infos_paiement %}
+                    <section class="qv-section qv-card slide-in" data-delay="400">
+                      <div class="qv-section-header">
+                        <div class="qv-icon-wrapper">
+                          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="M8 8h8M8 12h8M8 16h8" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </div>
+                        <h4 class="qv-h4">{% trans "Coordonnées de paiement" %}</h4>
+                      </div>
+                      <div class="qv-text scroll-fade">{{ c.infos_paiement|linebreaksbr }}</div>
+                    </section>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Actions sticky avec effet glass -->
+                <div class="qv-actions-glass">
+                  <div class="qv-actions-content">
+                    <a href="{{ c.get_absolute_url }}" class="btn btn-secondary magnetic" data-strength="0.2" data-ripple="true">
+                      <span class="btn-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                      </span>
+                      <span class="btn-text">{% trans "Explorer" %}</span>
+                    </a>
+                    <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ c.id }}" class="btn btn-primary magnetic" data-strength="0.3" data-ripple="true">
+                      <span class="btn-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                      </span>
+                      <span class="btn-text">{% trans "Réserver" %}</span>
+                      <span class="btn-glow"></span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <style>
+
+            </style>
+
+          </article>
+        {% empty %}
+
+        <!-- État vide avec animation -->
+        <div class="empty-state" data-empty-state="true">
+          <div class="empty-animation">
+            <div class="empty-icon">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div class="empty-ripple"></div>
+          </div>
+          <div class="empty-content">
+            <h3>{% trans "Aucun circuit disponible" %}</h3>
+            <p>{% trans "Revenez plus tard pour découvrir nos prochaines aventures" %}</p>
+            <button class="btn btn-outline" data-refresh="true">
+              {% trans "Actualiser la page" %}
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination améliorée -->
+      {% if page_obj.paginator.num_pages > 1 %}
+      <nav class="pagination" data-pagination="true">
+        {% if page_obj.has_previous %}
+          <a class="page-link prev" href="?page={{ page_obj.previous_page_number }}#circuits" data-page-link="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            <span>{% trans "Précédent" %}</span>
+          </a>
+        {% else %}
+          <span class="page-link disabled">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            <span>{% trans "Précédent" %}</span>
+          </span>
+        {% endif %}
+
+        <div class="page-numbers">
+          {% for p in page_range %}
+            {% if p == '…' %}
+              <span class="page-ellipsis">…</span>
+            {% elif p == page_obj.number %}
+              <span class="page-link current" data-current="true">{{ p }}</span>
+            {% else %}
+              <a class="page-link" href="?page={{ p }}#circuits" data-page-link="true">{{ p }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if page_obj.has_next %}
+          <a class="page-link next" href="?page={{ page_obj.next_page_number }}#circuits" data-page-link="true">
+            <span>{% trans "Suivant" %}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </a>
+        {% else %}
+          <span class="page-link disabled">
+            <span>{% trans "Suivant" %}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        {% endif %}
+      </nav>
+      {% endif %}
+      
+    </section>
+
+    <!-- Section déjà inscrit avec design moderne -->
+    <section class="existing-registration-section">
+      <div class="existing-registration-card glass-effect" data-tilt="true" id="DejaInscrit">
+        <div class="registration-content">
+          <div class="registration-header">
+            <h3>{% trans "Déjà inscrit ?" %}</h3>
+            <p>{% trans "Retrouvez votre inscription avec votre numéro de référence" %}</p>
+          </div>
+          
+          <form id="edit-form" class="registration-form" data-edit-form="true">
+            <div class="input-container" data-input-container="true">
+              <input type="text" id="ref" placeholder=" " class="registration-input" 
+                    pattern="[0-9a-fA-F-]{36}" data-uuid-input="true">
+              <label for="ref" class="floating-label">{% trans "Votre référence (UUID)" %}</label>
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+              </svg>
+              <div class="input-focus-border"></div>
+            </div>
+            <button class="btn btn-secondary btn-animate" type="submit" data-ripple="true">
+              <span class="btn-text">{% trans "Modifier mon inscription" %}</span>
+              <span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </span>
+            </button>
+          </form>
+        </div>
+        <div class="registration-visual">
+          <div class="visual-animation">
+            <div class="rider-silhouette"></div>
+            <div class="road-line"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal d'aperçu rapide -->
+    <div class="quick-view-modal" data-quick-view-modal="true">
+      <div class="modal-backdrop" data-modal-close="true"></div>
+      <div class="modal-content">
+        <button class="modal-close" data-modal-close="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+        <div class="modal-body" data-modal-body="true">
+          <!-- Contenu chargé dynamiquement -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% url 'javascript-catalog' %}?v={{ LANGUAGE_CODE }}"></script>
+  <script defer src="{% version_static 'circuitMoto/js/home.i18n.js' %}"></script>
+{% endblock %}
+
+
+

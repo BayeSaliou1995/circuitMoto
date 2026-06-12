@@ -1,0 +1,43 @@
+{# templates/circuitMoto/inscription/_wizard_actions.html #}
+{% load i18n %}
+
+<div class="actions">
+  {# PRÉCÉDENT #}
+  {% if wizard.steps.prev %}
+    <button
+      name="wizard_goto_step"
+      type="submit"
+      value="{{ wizard.steps.prev }}"
+      class="btn btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      {% trans "Précédent" %}
+    </button>
+  {% endif %}
+
+  {# ✅ EN ÉDITION : ENREGISTRER (save global) #}
+  {% if wizard_mode == "edit" %}
+    <button type="submit" name="wizard_action" value="save" class="btn btn-primary">
+      {% trans "Enregistrer les modifications" %}
+    </button>
+  {% endif %}
+
+  {# SUIVANT / TERMINER (comportement wizard normal) #}
+  <button type="submit" class="btn {% if wizard_mode == "edit" %}btn-secondary{% else %}btn-primary{% endif %}">
+    {% if wizard.steps.next %}
+      {% trans "Suivant" %}
+    {% else %}
+      {% trans "Terminer" %}
+    {% endif %}
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+  </button>
+</div>

@@ -1,0 +1,14 @@
+{# templates/emails/balades_demande_admin.txt #}
+Nouvelle demande de programmes Balades 1 jour
+
+Nom : {{ demande.prenom }} {{ demande.nom }}
+Email : {{ demande.email }}
+Téléphone : {{ demande.telephone|default:"Non renseigné" }}
+
+Balades sélectionnées :
+{% for b in selected_balades %}
+- {{ b.date_humaine }} — {{ b.titre }} (Guide : {{ b.guide|default:"libre" }})
+{% endfor %}
+
+Commentaire :
+{{ demande.commentaire|default:"Aucun commentaire." }}

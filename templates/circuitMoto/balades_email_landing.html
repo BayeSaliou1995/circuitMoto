@@ -1,0 +1,172 @@
+{# templates/circuitMoto/balades_email_landing.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Balades d’un jour — Pulsion Horizon{% endblock %}
+{% block body_class %}page-balades-landing{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/balades_1_jour.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="b1jl-page">
+  <div class="b1jl-shell">
+
+    <section class="b1jl-hero" aria-label="Découverte des balades d’un jour">
+      <div class="b1jl-hero__bg"></div>
+
+      <div class="b1jl-hero__content">
+        <div class="b1jl-hero__left">
+          <span class="b1jl-kicker">Pulsion Horizon</span>
+
+          <h1 class="b1jl-title">
+            Découvrez nos balades d’un jour
+          </h1>
+
+          <p class="b1jl-lead">
+            Choisissez les sorties qui vous attirent, découvrez les départs proposés
+            par nos partenaires moto, puis recevez les programmes détaillés directement
+            par e-mail via une expérience simple, claire et agréable.
+          </p>
+
+          <div class="b1jl-hero__actions">
+            <a href="{% url 'balades_1_jour' %}" class="b1j-btn">
+              Je sélectionne mes balades
+            </a>
+            <a href="#b1jlGrid" class="b1j-btn b1j-btn--ghost">
+              Voir les balades
+            </a>
+          </div>
+
+          <div class="b1jl-stats">
+            <div class="b1jl-stat">
+              <strong>{{ balades_count }}</strong>
+              <span>balade{{ balades_count|pluralize }} disponible{{ balades_count|pluralize }}</span>
+            </div>
+            <div class="b1jl-stat">
+              <strong>100%</strong>
+              <span>sélection en ligne</span>
+            </div>
+            <div class="b1jl-stat">
+              <strong>email</strong>
+              <span>programme envoyé facilement</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="b1jl-hero__right">
+          <div class="b1jl-highlight-card">
+            <div class="b1jl-highlight-card__head">
+              <span class="b1jl-chip">À la une</span>
+              <span class="b1jl-chip b1jl-chip--soft">Sélection rapide</span>
+            </div>
+
+            <div class="b1jl-highlight-list">
+              {% for b in balades_featured %}
+                <article class="b1jl-highlight-item">
+                  <div class="b1jl-highlight-item__date">{{ b.date_humaine }}</div>
+                  <h2 class="b1jl-highlight-item__title">{{ b.titre }}</h2>
+
+                  <div class="b1jl-highlight-item__meta">
+                    {# <span>Guide : {{ b.guide|default:"libre" }}</span> #}
+                    {# <span>Ordre : {{ b.ordre }}</span> #}
+                  </div>
+
+                  <div class="b1jl-highlight-item__actions">
+                    {% if b.slug_lien %}
+                      <a href="{% url 'balades_1_jour_lien' b.slug_lien %}" class="b1jl-inline-link">
+                        Ouvrir la page dédiée
+                      </a>
+                    {% else %}
+                      <a href="{% url 'balades_1_jour' %}" class="b1jl-inline-link">
+                        Sélectionner cette balade
+                      </a>
+                    {% endif %}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="b1jl-section-head" id="b1jlGrid">
+      <div>
+        <span class="b1jl-section-kicker">Balades disponibles</span>
+        <h2 class="b1jl-section-title">Choisissez votre départ ou explorez toutes les propositions</h2>
+      </div>
+      <p class="b1jl-section-text">
+        Chaque carte vous guide vers la page la plus adaptée : lien partenaire dédié quand il existe,
+        ou sélection générale des balades.
+      </p>
+    </section>
+
+    <section class="b1jl-grid" aria-label="Liste des balades">
+      {% for b in balades %}
+        <article class="b1jl-card">
+          <div class="b1jl-card__top">
+            <span class="b1jl-card__date">{{ b.date_humaine }}</span>
+
+            {% if b.slug_lien %}
+              <span class="b1jl-card__badge">Lien dédié</span>
+            {% else %}
+              <span class="b1jl-card__badge b1jl-card__badge--muted">Sélection globale</span>
+            {% endif %}
+          </div>
+
+          <h3 class="b1jl-card__title">{{ b.titre }}</h3>
+
+          <div class="b1jl-card__meta">
+            {# <span><strong>Guide :</strong> {{ b.guide|default:"libre" }}</span> #} 
+            <span><strong>Départ :</strong> {{ b.date_debut|date:"d/m/Y" }}</span>
+            {% if b.date_fin and b.date_fin != b.date_debut %}
+              <span><strong>Fin :</strong> {{ b.date_fin|date:"d/m/Y" }}</span>
+            {% endif %}
+          </div>
+
+          <p class="b1jl-card__text">
+            Accédez à la page de cette balade pour sélectionner rapidement votre intérêt
+            et recevoir le programme détaillé par e-mail.
+          </p>
+
+          <div class="b1jl-card__actions">
+            {% if b.slug_lien %}
+              <a href="{% url 'balades_1_jour_lien' b.slug_lien %}" class="b1j-btn">
+                Ouvrir cette balade
+              </a>
+            {% else %}
+              <a href="{% url 'balades_1_jour' %}" class="b1j-btn b1j-btn--ghost">
+                Aller à la sélection générale
+              </a>
+            {% endif %}
+          </div>
+        </article>
+      {% empty %}
+        <div class="b1jl-empty">
+          <h3>Aucune balade disponible pour le moment</h3>
+          <p>Revenez bientôt pour découvrir les prochaines sorties proposées.</p>
+        </div>
+      {% endfor %}
+    </section>
+
+    <section class="b1jl-cta">
+      <div class="b1jl-cta__content">
+        <span class="b1jl-section-kicker">Prêt à continuer ?</span>
+        <h2 class="b1jl-section-title">Accédez à la sélection complète</h2>
+        <p class="b1jl-section-text">
+          Vous pouvez sélectionner une ou plusieurs balades en une seule fois depuis la page principale.
+        </p>
+      </div>
+
+      <div class="b1jl-cta__actions">
+        <a href="{% url 'balades_1_jour' %}" class="b1j-btn">
+          Je sélectionne mes balades
+        </a>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

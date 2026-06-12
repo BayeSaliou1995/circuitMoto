@@ -1,0 +1,26 @@
+Nouvel interesse - Pre Programme 2027
+
+Client : {{ demande.prenom }} {{ demande.nom }}
+Email : {{ demande.email }}
+Telephone : {{ demande.telephone|default:"Non renseigne" }}
+Ville / Pays : {{ demande.localite|default:"-" }} {{ demande.pays|default:"" }}
+
+Participants prevus : {{ demande.participants_previsionnels }}
+Decision estimee : {{ demande.get_delai_decision_display }}
+Vehicule / preference : {{ demande.vehicule|default:"Non renseigne" }}
+Profil : {{ demande.profil|default:"Non renseigne" }}
+
+Circuits selectionnes :
+{% for s in selections %}
+- {{ s.circuit.titre }} - {{ s.circuit.mois }} - {{ s.circuit.duree }}
+  Niveau : {{ s.get_niveau_interet_display }}
+  Participants : {{ s.participants }}
+  Mode prefere : {{ s.mode_prefere|default:"Non renseigne" }}
+  Precision : {{ s.commentaire|default:"-" }}
+{% endfor %}
+
+Commentaire general :
+{{ demande.commentaire|default:"Aucun commentaire." }}
+
+Voir dans le back-office :
+{{ detail_url }}

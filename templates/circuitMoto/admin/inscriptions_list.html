@@ -1,0 +1,1624 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+
+{% block content %}
+
+  <div class="inscription-management-container">
+    
+    <!-- En-tête amélioré -->
+    <header class="management-header">
+      <div class="header-content">
+        <h1 class="header-title">Gestion des inscriptions</h1>
+        <p class="header-subtitle">Base de données complète des participants aux circuits</p>
+      </div>
+      {% comment %} <div class="header-actions">
+        <button class="theme-toggle" aria-label="Changer de thème">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div> {% endcomment %}
+    </header>
+
+    <!-- Filtres avec design amélioré -->
+    <div class="filters-section">
+      <form method="get" class="filter-form" id="filter-form">
+        <div class="filter-grid">
+          <!-- Champ de recherche avec micro-interactions -->
+          <div class="filter-group">
+            <label class="filter-label">Recherche</label>
+            <div class="search-input-container">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" name="q" value="{{ q }}" placeholder="Référence, nom, circuit..." class="search-input">
+              {% if q %}
+              <button type="button" class="search-clear" aria-label="Effacer la recherche">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Filtres avancés -->
+          <div class="filter-group">
+            <label class="filter-label">Statut</label>
+            <div class="custom-select">
+              <select name="statut" class="filter-select">
+                <option value="">Tous statuts</option>
+                <option value="OPTION" {% if statut == 'OPTION' %}selected{% endif %}>Option</option>
+                <option value="VALIDE" {% if statut == 'VALIDE' %}selected{% endif %}>Validée</option>
+                <option value="ANNULEE" {% if statut == 'ANNULEE' %}selected{% endif %}>Annulée</option>
+                <option value="TERMINEE" {% if statut == 'TERMINEE' %}selected{% endif %}>Terminée</option>
+              </select>
+              <div class="select-arrow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tri amélioré -->
+          <div class="filter-group">
+            <label class="filter-label">Trier par</label>
+            <div class="custom-select">
+              <select name="order" class="filter-select">
+                <option value="-cree_le"        {% if order == '-cree_le' %}selected{% endif %}>+ Récent</option>
+                <option value="cree_le"         {% if order == 'cree_le' %}selected{% endif %}>+ Ancien</option>
+
+                <option value="pilote__nom"     {% if order == 'pilote__nom' %}selected{% endif %}>Pilote A→Z</option>
+                <option value="-pilote__nom"    {% if order == '-pilote__nom' %}selected{% endif %}>Pilote Z→A</option>
+
+                <!-- ▼ Tri par circuit -->
+                <option value="circuit__nom"        {% if order == 'circuit__nom' %}selected{% endif %}>Circuit A→Z</option>
+                <option value="-circuit__nom"       {% if order == '-circuit__nom' %}selected{% endif %}>Circuit Z→A</option>
+                <option value="circuit__code"       {% if order == 'circuit__code' %}selected{% endif %}>Code circuit A→Z</option>
+                <option value="-circuit__code"      {% if order == '-circuit__code' %}selected{% endif %}>Code circuit Z→A</option>
+                <option value="circuit__date_debut" {% if order == 'circuit__date_debut' %}selected{% endif %}>Début (le plus tôt)</option>
+                <option value="-circuit__date_debut"{% if order == '-circuit__date_debut' %}selected{% endif %}>Début (le plus tard)</option>
+              </select>
+              <div class="select-arrow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Actions avec design cohérent -->
+          <div class="filter-actions">
+            <button type="submit" class="btn btn-primary btn-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <line x1="21" y1="21" x2="15" y2="15"></line>
+                <circle cx="10" cy="10" r="7"></circle>
+              </svg>
+              Appliquer
+            </button>
+            {% if q or statut %}
+            <a href="{% url 'bo_inscription_list' %}" class="btn btn-secondary">Réinitialiser</a>
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <form method="get" action="{% url 'bo_personnes_export' %}" class="export-form">
+      <!-- on véhicule aussi le filtre de statut de la page si présent -->
+      <input type="hidden" name="statut" value="{{ statut }}"/>
+
+      <div class="export-grid">
+        <div class="export-group">
+          <label class="export-label">Année (avec inscrits)</label>
+          <div class="custom-select">
+            <select id="export-year" name="year" class="export-select">
+              <option value="">Toutes années</option>
+              {% for y in export_years %}
+                <option value="{{ y }}" {% if exp_year|stringformat:'s' == y|stringformat:'s' %}selected{% endif %}>{{ y }}</option>
+              {% endfor %}
+            </select>
+            <div class="select-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="export-group">
+          <label class="export-label">Circuit (avec inscrits)</label>
+          <div class="custom-select">
+            <select id="export-circuit" name="circuit" class="export-select">
+              <option value="">Tous circuits</option>
+              {% for c in export_circuits %}
+                <option value="{{ c.id }}" {% if exp_circuit|stringformat:'s' == c.id|stringformat:'s' %}selected{% endif %}>
+                  {{ c.code }} — {{ c.nom }} ({{ c.date_debut|date:"d/m/Y" }})
+                </option>
+              {% endfor %}
+            </select>
+            <div class="select-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="export-actions">
+          <button type="submit" class="btn btn-accent modern-btn btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <path d="M14 2v6h6"/>
+              <path d="M9 15l3-3 3 3m0-3l-3 3-3-3"/>
+            </svg>
+            Export complet personnes
+          </button>
+          <button type="button" id="open-reservation-export" data-export-url="{% url 'bo_reservations_export' %}" class="btn btn-primary modern-btn btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3h18v18H3z"/>
+              <path d="M3 9h18M9 3v18"/>
+            </svg>
+            Suivi réservations
+          </button>
+          <a href="{% url 'bo_payment_excel_import' %}" class="btn btn-secondary modern-btn btn-sm">
+            Paiements Excel
+          </a>
+          {% if exp_circuit %}
+          <a href="{% url 'bo_payment_excel_template' %}" class="btn btn-primary modern-btn btn-sm">
+            Modèle paiements circuit
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+
+
+    <!-- Statistiques rapides -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ page_obj.paginator.count }}</span>
+          <span class="stat-label">Inscriptions totales</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des inscriptions avec design moderne -->
+    <div class="table-section">
+      <div class="table-responsive">
+        <table class="inscriptions-table">
+          <thead>
+            <tr>
+              <th class="reference-col">Référence</th>
+              <th class="circuit-col">Circuit</th>
+              <th class="participant-col">Pilote</th>
+              {% comment %} <th class="status-col">Statut</th> {% endcomment %}
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ins in page_obj.object_list %}
+            <tr class="inscription-row">
+              <!-- Référence avec animation de copie -->
+              <td class="reference-cell">
+                <div class="reference-wrapper">
+                  <span class="reference-code">{{ ins.id_public }}</span>
+                  <button class="copy-btn" data-copy="{{ ins.id_public }}" title="Copier la référence" aria-label="Copier la référence">
+                    <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+
+              <!-- Circuit avec informations détaillées -->
+              <td class="circuit-cell">
+                <div class="circuit-info">
+                  <div class="circuit-name">{{ ins.circuit.nom }}</div>
+                  <div class="circuit-meta">
+                    <span class="circuit-code">{{ ins.circuit.code }}</span>
+                    <span class="circuit-dates">
+                      {{ ins.circuit.date_debut|date:"d/m/Y" }} → {{ ins.circuit.date_fin|date:"d/m/Y" }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Pilote avec avatar de placeholder -->
+              <td class="participant-cell">
+                <div class="participant-info">
+                  {% comment %} <div class="participant-avatar">
+                    {{ ins.pilote.prenom|first|upper }}{{ ins.pilote.nom|first|upper }}
+                  </div> {% endcomment %}
+                  <div class="participant-details">
+                    <div class="participant-name">{{ ins.pilote.nom|upper }} {{ ins.pilote.prenom }}</div>
+                    <div class="participant-contact">
+                      {% if ins.pilote.email %}<span class="participant-email">{{ ins.pilote.email }}</span>{% endif %}
+                      {% if ins.pilote.telephone %}<span class="participant-phone">{{ ins.pilote.telephone }}</span>{% endif %}
+
+                      {# ▼ NOUVEAU : numéro d’urgence #}
+                      {% if ins.assurance and ins.assurance.telephone_urgence %}
+                        <span class="participant-phone">Urgence&nbsp;: {{ ins.assurance.telephone_urgence }}</span>
+                      {% endif %}
+                    </div>
+
+
+                  </div>
+                </div>
+              </td>
+
+              <!-- Statut avec badge coloré -->
+              {% comment %} <td class="status-cell">
+                <span class="status-badge status-{{ ins.statut|lower }}">{{ ins.statut }}</span>
+              </td> {% endcomment %}
+
+              <!-- Actions avec boutons améliorés -->
+              <td class="actions-cell">
+                <div class="action-buttons">
+                  <a href="{% url 'bo_personne_detail' ins.pilote.id %}" class="btn btn-sm btn-icon btn-secondary" title="Voir détails">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </a>
+                  <button type="button" class="btn btn-sm btn-icon btn-danger js-del"
+                    data-id="{{ ins.id }}"
+                    data-ref="{{ ins.id_public }}"
+                    data-pilote="{{ ins.pilote.prenom }} {{ ins.pilote.nom }}"
+                    data-circuit="{{ ins.circuit.nom }}"
+                    title="Supprimer l'inscription">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                  <form id="del-form-{{ ins.id }}" method="post" action="{% url 'bo_inscription_delete' ins.id %}" hidden>
+                    {% csrf_token %}
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="empty-table">
+                <div class="empty-content">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <h3>Aucune inscription trouvée</h3>
+                  <p>Essayez de modifier vos critères de recherche ou réinitialisez les filtres.</p>
+                  {% if q or statut %}
+                  <a href="?" class="btn btn-primary">Réinitialiser les filtres</a>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination améliorée -->
+      {% if page_obj.paginator.num_pages > 1 %}
+      <div class="pagination">
+        <div class="pagination-info">
+          Affichage de <strong>{{ page_obj.start_index }}</strong> à <strong>{{ page_obj.end_index }}</strong> sur <strong>{{ page_obj.paginator.count }}</strong> résultats
+        </div>
+        <div class="pagination-links">
+          {% if page_obj.has_previous %}
+            <a href="?page=1&{{ preserved }}" class="pagination-link pagination-first">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M19 12H5M12 5l-7 7 7 7"></path>
+              </svg>
+            </a>
+            <a href="?page={{ page_obj.previous_page_number }}&{{ preserved }}" class="pagination-link pagination-prev">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M15 18l-6-6 6-6"></path>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <span class="pagination-current">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <a href="?page={{ num }}&{{ preserved }}" class="pagination-link">{{ num }}</a>
+            {% elif num == 1 or num == page_obj.paginator.num_pages %}
+              <a href="?page={{ num }}&{{ preserved }}" class="pagination-link">{{ num }}</a>
+            {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+              <span class="pagination-ellipsis">...</span>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&{{ preserved }}" class="pagination-link pagination-next">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&{{ preserved }}" class="pagination-link pagination-last">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Modal de confirmation avec animation améliorée -->
+    <div id="confirm-del" class="modal">
+      <div class="modal-backdrop js-close"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <h3 class="modal-title">Confirmer la suppression</h3>
+          <button type="button" class="modal-close js-close" aria-label="Fermer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Vous êtes sur le point de supprimer l'inscription <strong class="js-ref"></strong>
+          </p>
+          <p class="modal-subtext js-who"></p>
+          <div class="modal-warning">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Cette action est irréversible</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary js-close">Annuler</button>
+          <button type="button" class="btn btn-danger js-confirm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Confirmer la suppression
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="reservation-export-modal" class="modal">
+      <div class="modal-backdrop js-close"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-icon modal-icon-info">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M3 3h18v18H3z"></path>
+              <path d="M3 9h18M9 3v18"></path>
+            </svg>
+          </div>
+          <h3 class="modal-title">Suivi réservations</h3>
+          <button type="button" class="modal-close js-close" aria-label="Fermer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Ce bouton télécharge un Excel de suivi interne basé sur les inscriptions, options et paiements déjà encodés dans la plateforme.
+          </p>
+          <p class="modal-subtext">
+            Le fichier reprend les colonnes utiles au suivi des réservations : documents, chambre, cabine, nuits d’étape, acomptes, solde, total et remarques. Aucune donnée n’est modifiée.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary js-close">Annuler</button>
+          <button type="button" class="btn btn-primary js-download-reservations">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <path d="M7 10l5 5 5-5"></path>
+              <path d="M12 15V3"></path>
+            </svg>
+            Télécharger le suivi
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    /* Variables CSS avec thème clair/sombre */
+    .inscription-management-container {
+      --primary: #4361ee;
+      --primary-light: rgba(67, 97, 238, 0.1);
+      --primary-hover: #3a56d4;
+      --secondary: #f8f9fa;
+      --secondary-hover: #e9ecef;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --danger-hover: #c0392b;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --text-lighter: #b2bec3;
+      --border: #dfe6e9;
+      --bg: #ffffff;
+      --bg-card: #ffffff;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --transition: all 0.2s ease;
+      --transition-slow: all 0.3s ease;
+      
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition-slow);
+    }
+
+    [data-theme="dark"] .inscription-management-container {
+      --primary: #5e72e4;
+      --primary-light: rgba(94, 114, 228, 0.15);
+      --primary-hover: #4d5fd0;
+      --secondary: #2d3748;
+      --secondary-hover: #4a5568;
+      --text: #edf2f7;
+      --text-light: #a0aec0;
+      --text-lighter: #718096;
+      --border: #4a5568;
+      --bg: #1a202c;
+      --bg-card: #2d3748;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Header amélioré */
+    .management-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem;
+      color: var(--text);
+      background: linear-gradient(90deg, var(--primary), #8a2be2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-subtitle {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+      transform: rotate(30deg);
+    }
+
+    .moon-icon {
+      display: none;
+    }
+
+    [data-theme="dark"] .sun-icon {
+      display: none;
+    }
+
+    [data-theme="dark"] .moon-icon {
+      display: block;
+    }
+
+    /* Filtres améliorés */
+    .filters-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-form {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .filter-form:focus-within {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-light);
+      margin-bottom: 0.25rem;
+    }
+
+    .search-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      color: var(--text-light);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 2.25rem 0.75rem 2.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .search-clear:hover {
+      color: var(--danger);
+      background: rgba(231, 76, 60, 0.1);
+    }
+
+    .custom-select {
+      position: relative;
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: 0.75rem;
+      padding-right: 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      appearance: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-light);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-self: flex-end;
+    }
+
+    /* Cartes de statistiques */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .stat-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    /* Tableau amélioré */
+    .table-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .table-section:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .inscriptions-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .inscriptions-table th {
+      text-align: left;
+      padding: 1rem;
+      background: var(--secondary);
+      font-weight: 600;
+      white-space: nowrap;
+      color: var(--text-light);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .inscriptions-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      transition: var(--transition);
+    }
+
+    .inscription-row {
+      transition: var(--transition);
+    }
+
+    .inscription-row:hover {
+      background: var(--primary-light);
+      transform: translateX(4px);
+    }
+
+    /* Colonnes */
+    .reference-cell {
+      width: 180px;
+    }
+
+    .circuit-cell {
+      min-width: 250px;
+    }
+
+    .participant-cell {
+      min-width: 250px;
+    }
+
+    .status-cell {
+      width: 120px;
+    }
+
+    .actions-cell {
+      width: 120px;
+    }
+
+    /* Cellules améliorées */
+    .reference-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .reference-code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      overflow: hidden;
+    }
+
+    .copy-btn:hover {
+      color: var(--primary);
+      background: var(--secondary);
+    }
+
+    .check-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .copy-btn.copied .copy-icon {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    .copy-btn.copied .check-icon {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      color: var(--success);
+    }
+
+    .circuit-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .circuit-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .circuit-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .circuit-code {
+      background: var(--secondary);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+    }
+
+    .participant-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .participant-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #8a2be2);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .participant-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .participant-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .participant-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    /* Badges de statut */
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .status-option {
+      background: rgba(243, 156, 18, 0.1);
+      color: #f39c12;
+    }
+
+    .status-valide {
+      background: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+    }
+
+    .status-annulee {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+    }
+
+    .status-terminee {
+      background: rgba(52, 152, 219, 0.1);
+      color: #3498db;
+    }
+
+    /* Actions */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-icon {
+      padding: 0.5rem;
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--secondary-hover);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger-hover);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+    }
+
+    /* Empty state amélioré */
+    .empty-table {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .empty-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .empty-content svg {
+      color: var(--text-light);
+      stroke-width: 1.5;
+      opacity: 0.5;
+    }
+
+    .empty-content h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .empty-content p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Pagination améliorée */
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .pagination-info {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .pagination-links {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .pagination-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      height: 38px;
+      padding: 0 0.5rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      background: var(--secondary);
+      color: var(--text);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .pagination-link:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .pagination-link svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .pagination-current {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      height: 38px;
+      padding: 0 0.5rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .pagination-ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      height: 38px;
+      padding: 0 0.5rem;
+      color: var(--text-light);
+    }
+
+    /* Modal amélioré */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal.is-open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      position: relative;
+      width: min(500px, 100%);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      animation: slideIn 0.3s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(231, 76, 60, 0.1);
+      color: var(--danger);
+    }
+
+    .modal-icon-info {
+      background: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+
+    .modal-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .modal-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 0.25rem;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+      background: var(--secondary);
+    }
+
+    .modal-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-body p {
+      margin: 0 0 0.75rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .modal-subtext {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin-bottom: 1rem !important;
+    }
+
+    .modal-warning {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: rgba(231, 76, 60, 0.05);
+      color: var(--danger);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin: 1.5rem 0 0 !important;
+    }
+
+    .modal-warning svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(20px) scale(0.98); opacity: 0; }
+      to { transform: none; opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .management-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .header-actions {
+        align-self: flex-end;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .inscription-management-container {
+        padding: 1rem;
+      }
+      
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .pagination {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+      }
+      
+      .inscriptions-table th,
+      .inscriptions-table td {
+        padding: 0.75rem;
+      }
+      
+      .participant-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .participant-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+      }
+      
+      .modal-footer {
+        flex-direction: column;
+      }
+      
+      .modal-footer .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .stats-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .filter-actions .btn {
+        width: 100%;
+      }
+    }
+
+
+    .export-form{
+      margin: 1rem 0 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .export-grid{
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: .75rem;
+      align-items: end;
+    }
+
+    .export-group{ display:flex; flex-direction:column; gap:.4rem; }
+    .export-label{ font-size:.85rem; color:var(--text-light); }
+
+    .export-select{
+      width: 100%;
+      padding: 0.65rem .9rem;
+      padding-right: 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      appearance: none;
+      transition: var(--transition);
+      font-size: .95rem;
+    }
+    .export-select:focus{
+      outline:none; border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    .export-group .custom-select{ position:relative; }
+    .export-group .select-arrow{
+      position:absolute; right:.6rem; top:50%; transform:translateY(-50%);
+      pointer-events:none; color:var(--text-light);
+    }
+
+    .export-actions{
+      display:flex;
+      gap:.55rem;
+      align-items:end;
+      flex-wrap:wrap;
+    }
+    .export-actions .btn{
+      height: 40px;
+      padding: 0 .9rem;
+    }
+
+    @media (max-width: 900px){
+      .export-grid{ grid-template-columns: 1fr; gap:.9rem; }
+      .export-actions .btn{ width:100%; }
+    }
+
+  </style>
+
+  <script>
+    // Recherche avec délai
+    (function(){
+      const form = document.getElementById('filter-form');
+      const searchInput = form.querySelector('input[name="q"]');
+      const searchClear = form.querySelector('.search-clear');
+      let timeout = null;
+      
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => form.submit(), 500);
+        });
+      }
+      
+      if (searchClear) {
+        searchClear.addEventListener('click', () => {
+          searchInput.value = '';
+          form.submit();
+        });
+      }
+      
+      // Copier la référence avec animation améliorée
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
+            btn.classList.add('copied');
+            setTimeout(() => { 
+              btn.classList.remove('copied');
+            }, 2000);
+          } catch(e) {
+            console.error('Erreur lors de la copie:', e);
+          }
+        });
+      });
+    })();
+
+    // Gestion du modal de suppression
+    (function(){
+      const modal = document.getElementById('confirm-del');
+      if (!modal) return;
+      
+      let currentId = null;
+      const refEl = modal.querySelector('.js-ref');
+      const whoEl = modal.querySelector('.js-who');
+      const confirmBtn = modal.querySelector('.js-confirm');
+      
+      // Ouvrir le modal
+      document.querySelectorAll('.js-del').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentId = btn.dataset.id;
+          refEl.textContent = btn.dataset.ref || '';
+          whoEl.textContent = `${btn.dataset.pilote || ''} — ${btn.dataset.circuit || ''}`;
+          modal.classList.add('is-open');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      
+      // Fermer le modal
+      modal.querySelectorAll('.js-close').forEach(el => {
+        el.addEventListener('click', () => {
+          modal.classList.remove('is-open');
+          document.body.style.overflow = '';
+        });
+      });
+      
+      // Fermer avec ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+          modal.classList.remove('is-open');
+          document.body.style.overflow = '';
+        }
+      });
+      
+      // Confirmer la suppression
+      confirmBtn.addEventListener('click', () => {
+        if (!currentId) return;
+        const form = document.getElementById(`del-form-${currentId}`);
+        if (form) form.submit();
+      });
+    })();
+
+    // Modal explicatif avant l'export du suivi reservations
+    (function() {
+      const openBtn = document.getElementById('open-reservation-export');
+      const modal = document.getElementById('reservation-export-modal');
+      const exportForm = document.querySelector('.export-form');
+      if (!openBtn || !modal || !exportForm) return;
+
+      const closeModal = () => {
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+      };
+
+      openBtn.addEventListener('click', () => {
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      modal.querySelectorAll('.js-close').forEach(el => {
+        el.addEventListener('click', closeModal);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+          closeModal();
+        }
+      });
+
+      modal.querySelector('.js-download-reservations').addEventListener('click', () => {
+        const url = new URL(openBtn.dataset.exportUrl, window.location.origin);
+        const formData = new FormData(exportForm);
+        formData.forEach((value, key) => {
+          if (value) url.searchParams.set(key, value);
+        });
+        closeModal();
+        window.location.href = url.toString();
+      });
+    })();
+  </script>
+
+  <script>
+    (function() {
+      const yearSel = document.getElementById('export-year');
+      const circuitSel = document.getElementById('export-circuit');
+      if (!yearSel) return;
+
+      yearSel.addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        // on mémorise l'année choisie dans l'URL de la page pour recalculer export_circuits côté serveur
+        if (this.value) {
+          url.searchParams.set('exp_year', this.value);
+        } else {
+          url.searchParams.delete('exp_year');
+        }
+        // quand l'année change, on réinitialise le circuit
+        url.searchParams.delete('exp_circuit');
+        // (on garde les autres filtres de la page tels que statut, q, order, etc.)
+        window.location.href = url.toString();
+      });
+
+      if (circuitSel) {
+        circuitSel.addEventListener('change', function() {
+          // Optionnel : garder la sélection circuit visible en rechargant la page
+          const url = new URL(window.location.href);
+          const val = this.value;
+          if (val) url.searchParams.set('exp_circuit', val);
+          else url.searchParams.delete('exp_circuit');
+          window.location.href = url.toString();
+        });
+      }
+    })();
+  </script>
+
+{% endblock %}

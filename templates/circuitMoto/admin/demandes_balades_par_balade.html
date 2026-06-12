@@ -1,0 +1,184 @@
+{# templates/circuitMoto/admin/demandes_balades_par_balade.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Demandes par balade — Back-office{% endblock %}
+{% block body_class %}bo-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/balades_bo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bo-dashboard">
+
+  <section class="bo-hero reveal">
+    <div class="bo-hero__content">
+      <div class="bo-kicker">Back-office</div>
+      <h1 class="bo-hero__title">Analyse des demandes par balade</h1>
+      <p class="bo-hero__text">
+        Suivez les balades les plus demandées, les emails concernés et les demandes à traiter.
+      </p>
+
+      <div class="bo-hero__chips">
+        <span class="hero-chip">{{ stats.total_balades }} balade{{ stats.total_balades|pluralize }}</span>
+        <span class="hero-chip">{{ stats.balades_avec_demandes }} avec demandes</span>
+        <span class="hero-chip">{{ stats.total_demandes }} demande{{ stats.total_demandes|pluralize }}</span>
+        <span class="hero-chip">{{ stats.total_non_traitees }} à traiter</span>
+      </div>
+    </div>
+
+    <div class="bo-hero__side">
+      <div class="hero-panel">
+        <div class="hero-panel__label">Balades avec demandes</div>
+        <div class="hero-panel__value">{{ stats.balades_avec_demandes }}</div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel__label">Demandes non traitées</div>
+        <div class="hero-panel__value">{{ stats.total_non_traitees }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel reveal">
+    <div class="section-head section-head--space">
+      <div>
+        <h2>Vue détaillée par balade</h2>
+        <p>Identifiez rapidement les balades les plus demandées et les contacts associés.</p>
+      </div>
+      <a href="{% url 'bo_demande_balade_list' %}" class="btn btn-outline-secondary">
+        Voir toutes les demandes
+      </a>
+    </div>
+
+    <form method="get" class="bo-filters">
+      <div class="bo-filters__grid">
+        <div class="field">
+          <label>Recherche</label>
+          <input type="text" name="q" value="{{ q }}" class="form-control"
+                 placeholder="Titre, guide, date affichée...">
+        </div>
+
+        <div class="field">
+          <label>Statut balade</label>
+          <select name="actif" class="form-control">
+            <option value="" {% if not actif %}selected{% endif %}>Toutes</option>
+            <option value="1" {% if actif == "1" %}selected{% endif %}>Actives</option>
+            <option value="0" {% if actif == "0" %}selected{% endif %}>Inactives</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Trier par</label>
+          <select name="sort" class="form-control">
+            <option value="-demandes" {% if sort == "-demandes" %}selected{% endif %}>Plus demandées</option>
+            <option value="demandes" {% if sort == "demandes" %}selected{% endif %}>Moins demandées</option>
+            <option value="date" {% if sort == "date" %}selected{% endif %}>Date croissante</option>
+            <option value="-date" {% if sort == "-date" %}selected{% endif %}>Date décroissante</option>
+            <option value="titre" {% if sort == "titre" %}selected{% endif %}>Titre A → Z</option>
+            <option value="-titre" {% if sort == "-titre" %}selected{% endif %}>Titre Z → A</option>
+            <option value="emails" {% if sort == "emails" %}selected{% endif %}>Plus d’emails uniques</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bo-filters__actions">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="{% url 'bo_demande_balade_par_balade' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      </div>
+    </form>
+
+    {% if page_obj.object_list %}
+      <div class="demandes-grid">
+        {% for b in page_obj.object_list %}
+          <article class="demande-card">
+            <div class="demande-card__head">
+              <div>
+                <h3>
+                  {% if b.date_humaine %}{{ b.date_humaine }}{% else %}{{ b.date_debut|date:"d/m/Y" }}{% endif %}
+                  — {{ b.titre }}
+                </h3>
+                <p class="muted">
+                  Guide : {{ b.guide|default:"libre" }} ·
+                  {% if b.actif %}Active{% else %}Inactive{% endif %}
+                </p>
+              </div>
+
+              <span class="status-pill {% if b.total_non_traitees %}is-warning{% else %}is-success{% endif %}">
+                {{ b.total_non_traitees }} à traiter
+              </span>
+            </div>
+
+            <div class="bo-kpi-inline">
+              <div class="hero-panel">
+                <div class="hero-panel__label">Demandes</div>
+                <div class="hero-panel__value">{{ b.total_demandes }}</div>
+              </div>
+              <div class="hero-panel">
+                <div class="hero-panel__label">Emails uniques</div>
+                <div class="hero-panel__value">{{ b.total_emails_uniques }}</div>
+              </div>
+              <div class="hero-panel">
+                <div class="hero-panel__label">Traitées</div>
+                <div class="hero-panel__value">{{ b.total_traitees }}</div>
+              </div>
+            </div>
+
+            <div class="demande-card__section">
+              <div class="demande-card__label">Contacts concernés</div>
+              <ul class="choice-list">
+                {% for d in b.demandes_programme.all|slice:":6" %}
+                  <li>
+                    <strong>{{ d.prenom }} {{ d.nom }}</strong> — {{ d.email }}
+                    {% if d.telephone %} · {{ d.telephone }}{% endif %}
+                    <span class="muted">({{ d.cree_le|date:"d/m/Y H:i" }})</span>
+                  </li>
+                {% empty %}
+                  <li>Aucune demande.</li>
+                {% endfor %}
+              </ul>
+
+              {% if b.total_demandes > 6 %}
+                <p class="muted">+ autres demandes à consulter dans le détail.</p>
+              {% endif %}
+            </div>
+
+            <div class="demande-card__section">
+                <a href="{% url 'bo_demande_balade_detail' b.id %}" class="btn btn-primary">
+                Voir les inscrits de cette balade
+                </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination-wrap" aria-label="Pagination">
+          <div class="pagination">
+            {% if page_obj.has_previous %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.previous_page_number }}" class="page-link">←</a>
+            {% endif %}
+
+            <span class="page-current">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.next_page_number }}" class="page-link">→</a>
+            {% endif %}
+          </div>
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <p>Aucune balade trouvée.</p>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{# templates/circuitMoto/emails/inscription_validee.txt #}
+
+Bonjour {{ dest_name }},
+
+Ton inscription au séjour « {{ c.nom }} »
+{% if circuit_dates %}— {{ circuit_dates }}{% endif %}
+{% if c.nb_jours %}({{ c.nb_jours }} jours){% endif %}
+est bien CONFIRMÉE suite à la réception de ton versement.
+Nous te remercions sincèrement pour la confiance que tu accordes à notre organisation.
+
+CÔTÉ PRATIQUE
+
+Rendez-vous / Logistique
+📅 {% if c.date_debut %}{{ c.date_debut|date:"d/m/Y" }}{% else %}Jour 1{% endif %} – Matin
+{{ rdv_text }}
+
+Une réunion d’information sera organisée environ 10 jours avant le départ afin de te transmettre toutes les informations utiles concernant le séjour et de faire connaissance avec l’équipe et les autres participants.
+
+Organisation du circuit
+{{ organisation_text }}
+
+Documents & Conseils
+Merci de prévoir :
+{% for item in checklist_items %}• {{ item }}
+{% endfor %}
+
+Un véhicule suiveur accompagnera le groupe pour le transport des bagages (si le nombre de participants est suffisant).
+
+Nous reviendrons vers toi prochainement afin de finaliser ton dossier et, si nécessaire, le suivi des paiements.
+
+Dans l’attente, n’hésite pas à nous contacter si tu as la moindre question.
+
+À très bientôt,
+
+L’équipe d’organisation
+
+Pour compléter ou mettre à jour ton dossier :
+{{ edit_url }}

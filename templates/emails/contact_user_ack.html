@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8">
+<p>Bonjour {{ cm.prenom }},</p>
+<p>Nous avons bien reçu votre message — merci de votre intérêt pour <b>Pulsion Horizon</b>.<br>
+Notre équipe vous répondra dans les meilleurs délais.</p>
+<p><b>Résumé</b><br>
+Type : {{ cm.get_type_demande_display }}<br>
+Circuit : {% if cm.circuit %}{{ cm.circuit.code }} — {{ cm.circuit.nom }}{% else %}—{% endif %}
+</p>
+<p><b>Votre message :</b><br>
+<pre style="white-space:pre-wrap">{{ cm.message }}</pre>
+</p>
+<p>Cordialement,<br>Pulsion Horizon</p>

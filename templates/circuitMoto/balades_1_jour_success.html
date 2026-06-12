@@ -1,0 +1,156 @@
+{# templates/circuitMoto/balades_1_jour_success.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Demande envoyée — Balades 1 jour{% endblock %}
+{% block meta_description %}Votre sélection de balades a bien été reçue. Retrouvez les informations pratiques et les prochaines étapes.{% endblock %}
+{% block body_class %}page-balades-success{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/balades_1_jour.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="b1j-success-page">
+  <div class="b1j-success-shell">
+
+    <div class="b1j-success-hero">
+      <div class="b1j-success-hero__bg" aria-hidden="true">
+        <span class="b1j-orb b1j-orb--1"></span>
+        <span class="b1j-orb b1j-orb--2"></span>
+        <span class="b1j-grid"></span>
+      </div>
+
+      <div class="b1j-success-hero__content">
+        <div class="b1j-success-badge">
+          <span class="b1j-success-icon">✓</span>
+          <div>
+            <p class="b1j-success-kicker">Demande enregistrée</p>
+            <strong>Votre sélection a bien été reçue</strong>
+          </div>
+        </div>
+
+        <h1>Merci pour votre demande</h1>
+        <p class="b1j-success-lead">
+          Nous avons bien reçu votre sélection de balades d’un jour.
+          Notre équipe vous contactera prochainement et vous transmettra
+          les programmes correspondant aux balades choisies.
+        </p>
+
+        <div class="b1j-success-actions">
+          <a href="{% url 'balades_1_jour' %}" class="b1j-btn b1j-btn--ghost">
+            Faire une nouvelle sélection
+          </a>
+          <a href="/" class="b1j-btn">
+            Retour à l’accueil
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="b1j-success-grid">
+      <article class="b1j-success-panel">
+        <div class="b1j-success-panel__icon">📩</div>
+        <h2>Confirmation reçue</h2>
+        <p>
+          Votre demande a été transmise avec succès. Nous reviendrons vers vous
+          avec les programmes détaillés correspondant à votre sélection.
+        </p>
+      </article>
+
+      <article class="b1j-success-panel">
+        <div class="b1j-success-panel__icon">🗺️</div>
+        <h2>Organisation des balades</h2>
+        <p>
+          Les balades d’un jour sont conçues pour offrir une expérience simple,
+          conviviale et bien encadrée, avec des informations pratiques envoyées
+          avant le départ.
+        </p>
+      </article>
+
+      <article class="b1j-success-panel">
+        <div class="b1j-success-panel__icon">☕</div>
+        <h2>Accueil Pulsion Horizon</h2>
+        <p>
+          Un accueil chaleureux vous attend, avec café de bienvenue et départ
+          guidé dans un cadre organisé et rassurant.
+        </p>
+      </article>
+    </div>
+
+    <section class="b1j-success-highlight">
+      <div class="b1j-success-highlight__media">
+        <img
+          src="{% static 'circuitMoto/images/presentation_balade_1_jour.jpg' %}"
+          alt="Présentation des balades d’un jour Pulsion Horizon"
+          width="1024"
+          height="683"
+          loading="lazy"
+        >
+      </div>
+
+      <div class="b1j-success-highlight__content">
+        <span class="b1j-success-highlight__kicker">Informations pratiques</span>
+        <h2>Une expérience conviviale, guidée et accessible</h2>
+
+        <p class="b1j-success-highlight__lead">
+          Sauf le week-end en Eiffel, proposé à <strong>119 €</strong>,
+          les balades d’un jour sont <strong>gratuites</strong>.
+        </p>
+
+        <div class="b1j-success-note-list">
+          <div class="b1j-success-note-item">
+            <span class="b1j-success-note-item__icon">🧭</span>
+            <div>
+              <strong>Road book GPS inclus</strong>
+              <p>Le road book GPS est envoyé avant le départ pour vous permettre de préparer votre sortie sereinement.</p>
+            </div>
+          </div>
+
+          <div class="b1j-success-note-item">
+            <span class="b1j-success-note-item__icon">🏍️</span>
+            <div>
+              <strong>Balade encadrée</strong>
+              <p>Chaque sortie est encadrée par un guide afin de garantir une expérience fluide, conviviale et sécurisée.</p>
+            </div>
+          </div>
+
+          <div class="b1j-success-note-item">
+            <span class="b1j-success-note-item__icon">☕</span>
+            <div>
+              <strong>Accueil chez Pulsion Horizon</strong>
+              <p>Nous offrons le café de bienvenue chez Pulsion Horizon avant le départ.</p>
+            </div>
+          </div>
+
+          <div class="b1j-success-note-item">
+            <span class="b1j-success-note-item__icon">🕘</span>
+            <div>
+              <strong>Horaires</strong>
+              <p>Rendez-vous à <strong>9h</strong> pour un <strong>dépard guidé à 10h</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="b1j-success-footer-card">
+      <div class="b1j-success-footer-card__text">
+        <p class="b1j-success-kicker">Et maintenant ?</p>
+        <h3>Préparez votre prochaine sortie</h3>
+        <p>
+          Conservez vos disponibilités et surveillez votre boîte e-mail.
+          Nous vous enverrons les programmes correspondant à votre sélection
+          afin que vous puissiez organiser votre prochaine balade dans les meilleures conditions.
+        </p>
+      </div>
+
+      <div class="b1j-success-footer-card__actions">
+        <a href="{% url 'balades_1_jour' %}" class="b1j-btn">Voir les autres balades</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

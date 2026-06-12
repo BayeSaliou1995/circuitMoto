@@ -1,0 +1,6 @@
+Bonjour {{ ins.passager.prenom }},
+
+{{ ins.pilote.prenom }} {{ ins.pilote.nom }} vous a ajouté·e comme passager·e pour « {{ ins.circuit.nom }} ».
+Référence dossier : {{ ins.id_public }}.
+
+— Pulsion Horizon

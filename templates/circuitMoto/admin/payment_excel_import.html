@@ -1,0 +1,112 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+<div class="container" style="max-width:1320px;margin:0 auto;padding:24px 16px 48px;">
+  <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-bottom:18px;">
+    <div>
+      <h1 style="margin:0 0 6px;font-size:2rem;">Paiements Excel multi-circuits</h1>
+      <p style="margin:0;color:#475569;max-width:920px;">Un seul classeur, plusieurs onglets circuits. Le modèle affiche les paiements déjà enregistrés, n’ouvre qu’une seule étape par ligne, puis l’import relit toutes les feuilles et applique toutes les modifications valides en une seule opération.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="{% url 'bo_inscription_list' %}" class="btn btn-secondary">Retour aux inscriptions</a>
+      <a href="{% url 'bo_payment_excel_template' %}" class="btn btn-primary">Télécharger le classeur multi-circuits</a>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:18px 18px 8px;box-shadow:0 12px 30px rgba(15,23,42,.06);margin-bottom:18px;">
+    <h2 style="margin:0 0 8px;font-size:1.1rem;">Circuits inclus dans l’export</h2>
+    <p style="margin:0 0 14px;color:#64748b;">Le classeur exporté contient un onglet d’accueil puis un onglet par circuit avec au moins une inscription.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      {% for c in circuits %}
+      <span style="display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;background:#f8fafc;border:1px solid #e2e8f0;font-size:.95rem;">
+        <strong style="margin-right:6px;">{{ c.code }}</strong> {{ c.nom }}
+      </span>
+      {% empty %}
+      <span style="color:#64748b;">Aucun circuit avec inscription.</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(15,23,42,.06);margin-bottom:18px;">
+    <h2 style="margin:0 0 10px;font-size:1.1rem;">Importer le classeur rempli</h2>
+    <p style="margin:0 0 14px;color:#64748b;">Travaille dans le classeur multi-circuits exporté depuis le système, remplis uniquement les colonnes jaunes dans les onglets concernés, puis importe le même fichier ici pour traiter toutes les feuilles d’un coup.</p>
+    <form method="post" enctype="multipart/form-data" style="display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:12px;align-items:end;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="preview">
+      <div>
+        <label for="excel_file" style="display:block;font-weight:700;margin-bottom:6px;">Classeur Excel</label>
+        <input id="excel_file" type="file" name="excel_file" accept=".xlsx" required style="width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:10px 12px;background:#fff;">
+      </div>
+      <button type="submit" class="btn btn-primary">Prévisualiser l’import global</button>
+    </form>
+  </div>
+
+  {% if preview %}
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(15,23,42,.06);">
+    <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <h2 style="margin:0 0 6px;font-size:1.2rem;">Prévisualisation globale prête</h2>
+        <p style="margin:0;color:#64748b;">Feuilles détectées : {{ preview.sheet_names|join:", " }}</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="padding:10px 12px;border-radius:12px;background:#eff6ff;min-width:120px;"><strong>{{ preview.stats.circuits }}</strong><br><span style="color:#64748b;">circuits lus</span></div>
+        <div style="padding:10px 12px;border-radius:12px;background:#ecfeff;min-width:120px;"><strong>{{ preview.stats.ready }}</strong><br><span style="color:#64748b;">prêtes</span></div>
+        <div style="padding:10px 12px;border-radius:12px;background:#fef2f2;min-width:120px;"><strong>{{ preview.stats.errors }}</strong><br><span style="color:#64748b;">erreurs</span></div>
+        <div style="padding:10px 12px;border-radius:12px;background:#f8fafc;min-width:120px;"><strong>{{ preview.stats.ignored }}</strong><br><span style="color:#64748b;">ignorées</span></div>
+        <div style="padding:10px 12px;border-radius:12px;background:#f0fdf4;min-width:120px;"><strong>{{ preview.stats.emails }}</strong><br><span style="color:#64748b;">emails</span></div>
+      </div>
+    </div>
+
+    {% if preview.stats.ready and not preview.stats.errors %}
+    <form method="post" style="margin-bottom:14px;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="apply">
+      <input type="hidden" name="preview_token" value="{{ preview.token }}">
+      <button type="submit" class="btn btn-primary">Appliquer l’import global</button>
+    </form>
+    {% endif %}
+
+    <div style="overflow:auto;border:1px solid #e2e8f0;border-radius:16px;">
+      <table style="width:100%;border-collapse:collapse;min-width:1220px;">
+        <thead>
+          <tr style="background:#0f172a;color:#fff;">
+            <th style="padding:12px;text-align:left;">Feuille</th>
+            <th style="padding:12px;text-align:left;">Circuit</th>
+            <th style="padding:12px;text-align:left;">Ligne</th>
+            <th style="padding:12px;text-align:left;">Référence</th>
+            <th style="padding:12px;text-align:left;">Client</th>
+            <th style="padding:12px;text-align:left;">Étape</th>
+            <th style="padding:12px;text-align:left;">Montant</th>
+            <th style="padding:12px;text-align:left;">Date</th>
+            <th style="padding:12px;text-align:left;">Mode</th>
+            <th style="padding:12px;text-align:left;">Email</th>
+            <th style="padding:12px;text-align:left;">Résultat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in preview.rows %}
+          <tr style="border-top:1px solid #e2e8f0;{% if row.status == 'error' %}background:#fef2f2;{% elif row.status == 'ready' %}background:#f0fdf4;{% else %}background:#f8fafc;{% endif %}">
+            <td style="padding:12px;">{{ row.sheet_name }}</td>
+            <td style="padding:12px;">{{ row.circuit_label }}</td>
+            <td style="padding:12px;">{{ row.row_number }}</td>
+            <td style="padding:12px;">{{ row.reference }}</td>
+            <td style="padding:12px;">{{ row.client }}</td>
+            <td style="padding:12px;">{{ row.stage }}</td>
+            <td style="padding:12px;">{{ row.amount }}</td>
+            <td style="padding:12px;">{{ row.payment_date }}</td>
+            <td style="padding:12px;">{{ row.method }}</td>
+            <td style="padding:12px;">{% if row.send_email %}Oui{% else %}Non{% endif %}</td>
+            <td style="padding:12px;">
+              <strong>{{ row.status|upper }}</strong><br>
+              <span style="color:#475569;">{{ row.message }}</span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="11" style="padding:16px;">Aucune ligne détectée.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

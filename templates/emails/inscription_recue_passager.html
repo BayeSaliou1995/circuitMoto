@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Ajout comme passager·e</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{margin:0;padding:0;background:#f5f7fb;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#111827}
+    .wrapper{width:100%;background:#f5f7fb;padding:24px 12px}
+    .container{max-width:600px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(17,24,39,.06)}
+    .header{background:linear-gradient(135deg,#3b82f6,#8b5cf6);padding:24px 24px 18px;color:#fff}
+    .brand{font-weight:700;font-size:18px}
+    .content{padding:24px}
+    .badge{display:inline-block;background:#eef2ff;color:#4338ca;font-weight:600;border-radius:999px;padding:6px 12px;margin:8px 0}
+    .foot{padding:18px 24px;font-size:12px;color:#6b7280;background:#fff}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="brand">Pulsion Horizon</div>
+        <div style="opacity:.95;margin-top:6px">Vous avez été ajouté·e comme passager·e</div>
+      </div>
+      <div class="content">
+        <p>Bonjour {{ ins.passager.prenom }},</p>
+        <p><strong>{{ ins.pilote.prenom }} {{ ins.pilote.nom }}</strong> vous a ajouté·e comme passager·e pour <strong>{{ ins.circuit.nom }}</strong>.</p>
+        <span class="badge">Référence dossier : {{ ins.id_public }}</span>
+        <p>À très vite !</p>
+      </div>
+      <div class="foot">© {{ now|date:"Y" }} Pulsion Horizon</div>
+    </div>
+  </div>
+</body>
+</html>

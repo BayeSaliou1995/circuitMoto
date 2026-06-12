@@ -1,0 +1,93 @@
+{# templates/circuitMoto/inscription/step_passager.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Informations du passager" %}</h2>
+    <p class="step-subtitle">{% trans "Renseignez les informations de la personne qui vous accompagne." %}</p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    {# ===== Grille 2 lignes x 3 champs ===== #}
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Identité" %}</h3>
+      </header>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label for="{{ form.prenom.id_for_label }}" class="required">{{ form.prenom.label }}</label>
+          {{ form.prenom }}
+          {{ form.prenom.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.nom.id_for_label }}" class="required">{{ form.nom.label }}</label>
+          {{ form.nom }}
+          {{ form.nom.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+      </div>
+
+      <div class="grid-3 grid-top">
+        <div class="form-group">
+          <label for="{{ form.telephone.id_for_label }}">{{ form.telephone.label }}</label>
+          {{ form.telephone }}
+          {{ form.telephone.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.date_naissance.id_for_label }}">{{ form.date_naissance.label }}</label>
+          {{ form.date_naissance }}
+          {{ form.date_naissance.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.nationalite.id_for_label }}">{{ form.nationalite.label }}</label>
+          {{ form.nationalite }}
+          {{ form.nationalite.errors }}
+        </div>
+      </div>
+
+      {# Champ restant (plein largeur) #}
+      <div class="form-group form-wide">
+        <label for="{{ form.numero_carte_identite.id_for_label }}">{{ form.numero_carte_identite.label }}</label>
+        {{ form.numero_carte_identite }}
+        {{ form.numero_carte_identite.errors }}
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+      </button>
+    </div>
+  </form>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% if contacts_recents_page %}
+  <div class="table-lite">
+    {% for c in contacts_recents_page %}
+      <div class="table-lite__row">
+        <div class="table-lite__main">
+          <div class="table-lite__title">{{ c.prenom }} {{ c.nom }}</div>
+          <div class="table-lite__meta">
+            {{ c.email }} · {{ c.get_type_demande_display }} · {{ c.cree_le|date:"d/m/Y H:i" }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="ajax-pagination">
+    {% if contacts_recents_page.has_previous %}
+      <button class="ajax-page-btn" data-section="contacts" data-page="{{ contacts_recents_page.previous_page_number }}">Précédent</button>
+    {% endif %}
+    <span>Page {{ contacts_recents_page.number }} / {{ contacts_recents_page.paginator.num_pages }}</span>
+    {% if contacts_recents_page.has_next %}
+      <button class="ajax-page-btn" data-section="contacts" data-page="{{ contacts_recents_page.next_page_number }}">Suivant</button>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="empty-state"><p>Aucun message en attente.</p></div>
+{% endif %}

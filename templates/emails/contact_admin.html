@@ -1,0 +1,16 @@
+{# templates/emails/contact_admin.html #}
+
+<!doctype html><meta charset="utf-8">
+<h2>Nouveau message de contact</h2>
+<p><b>{{ cm.nom }} {{ cm.prenom }}</b> — <a href="mailto:{{ cm.email }}">{{ cm.email }}</a> — {{ cm.telephone|default:"—" }}</p>
+<p><i>{{ cm.adresse|default:"" }}</i></p>
+<hr>
+<p>
+  Intéressé par un circuit ? <b>{{ cm.interesse_circuit|yesno:"Oui,Non" }}</b><br>
+  Statut : <b>{{ cm.get_statut_circuit_display|default:"—" }}</b><br>
+  Circuit : {% if cm.circuit %}<b>{{ cm.circuit.code }}</b> — <a href="{{ site_url }}{{ cm.circuit.get_absolute_url }}">ouvrir</a>{% else %}—{% endif %}
+</p>
+<p><b>Type :</b> {{ cm.get_type_demande_display }}</p>
+<p style="white-space:pre-wrap">{{ cm.message }}</p>
+<hr>
+<small>IP {{ cm.ip }} — UA {{ cm.user_agent }}</small>

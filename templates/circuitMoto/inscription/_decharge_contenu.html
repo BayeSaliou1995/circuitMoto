@@ -1,0 +1,40 @@
+{# templates/circuitMoto/inscription/_decharge_contenu.html #}
+
+{% load i18n %}
+
+<article class="terms">
+  <h3>{% trans "Déclaration – Décharge" %}</h3>
+
+  <p class="muted">
+    <strong>{% trans "Référence du voyage :" %}</strong>
+    {% blocktrans with name=circuit.nom start=circuit.date_debut|date:"SHORT_DATE_FORMAT" end=circuit.date_fin|date:"SHORT_DATE_FORMAT" %}
+      {{ name }} — du {{ start }} au {{ end }}
+    {% endblocktrans %}
+  </p>
+
+  <ul class="terms-list">
+    <li>{% trans "Je déclare être en bonne santé et avoir pris connaissance de la fiche technique (et du programme) de la randonnée en moto organisée." %}</li>
+    <li>{% trans "Je déclare être en possession d’un permis de conduire valable pour le véhicule utilisé." %}</li>
+    <li>{% trans "Je m’engage à suivre la randonnée, me conformer aux instructions données lors des briefings et celles des road-books, et rouler dans le respect de l’environnement et du matériel utilisé durant le circuit." %}</li>
+    <li>{% trans "Je déclare abandonner tout recours, tant pour moi-même que pour mes ayants droit, héritiers, proches (parents, conjoint, enfants) et nos assureurs envers les organisateurs de la randonnée, les autres participants, les préposés, le personnel, les bénévoles et chargés de mission visés ci-dessus, pour tout dommage que je subisse avant, pendant et après la randonnée." %}</li>
+    <li>{% trans "Je m’engage à ne pas conduire sous l’influence d’alcool ni d’autres drogues ou stimulants." %}</li>
+    <li>{% trans "Je m’engage à avoir pris connaissance du circuit proposé par l’organisation et à être conscient de mes capacités de pilotage pour participer à ce type de circuit." %}</li>
+    <li>{% trans "Je dégage l’organisation de toute responsabilité en cas d’accident." %}</li>
+  </ul>
+
+  <p>
+    {% blocktrans %}
+    Le participant déclare avoir pris connaissance des Conditions Générales de Vente de Pulsion Horizon
+    (lic 00619/MTTA/DRT/CDAV/CBAV) ainsi que des informations ci-jointes et les accepte.
+    {% endblocktrans %}
+  </p>
+
+  <p class="signature-hints">
+    {% blocktrans with today=today|date:"SHORT_DATE_FORMAT" %}
+      Lieu et date : ……………………… — {{ today }}
+    {% endblocktrans %}<br>
+    {% blocktrans with first=pilote_prenom last=pilote_nom %}
+      Nom et prénom : <strong>{{ first }} {{ last }}</strong>
+    {% endblocktrans %}
+  </p>
+</article>

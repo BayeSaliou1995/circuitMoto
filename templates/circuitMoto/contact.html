@@ -1,0 +1,910 @@
+{# templates/circuitMoto/contact.html #}
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load i18n static %}
+
+{% block title %} {% trans "Contact" %} — Pulsion Horizon {% endblock %}
+
+{% block extra_head %}
+
+  <style>
+    /* ===============================
+      DESIGN SYSTEM LUXURY CONTACT
+      =============================== */
+    :root {
+      --gold-primary: #D4AF37;
+      --gold-secondary: #FFD700;
+      --gold-accent: #F5E6B3;
+      --black-luxe: #1a1a1a;
+      --charcoal: #2d2d2d;
+      --white-pure: #ffffff;
+      --white-cream: #fefefe;
+      --gray-light: #f8f9fa;
+      --gray-medium: #e9ecef;
+      --gray-dark: #6c757d;
+      --success: #10b981;
+      --error: #ef4444;
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-luxury: 'Playfair Display', serif;
+      --font-accent: 'Cormorant Garamond', serif;
+      --shadow-subtle: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-medium: 0 4px 20px rgba(0,0,0,0.12);
+      --shadow-luxe: 0 8px 40px rgba(0,0,0,0.15);
+      --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.3);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ===============================
+      HERO SECTION LUXURY
+      =============================== */
+    .contact-hero-luxury {
+      position: relative;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--black-luxe) 0%, var(--charcoal) 50%, #3a3a3a 100%);
+      overflow: hidden;
+      color: var(--white-pure);
+    }
+
+    .hero-background-contact {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, 
+        rgba(26, 26, 26, 0.9) 0%, 
+        rgba(45, 45, 45, 0.85) 50%, 
+        rgba(58, 58, 58, 0.8) 100%);
+    }
+
+    .hero-content-contact {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 800px;
+      padding: 4rem 2rem;
+    }
+
+    .contact-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-title {
+      font-family: var(--font-luxury);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .contact-subtitle {
+      font-family: var(--font-accent);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      color: var(--gold-accent);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+    }
+
+    /* ===============================
+      CONTACT FORM LUXURY
+      =============================== */
+    .contact-form-section-luxury {
+      padding: 4rem 0;
+      background: var(--white-cream);
+    }
+
+    .form-container-luxury {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .contact-form-luxury {
+      background: var(--white-pure);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-luxe);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-form-luxury::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold-primary), var(--gold-secondary));
+    }
+
+    /* ===============================
+      FORM ELEMENTS LUXURY
+      =============================== */
+    .form-grid-luxury {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-field-luxury {
+      position: relative;
+    }
+
+    .form-field-luxury.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label-luxury {
+      display: block;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-input-luxury,
+    .form-textarea-luxury,
+    .form-select-luxury {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 2px solid var(--gray-medium);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-family: var(--font-primary);
+      transition: all var(--transition);
+      background: var(--white-pure);
+    }
+
+    .form-input-luxury:focus,
+    .form-textarea-luxury:focus,
+    .form-select-luxury:focus {
+      outline: none;
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .form-textarea-luxury {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    /* ===============================
+      CHECKBOX & RADIO LUXURY
+      =============================== */
+    .form-checkbox-luxury {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+      cursor: pointer;
+    }
+
+    .form-checkbox-luxury input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--gray-medium);
+      border-radius: 4px;
+      appearance: none;
+      position: relative;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .form-checkbox-luxury input[type="checkbox"]:checked {
+      background: var(--gold-primary);
+      border-color: var(--gold-primary);
+    }
+
+    .form-checkbox-luxury input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .form-checkbox-luxury span {
+      color: var(--charcoal);
+      font-weight: 500;
+    }
+
+    /* ===============================
+      BUTTONS LUXURY
+      =============================== */
+    .btn-luxury {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .btn-luxury::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-luxury:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary-luxury {
+      background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+      color: var(--white-pure);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .btn-primary-luxury:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-full-width {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ===============================
+      MESSAGES & ALERTS LUXURY
+      =============================== */
+    .flash-messages-luxury {
+      margin-bottom: 2rem;
+    }
+
+    .flash-item-luxury {
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .flash-item-luxury.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .flash-item-luxury.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .flash-item-luxury::before {
+      font-size: 1.2rem;
+    }
+
+    .flash-item-luxury.success::before {
+      content: '✅';
+    }
+
+    .flash-item-luxury.error::before {
+      content: '❌';
+    }
+
+    /* ===============================
+      SEPARATOR LUXURY
+      =============================== */
+    .form-separator-luxury {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .form-separator-luxury::before {
+      content: '⚡';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--white-pure);
+      padding: 0 1rem;
+      color: var(--gold-primary);
+      font-size: 1.2rem;
+    }
+
+    /* ===============================
+      ANIMATIONS
+      =============================== */
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .form-field-luxury {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .form-field-luxury:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
+
+    .form-field-luxury:nth-child(even) {
+      animation-delay: 0.2s;
+    }
+
+    /* ===============================
+      RESPONSIVE DESIGN
+      =============================== */
+    @media (max-width: 768px) {
+      .form-grid-luxury {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .contact-form-luxury {
+        padding: 2rem 1.5rem;
+        margin: 0 1rem;
+      }
+      
+      .hero-content-contact {
+        padding: 3rem 1rem;
+      }
+      
+      .contact-title {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contact-form-luxury {
+        padding: 1.5rem 1rem;
+      }
+      
+      .form-container-luxury {
+        padding: 0 1rem;
+      }
+      
+      .btn-luxury {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+      }
+    }
+
+    /* ===============================
+      ERROR STATES
+      =============================== */
+    .form-input-luxury.error,
+    .form-textarea-luxury.error,
+    .form-select-luxury.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .error-message-luxury {
+      color: var(--error);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .error-message-luxury::before {
+      content: '⚠️';
+      font-size: 0.8rem;
+    }
+
+    /* ===============================
+      ACCESSIBILITY
+      =============================== */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="contact-page-luxury">
+
+    <!-- HERO SECTION -->
+    <section class="contact-hero-luxury">
+      <div class="hero-background-contact"></div>
+      <div class="hero-content-contact">
+        <div class="contact-badge">
+          <span>📧</span>
+          {% trans "Contact Premium" %}
+        </div>
+        <h1 class="contact-title">{% trans "Contactez-nous" %}</h1>
+        <p class="contact-subtitle">
+          {% trans "Une question sur un circuit, un devis personnalisé, ou simplement l'envie de partager votre passion ? Notre équipe d'experts vous répond sous 24h." %}
+        </p>
+      </div>
+    </section>
+
+    <!-- CONTACT FORM SECTION -->
+    <section class="contact-form-section-luxury">
+      <div class="form-container-luxury">
+        {% if messages %}
+        <div class="flash-messages-luxury">
+          {% for message in messages %}
+          <div class="flash-item-luxury {{ message.tags }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" novalidate class="contact-form-luxury" id="contact-form-luxury">
+          {% csrf_token %}
+          {{ form.honeypot }}
+          <input type="hidden" name="form_loaded_at" value="{{ request.session.contact_form_loaded_at|default:'' }}">
+
+          <!-- Informations personnelles -->
+          <div class="form-grid-luxury">
+            <div class="form-field-luxury">
+              <label for="{{ form.prenom.id_for_label }}" class="form-label-luxury">
+                {% trans "Prénom" %} *
+              </label>
+              {{ form.prenom }}
+              {% if form.prenom.errors %}
+              <div class="error-message-luxury">
+                {{ form.prenom.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="form-field-luxury">
+              <label for="{{ form.nom.id_for_label }}" class="form-label-luxury">
+                {% trans "Nom" %} *
+              </label>
+              {{ form.nom }}
+              {% if form.nom.errors %}
+              <div class="error-message-luxury">
+                {{ form.nom.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="form-field-luxury">
+              <label for="{{ form.email.id_for_label }}" class="form-label-luxury">
+                {% trans "Email" %} *
+              </label>
+              {{ form.email }}
+              {% if form.email.errors %}
+              <div class="error-message-luxury">
+                {{ form.email.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="form-field-luxury">
+              <label for="{{ form.telephone.id_for_label }}" class="form-label-luxury">
+                {% trans "Téléphone" %}
+              </label>
+              {{ form.telephone }}
+              {% if form.telephone.errors %}
+              <div class="error-message-luxury">
+                {{ form.telephone.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="form-field-luxury full-width">
+              <label for="{{ form.adresse.id_for_label }}" class="form-label-luxury">
+                {% trans "Adresse" %}
+              </label>
+              {{ form.adresse }}
+              {% if form.adresse.errors %}
+              <div class="error-message-luxury">
+                {{ form.adresse.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Séparateur décoratif -->
+          <div class="form-separator-luxury"></div>
+
+          <!-- Intérêt circuit -->
+          <div class="form-checkbox-luxury">
+            {{ form.interesse_circuit }}
+            <span>{% trans "Je suis intéressé par un circuit moto" %}</span>
+          </div>
+          {% if form.interesse_circuit.errors %}
+          <div class="error-message-luxury">
+            {{ form.interesse_circuit.errors.0 }}
+          </div>
+          {% endif %}
+
+          <!-- Bloc circuit (caché par défaut) -->
+          <div id="bloc-circuit-luxury" class="form-grid-luxury"
+              style="{% if form.interesse_circuit.value %}display:grid;{% else %}display:none;{% endif %}">
+            <div class="form-field-luxury">
+              <label for="{{ form.statut_circuit.id_for_label }}" class="form-label-luxury">
+                {% trans "Statut" %}
+              </label>
+              {{ form.statut_circuit }}
+              {% if form.statut_circuit.errors %}
+              <div class="error-message-luxury">
+                {{ form.statut_circuit.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="form-field-luxury">
+              <label for="{{ form.circuit.id_for_label }}" class="form-label-luxury">
+                {% trans "Circuit" %}
+              </label>
+              {{ form.circuit }}
+              {% if form.circuit.errors %}
+              <div class="error-message-luxury">
+                {{ form.circuit.errors.0 }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Type de demande -->
+          <div class="form-field-luxury full-width">
+            <label for="{{ form.type_demande.id_for_label }}" class="form-label-luxury">
+              {% trans "Type de demande" %} *
+            </label>
+            {{ form.type_demande }}
+            {% if form.type_demande.errors %}
+            <div class="error-message-luxury">
+              {{ form.type_demande.errors.0 }}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Message -->
+          <div class="form-field-luxury full-width">
+            <label for="{{ form.message.id_for_label }}" class="form-label-luxury">
+              {% trans "Votre message" %} *
+            </label>
+            {{ form.message }}
+            {% if form.message.errors %}
+            <div class="error-message-luxury">
+              {{ form.message.errors.0 }}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Consentement -->
+          <div class="form-checkbox-luxury">
+            {{ form.consent }}
+            <span>{% trans "J'accepte que mes informations soient utilisées pour être recontacté dans le cadre de ma demande." %}</span>
+          </div>
+          {% if form.consent.errors %}
+          <div class="error-message-luxury">
+            {{ form.consent.errors.0 }}
+          </div>
+          {% endif %}
+
+          <!-- Bouton d'envoi -->
+          <div class="form-field-luxury full-width" style="margin-top: 2.5rem;">
+            <button type="submit" class="btn-luxury btn-primary-luxury btn-full-width">
+              <span>🚀</span>
+              {% trans "Envoyer mon message" %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const MSG_REQUIRED = "{{ _('Ce champ est obligatoire')|escapejs }}";
+    const MSG_EMAIL_INVALID = "{{ _("Format d'email invalide")|escapejs }}";
+  </script>
+
+  <script>
+
+    class LuxuryContactForm {
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        this.setupCircuitToggle();
+        this.setupFormAnimations();
+        this.setupInputEffects();
+        this.setupFormValidation();
+      }
+
+        setupCircuitToggle() {
+            const interesseCheckbox =
+            document.getElementById("id_interesse_circuit") ||
+            document.querySelector('input[name="interesse_circuit"]');
+
+            const circuitBloc   = document.getElementById("bloc-circuit-luxury");
+            const statutSelect  = document.getElementById("id_statut_circuit") ||
+                                document.querySelector('select[name="statut_circuit"]');
+            const circuitSelect = document.getElementById("id_circuit") ||
+                                document.querySelector('select[name="circuit"]');
+
+            const toggleCircuitBloc = () => {
+            const show = !!(interesseCheckbox && interesseCheckbox.checked);
+            if (circuitBloc){
+                circuitBloc.style.display = show ? 'grid' : 'none';
+                if (!show && statutSelect && circuitSelect){
+                statutSelect.value = "";
+                circuitSelect.innerHTML = '<option value="">— {{ _("Choisir") }} —</option>';
+                }
+            }
+            };
+
+            const loadCircuitsForStatut = async () => {
+            if (!statutSelect || !circuitSelect) return;
+            const statut = statutSelect.value;
+            if (!statut) return;
+
+            try {
+                circuitSelect.innerHTML = '<option value="">⏳ {{ _("Chargement...") }}</option>';
+                const resp = await fetch("{% url 'api_circuits_by_statut' %}?statut=" + encodeURIComponent(statut));
+                const data = await resp.json();
+                const results = data.results || [];
+
+                circuitSelect.innerHTML = '<option value="">— {{ _("Choisir un circuit") }} —</option>';
+                results.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.id;
+                let dates = "";
+                if (c.date_debut && c.date_fin){
+                    const d1 = new Date(c.date_debut).toLocaleDateString();
+                    const d2 = new Date(c.date_fin).toLocaleDateString();
+                    dates = ` (${d1} → ${d2})`;
+                }
+                opt.textContent = `${c.code} — ${c.nom}${dates}`;
+                circuitSelect.appendChild(opt);
+                });
+            } catch (e) {
+                circuitSelect.innerHTML = '<option value="">❌ {{ _("Erreur de chargement") }}</option>';
+            }
+            };
+
+            // Init
+            if (interesseCheckbox) {
+            toggleCircuitBloc(); // affiche si coché après un post raté
+            interesseCheckbox.addEventListener('change', toggleCircuitBloc);
+            }
+            if (statutSelect) {
+            statutSelect.addEventListener('change', loadCircuitsForStatut);
+
+            // Si on revient d’un POST avec valeur déjà présente, on recharge la liste
+            if (statutSelect.value) { loadCircuitsForStatut(); }
+
+            }
+        }
+
+        setupFormAnimations() {
+            // Add loading animation to form
+            const form = document.getElementById('contact-form-luxury');
+            if (form) {
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(20px)';
+            form.style.transition = 'all 0.6s ease-out';
+
+            setTimeout(() => {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }, 300);
+            }
+
+            // Animate form fields on scroll
+            const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+                }
+            });
+            }, observerOptions);
+
+            document.querySelectorAll('.form-field-luxury').forEach(field => {
+            observer.observe(field);
+            });
+        }
+
+        setupInputEffects() {
+            // Add focus effects to all form inputs
+            const inputs = document.querySelectorAll('.form-input-luxury, .form-textarea-luxury, .form-select-luxury');
+            
+            inputs.forEach(input => {
+            // Add focus class
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                this.parentElement.classList.remove('focused');
+                }
+            });
+
+            // Add magnetic effect on hover
+            input.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            input.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            });
+        }
+
+        setupFormValidation() {
+            const form = document.getElementById('contact-form-luxury');
+            
+            form.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Remove previous error states
+            document.querySelectorAll('.error-message-luxury').forEach(error => {
+                error.remove();
+            });
+            document.querySelectorAll('.form-input-luxury.error, .form-textarea-luxury.error, .form-select-luxury.error').forEach(input => {
+                input.classList.remove('error');
+            });
+
+            // Basic validation
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('error');
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message-luxury';
+                errorDiv.textContent = MSG_REQUIRED;
+                field.parentElement.appendChild(errorDiv);
+                }
+            });
+
+            // Email validation
+            const emailField = document.getElementById('id_email');
+            if (emailField && emailField.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
+                isValid = false;
+                emailField.classList.add('error');
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message-luxury';
+                errorDiv.textContent = MSG_EMAIL_INVALID;
+                emailField.parentElement.appendChild(errorDiv);
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                
+                // Scroll to first error
+                const firstError = form.querySelector('.error');
+                if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.focus();
+                }
+            } else {
+                // Add loading state to button
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                submitBtn.innerHTML = '<span>⏳</span> {% trans "Envoi en cours..." %}';
+                submitBtn.disabled = true;
+                }
+            }
+            });
+        }
+        }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      new LuxuryContactForm();
+      
+      // Add some interactive particles in background for premium feel
+      const heroSection = document.querySelector('.contact-hero-luxury');
+      if (heroSection && window.innerWidth > 768) {
+        createFloatingParticles(heroSection);
+      }
+    });
+
+    // Optional: Create floating particles for hero section
+    function createFloatingParticles(container) {
+      const particles = ['🏍️', '✨', '⭐', '🚀', '💫'];
+      const particleCount = 8;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+        particle.style.position = 'absolute';
+        particle.style.fontSize = Math.random() * 20 + 10 + 'px';
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animation = `floatLuxe ${Math.random() * 10 + 10}s infinite ease-in-out`;
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particle.style.zIndex = '1';
+        particle.style.pointerEvents = 'none';
+        
+        container.appendChild(particle);
+      }
+    }
+
+  </script>
+
+{% endblock %}

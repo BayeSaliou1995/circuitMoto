@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if is_reminder %}Rappel de paiement{% else %}Confirmation de paiement{% endif %}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f8fafc;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #0f172a;
+    }
+
+    .wrapper {
+      width: 100%;
+      padding: 28px 0;
+      background: #f8fafc;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .hero {
+      padding: 34px 34px 28px;
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.18), transparent 36%),
+        linear-gradient(135deg, {% if is_reminder %}#f59e0b 0%, #ea580c 100%{% else %}#2563eb 0%, #1d4ed8 100%{% endif %});
+      color: #ffffff;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.2;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.96);
+    }
+
+    .content {
+      padding: 30px 34px 34px;
+    }
+
+    .hello {
+      margin: 0 0 16px;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .intro {
+      margin: 0 0 22px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #334155;
+    }
+
+    .alert-box {
+      margin: 0 0 22px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.8;
+      border: 1px solid {% if is_reminder %}#fdba74{% else %}#bfdbfe{% endif %};
+      background: {% if is_reminder %}#fff7ed{% else %}#eff6ff{% endif %};
+      color: {% if is_reminder %}#9a3412{% else %}#1e3a8a{% endif %};
+    }
+
+    .section-title {
+      margin: 26px 0 14px;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .receipt-box {
+      margin-bottom: 24px;
+      border: 1px solid #dbeafe;
+      border-radius: 18px;
+      background: #f8fbff;
+      overflow: hidden;
+    }
+
+    .receipt-item {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .receipt-item + .receipt-item {
+      border-top: 1px solid #dbeafe;
+    }
+
+    .receipt-label,
+    .receipt-value {
+      display: table-cell;
+      padding: 14px 18px;
+      vertical-align: middle;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .receipt-label {
+      color: #334155;
+      width: 68%;
+    }
+
+    .receipt-value {
+      color: #1d4ed8;
+      text-align: right;
+      font-weight: 800;
+      width: 32%;
+      white-space: nowrap;
+    }
+
+    .summary-card {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0 0 24px;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .summary-card td {
+      padding: 14px 18px;
+      font-size: 14px;
+      line-height: 1.65;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .summary-card tr:last-child td {
+      border-bottom: none;
+    }
+
+    .summary-card td:first-child {
+      width: 58%;
+      color: #475569;
+      font-weight: 600;
+      background: #f8fafc;
+    }
+
+    .summary-card td:last-child {
+      width: 42%;
+      text-align: right;
+      color: #0f172a;
+      font-weight: 800;
+    }
+
+    .amount-due {
+      color: #c2410c !important;
+    }
+
+    .amount-over {
+      color: #0f766e !important;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .status-pill-reminder {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #fdba74;
+    }
+
+    .status-pill-ok {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .detail-wrap {
+      margin-top: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .detail-table th,
+    .detail-table td {
+      padding: 13px 14px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.6;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .detail-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 800;
+    }
+
+    .detail-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .detail-table td {
+      color: #475569;
+    }
+
+    .badge-paid,
+    .badge-partial,
+    .badge-due {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .badge-paid {
+      background: #ecfdf5;
+      color: #047857;
+    }
+
+    .badge-partial {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .badge-due {
+      background: #f8fafc;
+      color: #475569;
+    }
+
+    .info-box,
+    .note-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .note-box {
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      color: #9a3412;
+    }
+
+    .info-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+    }
+
+    .btn-wrap {
+      margin-top: 26px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      background: linear-gradient(135deg, {% if is_reminder %}#f59e0b 0%, #ea580c 100%{% else %}#2563eb 0%, #1d4ed8 100%{% endif %});
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 14px;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #475569;
+    }
+
+    @media screen and (max-width:620px) {
+      .wrapper { padding: 12px 0 !important; }
+
+      .container {
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+      }
+
+      .hero { padding: 24px 18px !important; }
+      .hero h1 { font-size: 23px !important; }
+      .hero p { font-size: 14px !important; }
+
+      .content { padding: 18px !important; }
+
+      .summary-card td {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .summary-card td + td {
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .receipt-label,
+      .receipt-value {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: left !important;
+      }
+
+      .receipt-value {
+        padding-top: 0 !important;
+      }
+
+      .detail-table,
+      .detail-table tbody,
+      .detail-table tr,
+      .detail-table td,
+      .detail-table th {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .detail-table thead {
+        display: none !important;
+      }
+
+      .detail-table tr {
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+
+      .detail-table tr:last-child {
+        border-bottom: none !important;
+      }
+
+      .detail-table td {
+        border-bottom: none !important;
+        padding: 10px 14px !important;
+      }
+
+      .btn {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="center" style="padding:0 12px;">
+          <div class="container">
+
+            <div class="hero">
+              <div class="hero-kicker">
+                {% if is_reminder %}Rappel paiement{% else %}Paiement{% endif %}
+              </div>
+              <h1>
+                {% if is_reminder %}Rappel de paiement{% else %}Confirmation de paiement{% endif %}
+              </h1>
+              <p>
+                {{ circuit.nom }} — {{ circuit.code }}<br>
+                {{ circuit.date_debut|date:"d/m/Y" }} → {{ circuit.date_fin|date:"d/m/Y" }}
+              </p>
+            </div>
+
+            <div class="content">
+              <p class="hello">Bonjour {{ dest_name }},</p>
+
+              {% if intro_message %}
+                <p class="intro">{{ intro_message }}</p>
+              {% else %}
+                <p class="intro">
+                  {% if is_reminder %}
+                    Nous vous rappelons qu’un montant reste à régler pour votre inscription.
+                  {% else %}
+                    Nous vous confirmons la bonne réception de votre paiement.
+                  {% endif %}
+                </p>
+              {% endif %}
+
+              <div class="alert-box">
+                {% if is_reminder %}
+                  Ce message fait suite à une situation de paiement non encore soldée.
+                {% else %}
+                  Ce message récapitule l’état actuel de votre règlement.
+                {% endif %}
+              </div>
+
+              {% if has_sent_acompte1 or has_sent_acompte2 or has_sent_solde or has_sent_options %}
+                <h2 class="section-title">Paiement bien reçu</h2>
+                <div class="receipt-box">
+                  {% if has_sent_acompte1 %}
+                    <div class="receipt-item">
+                      <span class="receipt-label">Acompte 1 reçu</span>
+                      <span class="receipt-value">{{ sent_acompte1_amount }} {{ ins.devise }}</span>
+                    </div>
+                  {% endif %}
+
+                  {% if has_sent_acompte2 %}
+                    <div class="receipt-item">
+                      <span class="receipt-label">Acompte 2 reçu</span>
+                      <span class="receipt-value">{{ sent_acompte2_amount }} {{ ins.devise }}</span>
+                    </div>
+                  {% endif %}
+
+                  {% if has_sent_solde %}
+                    <div class="receipt-item">
+                      <span class="receipt-label">Solde reçu</span>
+                      <span class="receipt-value">{{ sent_solde_amount }} {{ ins.devise }}</span>
+                    </div>
+                  {% endif %}
+
+                  {% if has_sent_options %}
+                    <div class="receipt-item">
+                      <span class="receipt-label">Paiement reçu pour les nouvelles options</span>
+                      <span class="receipt-value">{{ sent_options_amount }} {{ ins.devise }}</span>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              <h2 class="section-title">Situation actuelle</h2>
+
+              <table role="presentation" class="summary-card" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>Total initial</td>
+                  <td>{{ total_attendu_initial|default:total_attendu }} {{ ins.devise }}</td>
+                </tr>
+
+                {% if montant_options_ajoutees and montant_options_ajoutees > 0 %}
+                  <tr>
+                    <td>Options ajoutées</td>
+                    <td>{{ montant_options_ajoutees }} {{ ins.devise }}</td>
+                  </tr>
+                  <tr>
+                    <td>Nouveau total attendu</td>
+                    <td>{{ nouveau_total_attendu }} {{ ins.devise }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td>Total attendu</td>
+                    <td>{{ total_attendu|default:total_attendu_initial }} {{ ins.devise }}</td>
+                  </tr>
+                {% endif %}
+
+                <tr>
+                  <td>Total déjà payé</td>
+                  <td>{{ total_paye }} {{ ins.devise }}</td>
+                </tr>
+
+                {% if reste_a_payer and reste_a_payer > 0 %}
+                  <tr>
+                    <td>Reste à payer</td>
+                    <td class="amount-due">{{ reste_a_payer }} {{ ins.devise }}</td>
+                  </tr>
+                {% endif %}
+
+                {% if trop_percu and trop_percu > 0 %}
+                  <tr>
+                    <td>Trop-perçu</td>
+                    <td class="amount-over">{{ trop_percu }} {{ ins.devise }}</td>
+                  </tr>
+                {% endif %}
+
+                {% if situation_label %}
+                  <tr>
+                    <td>Situation</td>
+                    <td>
+                      <span class="status-pill {% if reste_a_payer and reste_a_payer > 0 %}status-pill-reminder{% else %}status-pill-ok{% endif %}">
+                        {{ situation_label }}
+                      </span>
+                    </td>
+                  </tr>
+                {% endif %}
+              </table>
+
+              {% if payment_rows %}
+                <h2 class="section-title">Détail des paiements enregistrés</h2>
+                <div class="detail-wrap">
+                  <table role="presentation" class="detail-table" width="100%" cellspacing="0" cellpadding="0">
+                    <thead>
+                      <tr>
+                        <th>Libellé</th>
+                        <th>Attendu</th>
+                        <th>Encaissé</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in payment_rows %}
+                        <tr>
+                          <td>{{ row.libelle }}</td>
+                          <td>{{ row.attendu }} {{ ins.devise }}</td>
+                          <td>{{ row.encaisse }} {{ ins.devise }}</td>
+                          <td>{{ row.date|date:"d/m/Y"|default:"—" }}</td>
+                          <td>
+                            {% if row.statut == "Payé" %}
+                              <span class="badge-paid">{{ row.statut }}</span>
+                            {% elif row.statut == "Partiellement payé" %}
+                              <span class="badge-partial">{{ row.statut }}</span>
+                            {% else %}
+                              <span class="badge-due">{{ row.statut }}</span>
+                            {% endif %}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% endif %}
+
+              {% if note_client %}
+                <div class="note-box">
+                  <strong>Note complémentaire</strong><br>
+                  {{ note_client }}
+                </div>
+              {% endif %}
+
+              {% if has_infos_paiement %}
+                <div class="info-box">
+                  <strong>Informations de paiement</strong><br>
+                  {{ infos_paiement }}
+                </div>
+              {% endif %}
+
+              <div class="btn-wrap">
+                <a href="{{ edit_url }}" class="btn">Revoir mon inscription</a>
+              </div>
+
+              <div class="footer">
+                Bien cordialement,<br>
+                <strong>L’équipe Pulsion Horizon</strong>
+              </div>
+            </div>
+
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

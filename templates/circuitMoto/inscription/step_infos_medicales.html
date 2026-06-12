@@ -1,0 +1,137 @@
+{# templates/circuitMoto/inscription/step_infos_medicales.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Informations médicales" %}</h2>
+    <p class="step-subtitle">
+      {% trans "Ces informations restent strictement confidentielles et ne sont utilisées qu'en cas d'urgence médicale." %}
+    </p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {# ===== Info confidentialité ===== #}
+    <section class="step-section medical-note">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Confidentialité" %}</h3>
+        <p class="section-subtitle">
+          {% trans "Nous ne consultons ces informations qu'en cas de nécessité médicale pendant le séjour." %}
+        </p>
+      </header>
+
+      <div class="info-card medical-confidential">
+        <svg class="medical-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <div>
+          <strong>{% trans "Données sensibles" %}</strong><br>
+          <span class="muted">{% trans "Merci d'être précis (allergies, traitements, antécédents), c'est crucial en cas d'urgence." %}</span>
+        </div>
+      </div>
+    </section>
+
+    {# ===== Données principales ===== #}
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Données médicales" %}</h3>
+      </header>
+
+      <div class="grid-2 grid-tight">
+        <div class="form-group">
+          <label for="{{ form.groupe_sanguin.id_for_label }}" class="required">{{ form.groupe_sanguin.label }}</label>
+          {{ form.groupe_sanguin }}
+          {{ form.groupe_sanguin.errors }}
+          <p class="field-help">{% trans "Important pour les soins d'urgence." %}</p>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+          {{ form.notes }}
+          {{ form.notes.errors }}
+          <p class="field-help">{% trans "Allergies, traitements, antécédents importants..." %}</p>
+        </div>
+      </div>
+    </section>
+
+    {# ===== Conditions ===== #}
+    <section class="step-section medical-conditions">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Conditions médicales" %}</h3>
+        <p class="section-subtitle">{% trans "Cochez uniquement ce qui s'applique." %}</p>
+      </header>
+
+      <div class="conditions-grid">
+        <label class="checkbox-line">
+          {{ form.hta }}
+          <span class="checkbox-text">{% trans "Hypertension artérielle" %}</span>
+        </label>
+
+        <label class="checkbox-line">
+          {{ form.asthme }}
+          <span class="checkbox-text">{% trans "Asthme" %}</span>
+        </label>
+
+        <label class="checkbox-line">
+          {{ form.epilepsie }}
+          <span class="checkbox-text">{% trans "Épilepsie" %}</span>
+        </label>
+
+        <label class="checkbox-line">
+          {{ form.problemes_peau }}
+          <span class="checkbox-text">{% trans "Problèmes cutanés" %}</span>
+        </label>
+
+        <label class="checkbox-line">
+          {{ form.vertiges }}
+          <span class="checkbox-text">{% trans "Vertiges" %}</span>
+        </label>
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        {% trans "Continuer" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,13 @@
+Bonjour {{ demande.prenom }},
+
+Nous avons bien recu votre selection pour le Pre Programme 2027 Pulsion Horizon.
+
+Votre selection :
+{% for s in selections %}
+- {{ s.circuit.titre }} - {{ s.circuit.mois }} - {{ s.circuit.duree }}
+  Niveau : {{ s.get_niveau_interet_display }}
+{% endfor %}
+
+Nous reviendrons vers vous lorsque les programmes et les ouvertures de reservation avanceront.
+
+L'equipe Pulsion Horizon

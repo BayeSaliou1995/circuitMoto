@@ -1,0 +1,643 @@
+{# templates/circuitMoto/inscription/succes.html #}
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load i18n %}
+{% block content %}
+
+  <div class="insc-success">
+
+    <!-- HERO -->
+    <header class="hero reveal">
+      <div class="confetti" aria-hidden="true"></div>
+      <div class="checkwrap">
+        <svg class="check" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="check__ring" cx="26" cy="26" r="24" fill="none"></circle>
+          <path class="check__mark" fill="none" d="M14 27 l8 8 l16 -18"></path>
+        </svg>
+      </div>
+      <h1>{% trans "Inscription confirmée" %}</h1>
+      <p class="subtitle">{% trans "Votre demande a bien été enregistrée" %}</p>
+    </header>
+
+    <!-- RÉF + STATUT -->
+    <section class="card card--row reveal">
+      <div class="ref">
+        <span class="ref__label">{% trans "Référence" %}</span>
+        <span class="ref__value" id="ref-value">{{ inscription.id_public }}</span>
+        <button type="button" class="btn btn--ghost btn--xs" id="btn-copy-ref" aria-label="Copier la référence">{% trans "Copier" %}</button>
+      </div>
+
+      <div class="status">
+        <span class="chip chip--{{ inscription.statut|lower }}">
+          {{ inscription.get_statut_display }}
+        </span>
+      </div>
+    </section>
+
+    <!-- RÉSUMÉ -->
+    <section class="card reveal">
+      <div class="sec-head">
+        <div class="sec-head__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>{% trans "Résumé de votre inscription" %}</h3>
+      </div>
+
+      <div class="grid grid--3">
+        <!-- Circuit -->
+        <div class="panel">
+          <div class="panel__head">
+            <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="10 8 16 12 10 16 10 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            <h4>{% trans "Circuit" %}</h4>
+          </div>
+          <ul class="list">
+            <li><span>{% trans "Nom" %}</span><b>{{ inscription.circuit.nom }}</b></li>
+            <li><span>{% trans "Code" %}</span><b>{{ inscription.circuit.code }}</b></li>
+            <li><span>{% trans "Dates" %}</span><b>{{ inscription.circuit.date_debut|date:"d/m/Y" }} → {{ inscription.circuit.date_fin|date:"d/m/Y" }}</b></li>
+            <li><span>{% trans "Devise" %}</span><b>{{ inscription.get_devise_display|default:inscription.devise }}</b></li>
+          </ul>
+        </div>
+
+        <!-- Pilote -->
+        <div class="panel">
+          <div class="panel__head">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <h4>{% trans "Pilote" %}</h4>
+          </div>
+          <ul class="list">
+            <li><b>{{ inscription.pilote.prenom }} {{ inscription.pilote.nom }}</b></li>
+            <li>{{ inscription.pilote.email }}</li>
+            {% if inscription.pilote.telephone %}<li>{{ inscription.pilote.telephone }}</li>{% endif %}
+          </ul>
+        </div>
+
+        <!-- Moto -->
+        <div class="panel">
+          <div class="panel__head">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 17l4-9 4 6 2-3 4 6H5z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <h4>{% trans "Moto" %}</h4>
+          </div>
+          {% with m=inscription.pilote.motos.all|first %}
+            {% if m %}
+            <ul class="list">
+              <li><span>{% trans "Marque" %}</span><b>{{ m.marque }}</b></li>
+              <li><span>{% trans "Modèle" %}</span><b>{{ m.modele|default:"-" }}</b></li>
+              <li><span>{% trans "Immatriculation" %}</span><b>{{ m.immatriculation|default:"-" }}</b></li>
+            </ul>
+            {% else %}
+            <div class="empty">{% trans "Informations sur la moto non renseignées" %}</div>
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+
+      {% if inscription.passager %}
+      <div class="panel panel--soft reveal">
+        <div class="panel__head">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <h4>{% trans "Passager" %}</h4>
+        </div>
+        <ul class="list">
+          <li><b>{{ inscription.passager.prenom }} {{ inscription.passager.nom }}</b></li>
+          {% if inscription.passager.email %}<li>{{ inscription.passager.email }}</li>{% endif %}
+          {% if inscription.passager.telephone %}<li>{{ inscription.passager.telephone }}</li>{% endif %}
+        </ul>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- OPTIONS -->
+    <section class="card reveal">
+      <div class="sec-head">
+        <div class="sec-head__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>{% trans "Options sélectionnées" %}</h3>
+      </div>
+
+      {% if inscription.selections_options.count %}
+        <p class="muted" style="margin:.25rem 0 .75rem">
+          {% trans "Récap : Options" %} = {{ pricing.options_total }} {{ inscription.devise }}
+        </p>
+
+        <div class="table-wrap">
+          <table class="nice-table">
+            <thead>
+              <tr>
+                <th>{% trans "Option" %}</th>
+                <th>{% trans "Bénéficiaire" %}</th>
+                <th>{% trans "Quantité" %}</th>
+                <th>{% trans "Prix unitaire" %}</th>
+                <th>{% trans "Total" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sel in inscription.selections_options.all %}
+              <tr>
+                <td>{{ sel.option.intitule }}</td>
+                <td>{% if sel.pour_passager %}{% trans "Passager" %}{% else %}{% trans "Pilote" %}{% endif %}</td>
+                <td>{{ sel.quantite }}</td>
+                <td>{{ sel.prix_unitaire_fige }} {{ inscription.devise }}</td>
+                <td class="cell-strong">{{ sel.prix_total }} {{ inscription.devise }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty">{% trans "Aucune option supplémentaire sélectionnée" %}</div>
+      {% endif %}
+    </section>
+
+    <!-- ASSURANCE & CONTACTS -->
+    <div class="grid grid--2">
+      <section class="card reveal">
+        <div class="sec-head">
+          <div class="sec-head__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3>{% trans "Assurance" %}</h3>
+        </div>
+        {% with a=inscription.assurance %}
+          {% if a %}
+          <ul class="list">
+            <li><span>{% trans "Type" %}</span><b>{{ a.get_type_display }}</b></li>
+            {% if a.compagnie %}<li><span>{% trans "Compagnie" %}</span><b>{{ a.compagnie }}</b></li>{% endif %}
+            {% if a.numero_police %}<li><span>{% trans "N° police" %}</span><b>{{ a.numero_police }}</b></li>{% endif %}
+            {% if a.valide_du or a.valide_au %}
+            <li><span>{% trans "Validité" %}</span><b>{{ a.valide_du|date:"d/m/Y"|default:"-" }} → {{ a.valide_au|date:"d/m/Y"|default:"-" }}</b></li>
+            {% endif %}
+          </ul>
+          {% else %}
+          <div class="empty">{% trans "Informations d'assurance non renseignées" %}</div>
+          {% endif %}
+        {% endwith %}
+      </section>
+
+      <section class="card reveal">
+        <div class="sec-head">
+          <div class="sec-head__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3>{% trans "Contacts d'urgence" %}</h3>
+        </div>
+        {% with contacts=inscription.pilote.contacts_urgence.all %}
+          {% if contacts %}
+          <ul class="contacts">
+            {% for c in contacts %}
+            <li class="contacts__item">
+              <div class="contacts__name">{{ c.nom }}{% if c.lien_parente %} <span class="contacts__rel">({{ c.lien_parente }})</span>{% endif %}</div>
+              {% if c.telephone %}
+              <a href="tel:{{ c.telephone }}" class="contacts__phone" title="Appeler {{ c.nom }}">{{ c.telephone }}</a>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <div class="empty">{% trans "Aucun contact enregistré" %}</div>
+          {% endif %}
+        {% endwith %}
+      </section>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <section class="card reveal">
+      <div class="sec-head">
+        <div class="sec-head__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h3>{% trans "Documents fournis" %}</h3>
+      </div>
+
+      {% if inscription.documents.count %}
+        <ul class="docs">
+          {% for d in inscription.documents.all %}
+          <li class="docs__item">
+            <div class="docs__meta">
+              <span class="docs__type">{{ d.get_type_document_display }}</span>
+              <span class="badge badge--{{ d.statut|lower }}">{{ d.get_statut_display }}</span>
+            </div>
+            <div class="docs__file">
+              {% if d.fichier %}
+                <a href="{{ d.fichier.url }}" target="_blank" class="link">
+                  {{ d.fichier.name|truncatechars:40 }}
+                </a>
+              {% else %}
+                <span class="muted">{% trans "(fichier manquant)" %}</span>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        <p class="note">{% trans "Les documents seront vérifiés par l'organisation." %}</p>
+      {% else %}
+        <div class="empty">{% trans "Aucun document transmis" %}</div>
+      {% endif %}
+    </section>
+
+    <!-- MONTANT -->
+    <section class="card card--accent reveal">
+      <div class="sec-head">
+        <div class="sec-head__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h3>{% trans "Montant estimatif" %}</h3>
+      </div>
+
+      <div class="panel panel--soft" style="margin:.5rem 0 1rem">
+        <ul class="list">
+          <li><span>{% trans "Pilote" %}</span><b>{{ pricing.pilote }} {{ inscription.devise }}</b></li>
+          {% if pricing.passager %}
+            <li><span>{% trans "Passager" %}</span><b>{{ pricing.passager }} {{ inscription.devise }}</b></li>
+          {% endif %}
+          <li><span>{% trans "Options" %}</span><b>{{ pricing.options_total }} {{ inscription.devise }}</b></li>
+          <li class="cell-strong"><span>{% trans "Total" %}</span><b>{{ pricing.total }} {{ inscription.devise }}</b></li>
+        </ul>
+      </div>
+
+
+      <div class="totals">
+        <div class="totals__item">
+          <span class="totals__label">{% trans "Sous-total" %}</span>
+          <span class="totals__value">{{ inscription.sous_total_attendu }} {{ inscription.devise }}</span>
+        </div>
+        <div class="totals__item totals__item--strong">
+          <span class="totals__label">{% trans "Total estimé" %}</span>
+          <span class="totals__value">{{ inscription.total_attendu }} {{ inscription.devise }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉCHÉANCIER -->
+    <section class="card reveal">
+      <div class="sec-head">
+        <div class="sec-head__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h3>{% trans "Échéancier prévisionnel" %}</h3>
+      </div>
+
+      {% with echeances=inscription.paiements.all %}
+        {% if echeances %}
+        <div class="table-wrap">
+          <div class="panel panel--soft">
+            <ul class="list">
+              <li>
+                <span>{% trans "Premier acompte" %}</span>
+                <b>{% trans "Payé :" %} {% if echeancier.acompte.paye %}{% trans "Oui" %}{% else %}{% trans "Non" %}{% endif %}</b>
+              </li>
+              <li>
+                <span>{% trans "Montant" %}</span>
+                <b>{{ echeancier.acompte.montant }} {{ inscription.devise }}</b>
+              </li>
+              {% if echeancier.acompte.date %}
+                <li>
+                  <span>{% trans "Date du 1er paiement" %}</span>
+                  <b>{{ echeancier.acompte.date|date:"d/m/Y" }}</b>
+                </li>
+              {% endif %}
+              {% if echeancier.solde.date %}
+                <li>
+                  <span>{% trans "Date du solde à payer" %}</span>
+                  <b>{{ echeancier.solde.date|date:"d/m/Y" }}</b>
+                </li>
+              {% endif %}
+            </ul>
+            {% if echeancier.acompte.par_personne %}
+              <p class="muted" style="margin:.5rem 0 0">
+                {% trans "L’acompte est calculé par personne:" %} {{ echeancier.acompte.par_personne }} × {{ echeancier.acompte.nb_personnes }}).
+              </p>
+            {% endif %}
+          </div>
+
+        </div>
+        {% else %}
+        <div class="empty">{% trans "Aucune échéance générée" %}</div>
+        {% endif %}
+      {% endwith %}
+
+      <div class="payment-methods">
+        <h5>{% trans "Paiement accepté" %}</h5>
+        <div class="methods">
+          <span>{% trans "Virement bancaire" %}</span>
+        </div>
+
+        {% if inscription.circuit.infos_paiement %}
+          <div class="payment-infos">
+            <h6>{% trans "Coordonnées & mentions" %}</h6>
+            <div class="muted">{{ inscription.circuit.infos_paiement|linebreaks }}</div>
+          </div>
+        {% else %}
+          <p class="muted">{% trans "Les coordonnées bancaires vous seront communiquées par e-mail." %}</p>
+        {% endif %}
+      </div>
+
+
+    </section>
+
+    <!-- DÉCHARGE -->
+    <section class="card reveal">
+      <div class="sec-head">
+        <div class="sec-head__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h3>{% trans "Décharge signée" %}</h3>
+      </div>
+      {% with d=inscription.decharge %}
+        {% if d %}
+        <ul class="list">
+          <li><span>{% trans "Signataire" %}</span><b>{{ d.nom_signataire }} — {{ d.email_signataire }}</b></li>
+          <li><span>{% trans "Signée le" %}</span><b>{{ d.signee_le|date:"d/m/Y H:i"|default:"—" }}</b></li>
+        </ul>
+        {% if d.signature_image %}
+        <figure class="signature">
+          <img src="{{ d.signature_image.url }}" alt="Signature" />
+        </figure>
+        {% endif %}
+        {% else %}
+        <div class="empty">{% trans "Décharge non retrouvée" %}</div>
+        {% endif %}
+      {% endwith %}
+    </section>
+
+    <!-- ACTIONS -->
+    <div class="actions reveal">
+      <button type="button" class="btn btn--ghost" id="btn-print">{% trans "Imprimer" %}</button>
+
+      <a href="{% url 'inscription_edit_start' inscription.id_public %}" class="btn btn--soft">
+        {% trans "Modifier l'inscription" %}
+      </a>
+
+      <a href="{% url 'inscription_create_start' %}" class="btn">
+        {% trans "Nouvelle inscription" %}
+      </a>
+
+      <a href="/" class="btn btn--ghost">{% trans "Retour à l'accueil" %}</a>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <style>
+    /* ========= THEME HOOKS (utilise tes variables existantes) ========= */
+    :root {
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --shadow-1: 0 6px 24px rgba(0,0,0,.08);
+      --shadow-2: 0 12px 40px rgba(0,0,0,.12);
+      --grad-hero: linear-gradient(135deg, var(--primary), #8b5cf6);
+      --grad-accent: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.08));
+    }
+
+    .insc-success { max-width: 1080px; margin: 0 auto; padding-bottom: 4rem; }
+
+    /* ========= HERO ========= */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 3.5rem 1rem 2.25rem;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(1200px 300px at 50% -20%, rgba(99,102,241,.25), transparent 60%),
+        var(--grad-hero);
+      color: #fff;
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+    }
+    .hero h1 { font-size: clamp(1.4rem, 2.4vw, 2rem); margin: .5rem 0 0; letter-spacing:.2px }
+    .hero .subtitle { opacity:.9; margin-top:.25rem }
+
+    .checkwrap { display:flex; justify-content:center; align-items:center }
+    .check { width: 72px; height:72px; display:block }
+    .check__ring {
+      stroke: rgba(255,255,255,.75);
+      stroke-width: 2;
+      transform-origin: 50% 50%;
+      animation: ringPop .7s ease both .1s;
+    }
+    .check__mark {
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: draw .6s cubic-bezier(.2,.7,.2,1) .3s forwards;
+    }
+    @keyframes draw { to { stroke-dashoffset: 0 } }
+    @keyframes ringPop { from { transform: scale(.8); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+
+    /* Confetti (léger) */
+    .confetti::before, .confetti::after {
+      content:"";
+      position:absolute; inset:-40px -10px auto auto; height:1px; width:1px; pointer-events:none;
+      box-shadow:
+        0 40px 0 2px rgba(255,255,255,.45),
+        -140px 90px 0 3px rgba(255,255,255,.25),
+        120px 120px 0 2px rgba(255,255,255,.35),
+        -40px 160px 0 2px rgba(255,255,255,.2);
+      animation: rain 2.2s ease-in-out infinite;
+    }
+    .confetti::after { animation-delay: .6s; filter:hue-rotate(40deg) }
+    @keyframes rain {
+      from { transform: translateY(-10px) rotate(0deg) }
+      to   { transform: translateY(30px) rotate(30deg) }
+    }
+
+    /* ========= CARDS & PANELS ========= */
+    .card {
+      background: var(--panel, #0b0b0b06);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-top: 1rem;
+      box-shadow: var(--shadow-1);
+      backdrop-filter: saturate(120%) blur(6px);
+    }
+    .card--row { display:flex; gap:1rem; align-items:center; justify-content:space-between; flex-wrap:wrap }
+    .card--accent { background: var(--grad-accent); border-color: var(--primary) }
+
+    .sec-head { display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem }
+    .sec-head__icon {
+      display:grid; place-items:center; width:36px; height:36px;
+      border-radius: 10px; background: rgba(99,102,241,.12); color: var(--primary);
+    }
+
+    .panel { border:1px dashed var(--border); border-radius: 12px; padding: .9rem }
+    .panel--soft { background: rgba(0,0,0,.02) }
+
+    .panel__head { display:flex; align-items:center; gap:.5rem; margin-bottom:.5rem; color: var(--primary) }
+    .panel__head svg { opacity:.9 }
+
+    .list { list-style:none; padding:0; margin:0 }
+    .list li { display:flex; align-items:center; gap: .75rem; padding:.35rem 0; }
+    .list li span { color: var(--text-light); min-width: 120px }
+    .list li b { font-weight:600 }
+
+    .empty { text-align:center; padding:1rem; color: var(--text-light) }
+
+    /* ========= REF & STATUS ========= */
+    .ref { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+    .ref__label { font-weight:600; color: var(--text-light) }
+    .ref__value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; padding:.25rem .5rem; background: rgba(0,0,0,.04); border-radius: 6px }
+
+    .chip {
+      display:inline-flex; align-items:center; gap:.4rem;
+      padding:.35rem .6rem; border-radius: 999px; font-weight:600; font-size:.9rem; letter-spacing:.2px;
+      color:#fff;
+    }
+    .chip--confirme, .chip--valide { background: var(--success); box-shadow: 0 0 0 0 rgba(16,185,129,.6); animation: pulse 1.6s ease-out 2 }
+    .chip--en_attente { background: var(--primary) }
+    .chip--annule { background: var(--error) }
+    .chip--mini { font-size:.8rem; padding:.25rem .5rem }
+
+    @keyframes pulse { to { box-shadow: 0 0 0 14px rgba(16,185,129,0) } }
+
+    /* ========= TABLES ========= */
+    .table-wrap { width:100%; overflow:auto; border-radius: 12px; border:1px solid var(--border) }
+    .nice-table { width:100%; border-collapse: collapse; min-width: 640px }
+    .nice-table th, .nice-table td { padding:.8rem .9rem; text-align:left }
+    .nice-table thead th { position:sticky; top:0; background: var(--secondary); z-index:1 }
+    .nice-table tbody tr { border-top:1px solid var(--border); transition: background .2s ease }
+    .nice-table tbody tr:hover { background: rgba(99,102,241,.06) }
+    .cell-strong { font-weight:700 }
+
+    /* ========= CONTACTS ========= */
+    .contacts { list-style:none; padding:0; margin:0 }
+    .contacts__item { display:flex; align-items:center; justify-content:space-between; padding:.6rem 0; border-bottom:1px dashed var(--border) }
+    .contacts__item:last-child { border-bottom:0 }
+    .contacts__name { font-weight:600 }
+    .contacts__rel { color: var(--text-light); font-weight:400 }
+    .contacts__phone { text-decoration:none; color: var(--primary) }
+    .contacts__phone:hover { text-decoration:underline }
+
+    /* ========= DOCS ========= */
+    .docs { list-style:none; padding:0; margin:0; display:grid; gap:.75rem }
+    .docs__item { border:1px dashed var(--border); border-radius:10px; padding:.75rem }
+    .docs__meta { display:flex; gap:.75rem; align-items:center; justify-content:space-between; margin-bottom:.25rem }
+    .docs__type { font-weight:600 }
+    .badge { font-size:.8rem; padding:.2rem .5rem; border-radius: 999px; }
+    .badge--en_attente { background: rgba(59,130,246,.12); color: var(--primary) }
+    .badge--valide { background: rgba(16,185,129,.12); color: var(--success) }
+    .badge--refuse { background: rgba(239,68,68,.12); color: var(--error) }
+    .link { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--border) }
+    .link:hover { color: var(--primary) }
+    .muted { color: var(--text-light) }
+
+    /* ========= TOTALS ========= */
+    .totals { display:grid; grid-template-columns: 1fr 1fr; gap:1rem }
+    .totals__item { border-radius:12px; background: var(--bg); padding:1rem; border:1px solid var(--border) }
+    .totals__item--strong { background: var(--primary); color:#fff; border-color: transparent }
+    .totals__label { display:block; font-size:.9rem; opacity:.85 }
+    .totals__value { font-weight:800; font-size:1.4rem }
+
+    /* ========= MÉTHODES ========= */
+    .payment-methods { margin-top:1rem; padding-top: 1rem; border-top:1px solid var(--border) }
+    .payment-methods h5 { margin:0 }
+    .methods { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem }
+    .methods span { background: rgba(0,0,0,.04); padding:.4rem .6rem; border-radius:999px }
+
+    /* ========= ACTIONS ========= */
+    .actions { display:flex; gap:.6rem; flex-wrap:wrap; justify-content:flex-end; margin-top: 1.25rem }
+    .btn {
+      appearance:none; border:0; border-radius: 12px; padding:.7rem 1rem; cursor:pointer;
+      font-weight:700; letter-spacing:.2px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
+      color:#fff; background: var(--grad-hero); box-shadow: var(--shadow-1); position:relative; overflow:hidden;
+      transition: transform .06s ease;
+    }
+    .btn:active { transform: translateY(1px) scale(.99) }
+    .btn--soft { background: linear-gradient(135deg, #6366f1, #60a5fa) }
+    .btn--ghost { background: transparent; color: var(--text); border:1px solid var(--border) }
+    .btn--xs { padding:.35rem .55rem; font-size:.8rem; border-radius:8px }
+    .btn::after {
+      content:""; position:absolute; inset:0; transform: translateX(-120%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+      transition: transform .5s ease;
+    }
+    .btn:hover::after { transform: translateX(120%) }
+
+    /* ========= GRID HELPERS ========= */
+    .grid { display:grid; gap:1rem }
+    .grid--2 { grid-template-columns: repeat(2, 1fr) }
+    .grid--3 { grid-template-columns: repeat(3, 1fr) }
+    @media (max-width: 1024px) { .grid--3 { grid-template-columns: 1fr 1fr } }
+    @media (max-width: 768px)  {
+      .grid--3, .grid--2 { grid-template-columns: 1fr }
+      .totals { grid-template-columns: 1fr }
+    }
+
+    /* ========= REVEAL ON SCROLL ========= */
+    .reveal { opacity:0; transform: translateY(10px); transition: opacity .45s cubic-bezier(.2,.7,.2,1), transform .45s cubic-bezier(.2,.7,.2,1) }
+    .reveal.in-view { opacity:1; transform:none }
+
+    /* ========= TOAST ========= */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #111; color:#fff; padding:.7rem 1rem; border-radius: 12px; box-shadow: var(--shadow-2);
+      opacity:0; pointer-events:none; transition: opacity .25s ease, transform .25s ease; z-index: 50;
+    }
+    .toast.show { opacity:1; transform: translateX(-50%) translateY(0) }
+
+    /* ========= PRINT ========= */
+    @media print {
+      .hero, .actions, #toast { display:none !important }
+      .card, .panel, .docs__item { box-shadow:none !important; backdrop-filter:none !important }
+    }
+
+    /* Respecte les préférences utilisateurs */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important }
+    }
+
+    .payment-infos { margin-top:.6rem; padding:.75rem; border:1px dashed var(--border); border-radius:10px; background: rgba(0,0,0,.02) }
+    .payment-infos h6 { margin:0 0 .35rem; font-size:.95rem; color: var(--text) }
+
+
+  </style>
+
+  <script>
+    (function(){
+      // Print
+      var btnPrint = document.getElementById('btn-print');
+      if (btnPrint) btnPrint.addEventListener('click', function(){ window.print(); });
+
+      // Copy ref + toast
+      var btnCopy = document.getElementById('btn-copy-ref');
+      var ref = document.getElementById('ref-value');
+      var toast = document.getElementById('toast');
+      function showToast(msg){
+        if(!toast) return;
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(function(){ toast.classList.remove('show'); }, 1600);
+      }
+      if (btnCopy && ref && navigator.clipboard) {
+        btnCopy.addEventListener('click', async function(){
+          try {
+            await navigator.clipboard.writeText(ref.textContent.trim());
+            showToast('Référence copiée ✨');
+          } catch(e) {
+            showToast('Impossible de copier');
+          }
+        });
+      }
+
+      // Reveal on scroll (stagger)
+      var els = [].slice.call(document.querySelectorAll('.reveal'));
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .12 });
+        els.forEach(function(el){ io.observe(el); });
+      } else {
+        els.forEach(function(el){ el.classList.add('in-view'); });
+      }
+    })();
+  </script>
+
+{% endblock %}

@@ -1,0 +1,644 @@
+{% load static %}
+{% with url_name=request.resolver_match.url_name|default:'' %}
+
+  <header class="site-nav-wrap" role="banner">
+
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- Brand -->
+      <div class="nav-left">
+        <a class="brand" href="{% url 'home' %}" aria-label="Pulsion Horizon">
+          {% comment %} <img src="https://senegal-travel-pulsion.com/favicon.ico" alt="" class="brand-logo" width="28" height="28" loading="lazy" decoding="async"> {% endcomment %}
+          <span class="brand-name">Pulsion&nbsp;INSCRIPTION</span>
+        </a>
+      </div>
+
+      <!-- Liens desktop -->
+      <div class="nav-center desktop-only">
+        <a href="{% url 'home' %}"
+          class="nav-link {% if url_name == 'home' %}active{% endif %}"
+          {% if url_name == 'home' %}aria-current="page"{% endif %}>
+          <span class="nav-link-text">Accueil</span>
+        </a>
+
+        {% if request.user.is_superuser %}
+          <a href="{% url 'bo_inscription_list' %}"
+            class="nav-link {% if url_name == 'bo_inscription_list' %}active{% endif %}"
+            {% if url_name == 'bo_inscription_list' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">Participants</span>
+          </a>
+          <a href="{% url 'bo_circuit_list' %}"
+            class="nav-link {% if url_name == 'bo_circuit_list' %}active{% endif %}"
+            {% if url_name == 'bo_circuit_list' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">Circuits</span>
+          </a>
+          {% comment %} <!-- <a href="{% url 'bo_personne_create' %}"
+            class="nav-link {% if url_name == 'bo_personne_create' %}active{% endif %}"
+            {% if url_name == 'bo_personne_create' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">Nouveau participant</span>
+          </a> --> {% endcomment %}
+          <a href="{% url 'bo_circuit_create' %}"
+            class="nav-link {% if url_name == 'bo_circuit_create' %}active{% endif %}"
+            {% if url_name == 'bo_circuit_create' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">Nouveau circuit</span>
+          </a>
+        {% else %}
+          <a href="{% url 'programmes_index' %}"
+            class="nav-link {% if url_name == 'programmes_index' or url_name == 'programme_detail' %}active{% endif %}"
+            {% if url_name == 'programmes_index' or url_name == 'programme_detail' %}aria-current="page"{% endif %}>
+            <span class="nav-link-text">Programmes</span>
+          </a>
+          <a href="{% url 'inscription_lookup' %}"
+            class="nav-link {% if url_name == 'inscription_lookup' %}active{% endif %}">
+            <span class="nav-link-text">Déjà inscrit ?</span>
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Actions à droite -->
+      <div class="nav-right">
+
+        <!-- Actions desktop (login/back-office) -->
+        <div class="desktop-only nav-actions">
+          {% if not request.resolver_match or request.resolver_match.url_name != 'login' %}
+            {% if request.user.is_authenticated %}
+              {% if request.user.is_staff %}
+                <a href="{% url 'bo_dashboard' %}" class="nav-link nav-cta">
+                  <span class="nav-link-text">Back-office</span>
+                </a>
+              {% endif %}
+              <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'home' %}">
+                <button type="submit" class="nav-link danger">
+                  <span class="nav-link-text">Déconnexion</span>
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="nav-link nav-cta">
+                <span class="nav-link-text">Connexion</span>
+              </a>
+            {% endif %}
+          {% endif %}
+        </div>
+        
+        <!-- Burger toujours visible sur mobile -->
+        <button class="menu-toggle" aria-expanded="false" aria-controls="mobileMenu">
+          <span class="sr-only">Ouvrir le menu</span>
+          <div class="hamburger">
+            <span class="hamburger-line hamburger-line-1"></span>
+            <span class="hamburger-line hamburger-line-2"></span>
+            <span class="hamburger-line hamburger-line-3"></span>
+          </div>
+        </button>
+
+      </div>
+
+    </nav>
+
+  </header>
+  
+  <!-- Overlay + panneau mobile -->
+  <div class="nav-overlay"></div>
+  <div id="mobileMenu" class="mobile-panel">
+    <div class="mobile-panel-content">
+      <div class="mobile-group">
+        <a href="{% url 'home' %}" class="mobile-link {% if url_name == 'home' %}active{% endif %}" {% if url_name == 'home' %}aria-current="page"{% endif %}>
+          <span>Accueil</span>
+        </a>
+        
+        {% if request.user.is_superuser %}
+          <a href="{% url 'bo_inscription_list' %}" class="mobile-link {% if url_name == 'bo_inscription_list' %}active{% endif %}" {% if url_name == 'bo_inscription_list' %}aria-current="page"{% endif %}>
+            <span>Participants</span>
+          </a>
+
+          <a href="{% url 'bo_circuit_list' %}" class="mobile-link {% if url_name == 'bo_circuit_list' %}active{% endif %}" {% if url_name == 'bo_circuit_list' %}aria-current="page"{% endif %}>
+            <span>Circuits</span>
+          </a>
+          <!-- {% comment %} <a href="{% url 'bo_personne_create' %}" class="mobile-link {% if url_name == 'bo_personne_create' %}active{% endif %}" {% if url_name == 'bo_personne_create' %}aria-current="page"{% endif %}>
+            <span>Nouveau participant</span>
+          </a> {% endcomment %} -->
+          <a href="{% url 'bo_circuit_create' %}" class="mobile-link {% if url_name == 'bo_circuit_create' %}active{% endif %}" {% if url_name == 'bo_circuit_create' %}aria-current="page"{% endif %}>
+            <span>Nouveau circuit</span>
+          </a>
+        {% else %}
+          <a href="{% url 'programmes_index' %}" class="mobile-link {% if url_name == 'programmes_index' or url_name == 'programme_detail' %}active{% endif %}" {% if url_name == 'programmes_index' or url_name == 'programme_detail' %}aria-current="page"{% endif %}>
+            <span>Programmes</span>
+          </a>
+          <a href="{% url 'inscription_lookup' %}" class="mobile-link {% if url_name == 'inscription_lookup' %}active{% endif %}">
+            <span>Déjà inscrit ?</span>
+          </a>
+        {% endif %}
+      </div>
+
+      {% if not request.resolver_match or request.resolver_match.url_name != 'login' %}
+        <div class="mobile-group">
+          {% if request.user.is_authenticated %}
+            {% if request.user.is_staff %}
+              <a href="{% url 'bo_dashboard' %}" class="mobile-link">
+                <span>Back-office</span>
+              </a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}" class="logout-form mobile-logout">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'home' %}">
+              <button type="submit" class="mobile-link danger">
+                <span>Déconnexion</span>
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="mobile-link cta">
+              <span>Connexion</span>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <style>
+    /* Variables CSS */
+    :root {
+      --nav-height: 70px;
+      --nav-bg: rgba(255, 255, 255, 0.92);
+      --nav-border: rgba(0, 0, 0, 0.08);
+      --nav-text: #1a202c;
+      --nav-muted: #4a5568;
+      --brand: #4f46e5;
+      --accent: #7c3aed;
+      --ring: rgba(79, 70, 229, 0.25);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+    }
+
+    [data-theme="dark"] {
+      --nav-bg: rgba(26, 32, 44, 0.92);
+      --nav-border: rgba(255, 255, 255, 0.08);
+      --nav-text: #f7fafc;
+      --nav-muted: #cbd5e0;
+    }
+
+    /* Styles de base */
+    [hidden] { 
+      display: none !important; 
+    }
+
+    body { 
+      padding-top: calc(var(--nav-height) + 1.5rem); 
+    }
+    
+    @media (max-width: 768px) {
+      body { 
+        padding-top: calc(var(--nav-height) + 1rem); 
+      }
+    }
+
+    /* Navigation principale */
+    .site-nav-wrap { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      height: var(--nav-height); 
+      z-index: 3000; 
+    }
+    
+    .site-nav {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0 1.5rem;
+      background: var(--nav-bg);
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      border-bottom: 1px solid var(--nav-border);
+      transition: var(--transition);
+    }
+    
+    .site-nav.scrolled { 
+      box-shadow: var(--shadow-md);
+    }
+
+    .nav-left, .nav-right { 
+      display: flex; 
+      align-items: center; 
+      gap: 1rem; 
+    }
+    
+    .brand { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      text-decoration: none; 
+      transition: transform 0.2s ease;
+    }
+    
+    .brand:hover {
+      transform: translateY(-1px);
+    }
+    
+    .brand-logo { 
+      width: 32px; 
+      height: 32px; 
+      border-radius: 10px; 
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    
+    .brand:hover .brand-logo {
+      transform: rotate(5deg);
+    }
+    
+    .brand-name { 
+      font-weight: 800; 
+      font-size: 1.25rem;
+      letter-spacing: -0.025em; 
+      color: var(--nav-text); 
+      white-space: nowrap; 
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-center { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+    }
+    
+    .nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      line-height: 1;
+      color: var(--nav-muted);
+      font-weight: 600;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      overflow: hidden;
+    }
+    
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      transition: var(--transition);
+      transform: translateX(-50%);
+    }
+    
+    .nav-link:hover {
+      color: var(--nav-text);
+      background: rgba(0, 0, 0, 0.03);
+    }
+    
+    .nav-link:hover::before {
+      width: 70%;
+    }
+    
+    [data-theme="dark"] .nav-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-link.active {
+      color: #fff;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      box-shadow: 0 6px 14px rgba(79, 70, 229, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .nav-link.active::before {
+      display: none;
+    }
+    
+    .nav-link-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .nav-actions .nav-link.nav-cta { 
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .nav-actions .nav-link.nav-cta:hover { 
+      box-shadow: 0 0 0 4px var(--ring), var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .nav-link.danger { 
+      background: rgba(239, 68, 68, 0.08); 
+      color: #ef4444; 
+      border-color: rgba(239, 68, 68, 0.2); 
+    }
+    
+    .nav-link.danger:hover { 
+      background: rgba(239, 68, 68, 0.14); 
+      transform: translateY(-1px);
+    }
+
+    .logout-form { 
+      margin: 0; 
+    }
+
+    /* Menu hamburger */
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--nav-text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .menu-toggle:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    
+    [data-theme="dark"] .menu-toggle:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hamburger {
+      position: relative;
+      width: 22px;
+      height: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .hamburger-line {
+      display: block;
+      height: 2px;
+      width: 100%;
+      border-radius: 1px;
+      background-color: currentColor;
+      transition: var(--transition);
+      transform-origin: center;
+    }
+    
+    .menu-toggle[aria-expanded="true"] .hamburger-line-1 {
+      transform: translateY(7px) rotate(45deg);
+    }
+    
+    .menu-toggle[aria-expanded="true"] .hamburger-line-2 {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    
+    .menu-toggle[aria-expanded="true"] .hamburger-line-3 {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Responsive */
+    .desktop-only { 
+      display: flex; 
+    }
+    
+    @media (max-width: 960px) {
+      .desktop-only { 
+        display: none; 
+      }
+      
+      .site-nav {
+        padding: 0 1rem;
+      }
+    }
+
+    /* Menu mobile */
+    .nav-overlay {
+      position: fixed;
+      inset: var(--nav-height) 0 0 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 3990;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .mobile-panel {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 4000;
+      background: var(--nav-bg);
+      border-top: 1px solid var(--nav-border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem calc(2rem + env(safe-area-inset-bottom));
+      overflow: auto;
+      transform: translateY(-20px);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .mobile-panel-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .mobile-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .mobile-link {
+      display: flex;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--nav-muted);
+      transition: var(--transition);
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    
+    .mobile-link:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--nav-text);
+      transform: translateX(0);
+    }
+    
+    [data-theme="dark"] .mobile-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    
+    .mobile-link.active {
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .mobile-link.cta {
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      color: white;
+      text-align: center;
+      justify-content: center;
+    }
+    
+    .mobile-link.danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      text-align: center;
+    }
+    
+    .mobile-logout {
+      display: contents;
+    }
+
+    /* États ouverts */
+    body.menu-open .nav-overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    body.menu-open .mobile-panel {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    body.menu-open .mobile-link {
+      opacity: 1;
+      transform: translateX(0);
+      transition: transform 0.4s ease 0.1s, opacity 0.4s ease 0.1s, background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    body.menu-open .mobile-link:nth-child(2) {
+      transition-delay: 0.15s;
+    }
+    
+    body.menu-open .mobile-link:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+    
+    body.menu-open .mobile-link:nth-child(4) {
+      transition-delay: 0.25s;
+    }
+    
+    body.menu-open .mobile-link:nth-child(5) {
+      transition-delay: 0.3s;
+    }
+    
+    body.menu-open .mobile-link:nth-child(6) {
+      transition-delay: 0.35s;
+    }
+
+    /* Accessibilité */
+    .sr-only { 
+      position: absolute; 
+      width: 1px; 
+      height: 1px; 
+      padding: 0; 
+      margin: -1px; 
+      overflow: hidden; 
+      clip: rect(0, 0, 0, 0); 
+      border: 0; 
+    }
+
+    /* Par sécurité : en desktop, on ne montre jamais le panneau mobile */
+    @media (min-width: 961px) {
+      .nav-overlay, .mobile-panel { 
+        display: none !important; 
+      }
+      
+      .menu-toggle {
+        display: none;
+      }
+    }
+
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const nav = document.querySelector('.site-nav');
+      const btn = document.querySelector('.menu-toggle');
+      const panel = document.getElementById('mobileMenu');
+      const overlay = document.querySelector('.nav-overlay');
+      const body = document.body;
+
+      function onScroll(){
+        if (!nav) return;
+        if (window.scrollY > 6) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, {passive:true});
+
+      function openMenu(){
+        if(!panel || !overlay || !btn) return;
+        panel.removeAttribute('hidden');
+        overlay.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded','true');
+        body.classList.add('menu-open');
+        document.documentElement.style.overflow = 'hidden';
+      }
+      
+      function closeMenu(){
+        if(!panel || !overlay || !btn) return;
+        btn.setAttribute('aria-expanded','false');
+        body.classList.remove('menu-open');
+        
+        // Délai pour permettre l'animation de fermeture
+        setTimeout(() => {
+          panel.setAttribute('hidden','');
+          overlay.setAttribute('hidden','');
+          document.documentElement.style.overflow = '';
+        }, 300);
+      }
+
+      if (btn) btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        open ? closeMenu() : openMenu();
+      });
+      
+      if (overlay) overlay.addEventListener('click', closeMenu);
+      
+      if (panel) panel.addEventListener('click', (e) => {
+        const a = e.target.closest('a,button');
+        if (a && !a.classList.contains('menu-toggle')) closeMenu();
+      });
+
+      // Fermer le menu en appuyant sur Échap
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && body.classList.contains('menu-open')) {
+          closeMenu();
+        }
+      });
+    });
+  </script>
+
+{% endwith %}

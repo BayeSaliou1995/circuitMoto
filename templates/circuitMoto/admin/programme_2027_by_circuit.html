@@ -1,0 +1,192 @@
+{# templates/circuitMoto/admin/programme_2027_by_circuit.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Programme 2027 par circuit | Back-office{% endblock %}
+{% block body_class %}bo-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/balades_bo.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/programme_2027_bo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bo-dashboard">
+  <section class="bo-hero reveal">
+    <div class="bo-hero__content">
+      <div class="bo-kicker">Back-office</div>
+      <h1 class="bo-hero__title">Analyse par circuit 2027</h1>
+      <p class="bo-hero__text">
+        Visualisez les circuits les plus demandés, les personnes à recontacter et les niveaux d'intérêt.
+      </p>
+
+      <div class="bo-hero__chips">
+        <span class="hero-chip">{{ stats.total_circuits }} circuit{{ stats.total_circuits|pluralize }}</span>
+        <span class="hero-chip">{{ stats.circuits_avec_interesses }} avec intéressés</span>
+        <span class="hero-chip">{{ stats.total_interesses }} intéressé{{ stats.total_interesses|pluralize }}</span>
+        <span class="hero-chip">{{ stats.total_non_traites }} à traiter</span>
+      </div>
+    </div>
+
+    <div class="bo-hero__side">
+      <div class="hero-panel">
+        <div class="hero-panel__label">Sélections</div>
+        <div class="hero-panel__value">{{ stats.total_selections }}</div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel__label">Circuits actifs</div>
+        <div class="hero-panel__value">{{ stats.circuits_actifs }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel reveal">
+    <div class="section-head section-head--space">
+      <div>
+        <h2>Circuits et intéressés</h2>
+        <p>Chaque circuit ouvre une fiche dédiée avec les informations complètes des clients.</p>
+      </div>
+      <a href="{% url 'bo_programme_2027_interests' %}" class="btn btn-outline-secondary">
+        Voir tous les intéressés
+      </a>
+    </div>
+
+    <form method="get" class="bo-filters">
+      <div class="bo-filters__grid">
+        <div class="field">
+          <label>Recherche</label>
+          <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Circuit, mois, durée, formule...">
+        </div>
+
+        <div class="field">
+          <label>Statut</label>
+          <select name="actif" class="form-control">
+            <option value="" {% if not actif %}selected{% endif %}>Tous</option>
+            <option value="1" {% if actif == "1" %}selected{% endif %}>Actifs</option>
+            <option value="0" {% if actif == "0" %}selected{% endif %}>Inactifs</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Catégorie</label>
+          <select name="categorie" class="form-control">
+            <option value="">Toutes</option>
+            {% for value,label in categorie_choices %}
+              <option value="{{ value }}" {% if categorie == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Trier par</label>
+          <select name="sort" class="form-control">
+            <option value="-interesses" {% if sort == "-interesses" %}selected{% endif %}>Plus demandés</option>
+            <option value="interesses" {% if sort == "interesses" %}selected{% endif %}>Moins demandés</option>
+            <option value="-prets" {% if sort == "-prets" %}selected{% endif %}>Plus prêts à réserver</option>
+            <option value="ordre" {% if sort == "ordre" %}selected{% endif %}>Ordre programme</option>
+            <option value="-ordre" {% if sort == "-ordre" %}selected{% endif %}>Ordre inverse</option>
+            <option value="titre" {% if sort == "titre" %}selected{% endif %}>Titre A à Z</option>
+            <option value="-titre" {% if sort == "-titre" %}selected{% endif %}>Titre Z à A</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bo-filters__actions">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="{% url 'bo_programme_2027_by_circuit' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      </div>
+    </form>
+
+    {% if page_obj.object_list %}
+      <div class="p27bo-circuit-grid">
+        {% for c in page_obj.object_list %}
+          <article class="p27bo-circuit">
+            <div class="p27bo-circuit__head">
+              <div>
+                <span class="p27bo-month">{{ c.mois }}</span>
+                <h3>{{ c.titre }}</h3>
+                <p>{{ c.duree }} · {{ c.formule }}</p>
+              </div>
+              <span class="status-pill {% if c.total_non_traites %}is-warning{% else %}is-success{% endif %}">
+                {{ c.total_non_traites }} à traiter
+              </span>
+            </div>
+
+            <div class="p27bo-score-grid">
+              <div>
+                <span>Intéressés</span>
+                <strong>{{ c.total_interesses }}</strong>
+              </div>
+              <div>
+                <span>Emails uniques</span>
+                <strong>{{ c.total_emails_uniques }}</strong>
+              </div>
+              <div>
+                <span>Très intéressés</span>
+                <strong>{{ c.total_tres_interesse }}</strong>
+              </div>
+              <div>
+                <span>Prêts à réserver</span>
+                <strong>{{ c.total_pret }}</strong>
+              </div>
+            </div>
+
+            <div class="p27bo-level-bar" aria-label="Répartition par niveau">
+              <span style="--w: {{ c.total_curieux|default:0 }};"></span>
+              <span style="--w: {{ c.total_interesse|default:0 }};"></span>
+              <span style="--w: {{ c.total_tres_interesse|default:0 }};"></span>
+              <span style="--w: {{ c.total_pret|default:0 }};"></span>
+            </div>
+
+            <div class="p27bo-section">
+              <div class="demande-card__label">Derniers contacts</div>
+              <ul class="choice-list">
+                {% for s in c.selections.all|slice:":5" %}
+                  <li>
+                    <strong>{{ s.demande.prenom }} {{ s.demande.nom }}</strong> - {{ s.demande.email }}
+                    {% if s.demande.telephone %} · {{ s.demande.telephone }}{% endif %}
+                    <span class="muted">({{ s.get_niveau_interet_display }})</span>
+                  </li>
+                {% empty %}
+                  <li>Aucun intéressé pour le moment.</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="p27bo-card__actions">
+              <a href="{% url 'bo_programme_2027_circuit_detail' c.id %}" class="btn btn-primary">
+                Voir tous les intéressés
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination-wrap" aria-label="Pagination">
+          <div class="pagination">
+            {% if page_obj.has_previous %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.previous_page_number }}" class="page-link">←</a>
+            {% endif %}
+            <span class="page-current">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.next_page_number }}" class="page-link">→</a>
+            {% endif %}
+          </div>
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <p>Aucun circuit trouvé.</p>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/dashboard.js' %}"></script>
+{% endblock %}

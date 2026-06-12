@@ -1,0 +1,14 @@
+{# templates/emails/balades_demande_user_ack.txt #}
+Bonjour {{ demande.prenom }},
+
+Nous avons bien reçu votre sélection de balades.
+
+Balades choisies :
+{% for b in selected_balades %}
+- {{ b.date_humaine }} — {{ b.titre }} (Guide : {{ b.guide|default:"libre" }})
+{% endfor %}
+
+Nous vous transmettrons manuellement les programmes correspondants dans les meilleurs délais.
+
+Merci,
+Pulsion Horizon

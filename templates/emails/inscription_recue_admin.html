@@ -1,0 +1,100 @@
+{# templates/emails/inscription_recue_admin.html #}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Nouvelle inscription (admin)</title>
+  <style>
+    /* Petites adaptations mobile */
+    @media (max-width:600px){
+      .container{width:100%!important}
+      .p-24{padding:16px!important}
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#f6f8fb;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f8fb">
+    <tr>
+      <td align="center" style="padding:24px">
+        <table class="container" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+               style="width:600px;max-width:600px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+          <tr>
+            <td style="padding:16px 20px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;font-weight:700;
+                       font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;">
+              Nouvelle inscription reçue
+            </td>
+          </tr>
+          <tr>
+            <td class="p-24" style="padding:24px;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#111827;
+                                     font-size:14px;line-height:1.6">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;color:#6b7280;">Circuit</td>
+                  <td align="right" style="padding:8px 0;border-bottom:1px solid #e5e7eb;font-weight:600;color:#111827;">
+                    {{ ins.circuit.nom }} ({{ ins.circuit.code }})
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;color:#6b7280;">Pilote</td>
+                  <td align="right" style="padding:8px 0;border-bottom:1px solid #e5e7eb;font-weight:600;color:#111827;">
+                    {{ ins.pilote.prenom }} {{ ins.pilote.nom }} — {{ ins.pilote.email }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;color:#6b7280;">Passager</td>
+                  <td align="right" style="padding:8px 0;border-bottom:1px solid #e5e7eb;font-weight:600;color:#111827;">
+                    {% if ins.passager %}{{ ins.passager.prenom }} {{ ins.passager.nom }}{% else %}—{% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;color:#6b7280;">Réf.</td>
+                  <td align="right" style="padding:8px 0;font-weight:600;color:#111827;">
+                    {{ ins.id_public }}
+                  </td>
+                </tr>
+              </table>
+
+              <div style="height:16px"></div>
+
+              <a href="{{ edit_url }}"
+                 style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;font-weight:600;
+                        padding:10px 16px;border-radius:8px;">
+                Ouvrir le dossier
+              </a>
+
+
+
+              <div style="height:8px"></div>
+
+              <a href="{{ ins_detail_admin_url }}"
+                style="display:inline-block;background:#111827;color:#ffffff;text-decoration:none;font-weight:600;
+                        padding:10px 16px;border-radius:8px;">
+                Voir le détail (Back-office)
+              </a>
+
+              <p style="margin-top:12px;color:#6b7280;font-size:12px;">
+                Fiche pilote : <a href="{{ personne_admin_url }}" style="color:#2563eb;">ouvrir</a>
+                {% if ins.passager %} — Fiche passager : <a href="{{ passager_admin_url }}" style="color:#2563eb;">ouvrir</a>{% endif %}
+              </p>
+
+
+              <p style="margin-top:16px;color:#6b7280;font-size:12px;margin-bottom:0;">
+                Vous recevez cet e-mail parce qu’une nouvelle inscription a été soumise sur votre site.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 20px;background:#f9fafb;color:#6b7280;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+                       font-size:12px;text-align:center;">
+              © {{ now|date:"Y" }} Pulsion Horizon
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

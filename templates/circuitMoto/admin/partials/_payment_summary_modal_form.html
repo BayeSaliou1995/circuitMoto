@@ -1,0 +1,202 @@
+{# templates/circuitMoto/admin/partials/_payment_summary_modal_form.html #}
+
+<form class="js-payment-summary-form" method="post" action="{% url 'bo_personne_detail' personne.id %}">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="ins_payment_summary_send">
+  {{ form.ins_id }}
+
+  <div class="paysum-panel">
+    <div class="paysum-panel-head">
+      <div>
+        <div class="paysum-kicker">Préparation de l’email</div>
+        <h3 class="paysum-title">Récapitulatif de paiement</h3>
+      </div>
+      <div class="paysum-chip">
+        Vérification avant envoi
+      </div>
+    </div>
+
+    <div class="paysum-grid">
+
+      {# ========================================================= #}
+      {# 1. DESTINATAIRE / EMAIL                                   #}
+      {# ========================================================= #}
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Destinataire</div>
+        <hr class="paysum-separator">
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">Destinataire</label>
+        {{ form.recipient_role }}
+      </div>
+
+      <div class="paysum-col paysum-col--wide">
+        <label class="paysum-label">Sujet</label>
+        {{ form.sujet }}
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">Email destinataire</label>
+        <input type="text" class="paysum-input paysum-input--readonly" value="{{ recipient_email }}" disabled>
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">Introduction</label>
+        {{ form.intro_message }}
+      </div>
+
+
+      {# ========================================================= #}
+      {# 2. MONTANT INITIAL                                        #}
+      {# ========================================================= #}
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Montant initial de l’inscription</div>
+        <hr class="paysum-separator">
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">Total attendu initial</label>
+        {{ form.total_attendu }}
+      </div>
+
+
+      {# ========================================================= #}
+      {# 3. OPTIONS AJOUTÉES (AFFICHAGE CONDITIONNEL)              #}
+      {# ========================================================= #}
+      {# OPTIONS AJOUTÉES #}
+      {% if has_options_added %}
+        <div class="paysum-col paysum-col--full" data-options-added-block>
+          <div class="paysum-section-title">Options ajoutées après modification</div>
+          <hr class="paysum-separator">
+        </div>
+
+        <div class="paysum-col" data-options-added-block>
+          <label class="paysum-label">Montant des options ajoutées</label>
+          {{ form.montant_options_ajoutees }}
+        </div>
+
+        <div class="paysum-col" data-options-added-block>
+          <label class="paysum-label">Nouveau total attendu</label>
+          {{ form.nouveau_total_attendu }}
+        </div>
+
+        <div class="paysum-col" data-options-added-block>
+          <label class="paysum-label">Paiement reçu pour les nouvelles options</label>
+          {{ form.paiement_recu_pour_options }}
+        </div>
+      {% endif %}
+
+
+      {# ========================================================= #}
+      {# 4. ENCAISSEMENTS                                           #}
+      {# ========================================================= #}
+      {# ENCAISSEMENTS #}
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Encaissements enregistrés</div>
+        <hr class="paysum-separator">
+      </div>
+
+      {% if has_acompte1 %}
+        <div class="paysum-col">
+          <label class="paysum-label">Acompte 1 encaissé</label>
+          {{ form.acompte1_encaisse }}
+        </div>
+      {% endif %}
+
+      {% if has_acompte2 %}
+        <div class="paysum-col">
+          <label class="paysum-label">Acompte 2 encaissé</label>
+          {{ form.acompte2_encaisse }}
+        </div>
+      {% endif %}
+
+      <div class="paysum-col">
+        <label class="paysum-label">Montant encaissé après acomptes</label>
+        {{ form.solde_encaisse }}
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">Date du paiement <span class="text-danger">*</span></label>
+        {{ form.date_paiement }}
+      </div>
+
+
+      {# ========================================================= #}
+      {# 5. ÉTAT ACTUEL                                             #}
+      {# ========================================================= #}
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">État actuel du paiement</div>
+        <hr class="paysum-separator">
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">Reste à payer</label>
+        {{ form.montant_restant }}
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">Trop-perçu</label>
+        {{ form.trop_percu }}
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">Libellé de situation</label>
+        {{ form.situation_label }}
+      </div>
+
+
+      {# ========================================================= #}
+      {# 6. MESSAGE CLIENT                                          #}
+      {# ========================================================= #}
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Contenu du message</div>
+        <hr class="paysum-separator">
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">Message complémentaire</label>
+        {{ form.note_client }}
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">Informations de paiement / consignes</label>
+        {{ form.infos_paiement_custom }}
+      </div>
+
+
+      {# ========================================================= #}
+      {# 7. OPTIONS D’INCLUSION                                     #}
+      {# ========================================================= #}
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-options-card">
+          <div class="paysum-options-title">Options d’inclusion</div>
+          <label class="paysum-check-row">
+            {{ form.inclure_detail_paiements }}
+            <span>Inclure le détail des paiements enregistrés</span>
+          </label>
+          <label class="paysum-check-row">
+            {{ form.inclure_infos_paiement }}
+            <span>Inclure les informations de paiement du circuit</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    {% if form.errors %}
+      <div class="form-errors">
+        {{ form.errors }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="paysum-preview-box">
+    <div class="paysum-preview-head">
+      <div>
+        <div class="paysum-kicker">Aperçu dynamique</div>
+        <h4>Aperçu avant envoi</h4>
+      </div>
+    </div>
+    <div class="paysum-preview" id="paysum-live-preview"></div>
+  </div>
+</form>

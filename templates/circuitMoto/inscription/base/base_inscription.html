@@ -1,0 +1,211 @@
+<!-- {# templates/circuitMoto/inscription/base/base_inscription.html #} -->
+{% load i18n static version_static %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'fr' }}" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Pulsion Inscription{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  {% block meta %}
+    <meta name="description" content="{% block meta_description %}Inscrivez-vous aux circuits moto Pulsion Inscription.{% endblock %}">
+    {% block robots %}<meta name="robots" content="index,follow,max-image-preview:large">{% endblock %}
+    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="color-scheme" content="light dark">
+  {% endblock %}
+
+  <!-- {# OG/Twitter — surchargeables si besoin #} -->
+  {% block social_meta %}
+    <meta property="og:locale" content="{% if LANGUAGE_CODE == 'en' %}en_US{% else %}fr_FR{% endif %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="Pulsion Inscription">
+
+    <meta property="og:title" content="{% block og_title %}Pulsion Inscription{% endblock %}">
+    <meta property="og:description" content="{% block og_desc %}Voyages et circuits moto.{% endblock %}">
+
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <meta property="og:image" content="{% block og_image %}{{ SITE_URL }}{% static 'circuitMoto/img/social/pulsion-og.jpg' %}{% endblock %}">
+    <meta property="og:image:alt" content="{% block og_image_alt %}Pulsion Inscription — circuits moto{% endblock %}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block tw_title %}Pulsion Inscription{% endblock %}">
+    <meta name="twitter:description" content="{% block tw_desc %}Voyages et circuits moto.{% endblock %}">
+    <meta name="twitter:image" content="{% block tw_image %}{{ SITE_URL }}{% static 'circuitMoto/img/social/pulsion-og.jpg' %}{% endblock %}">
+  {% endblock %}
+
+
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'circuitMoto/img/favicon/favicon.ico' %}" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'circuitMoto/img/favicon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'circuitMoto/img/favicon/favicon-16x16.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'circuitMoto/img/favicon/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'circuitMoto/img/favicon/site.webmanifest' %}">
+
+
+  <!-- {# Applique le thème AVANT le paint (évite le flash) #} -->
+  <script>
+    (function(){try{
+      var t = localStorage.getItem('theme')
+              || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
+      document.documentElement.setAttribute('data-theme', t);
+    }catch(e){}})();
+  </script>
+
+  <!-- {# Fonts #} -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- {# CSS principal #} -->
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/base.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/nav.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/footer.css' %}">
+
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/backup-modal.css' %}">
+
+
+  {% block extra_head %}
+  
+  
+  {% endblock %}
+
+  {% block structured_data %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Pulsion Horizon",
+        "url": "{{ SITE_URL }}/",
+        "logo": "{{ SITE_URL }}{% static 'circuitMoto/img/favicon/android-chrome-512x512.png' %}"
+      }
+    </script>
+  {% endblock %}
+
+
+</head>
+<body class="{% block body_class %}{% endblock %}"
+  data-page="{{ request.resolver_match.url_name|default:'' }}"
+  data-wizard-mode="{{ wizard_mode|default:'' }}">
+
+  {% block public_nav %}{% include "circuitMoto/base/_nav.html" %}{% endblock %}
+
+  <!-- {# Messages Django (centrés, accessibles) #} -->
+  {% include "circuitMoto/base/_messages.html" %}
+
+  <!-- {# Wizard (optionnel) — ne s’affiche que si wizard dans le contexte #} -->
+  {% block wizard_ui %}
+    {% if wizard %}
+      <header class="wizard-head">
+        <h1 class="page-title">{{ current_step_title }}</h1>
+
+        {% with cur=wizard.steps.index|add:'1' total=wizard.steps.count %}
+          <div class="progress-container" role="progressbar"
+              aria-valuemin="0" aria-valuemax="100"
+              aria-valuenow="{% widthratio cur total 100 %}">
+            <div class="progress-bar" id="progress-bar"
+                style="width:{% widthratio cur total 100 %}%"></div>
+          </div>
+        {% endwith %}
+
+        <div class="step-indicator" aria-label="{% trans 'Étapes' %}">
+          {% if steps_progress %}
+            {% for sp in steps_progress %}
+              {% if sp.is_current %}
+                <div class="step active" aria-current="step">
+                  <span class="step-number">{{ sp.index }}</span>
+                  <span class="step-label">{{ sp.title }}</span>
+                </div>
+
+              {% elif sp.is_clickable %}
+                <button
+                  type="button"
+                  class="step {% if sp.is_completed %}completed{% endif %} step-link"
+                  data-wizard-step="{{ sp.name }}"
+                  data-step-url="{{ sp.url }}"
+                  aria-label="{% blocktrans %}Aller à l’étape {{ sp.index }} : {{ sp.title }}{% endblocktrans %}">
+                  <span class="step-number">{{ sp.index }}</span>
+                  <span class="step-label">{{ sp.title }}</span>
+                </button>
+
+
+              {% else %}
+                <div class="step" aria-disabled="true" title="{% trans 'Veuillez compléter les étapes précédentes.' %}">
+                  <span class="step-number">{{ sp.index }}</span>
+                  <span class="step-label">{{ sp.title }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+
+
+
+      </header>
+    {% endif %}
+  {% endblock %}
+
+  <main id="content" class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "circuitMoto/base/_footer.html" %}
+  <script src="{% url 'javascript-catalog' %}"></script>
+  <!-- {# JS factorisés #} -->
+  <script defer src="{% version_static 'circuitMoto/js/ui.js' %}"></script>
+  <script defer src="{% version_static 'circuitMoto/js/theme.js' %}"></script>
+  <script defer src="{% version_static 'circuitMoto/js/base.js' %}"></script>
+  <script defer src="{% version_static 'circuitMoto/js/wizard_nav.js' %}"></script>
+  <script defer src="{% version_static 'circuitMoto/js/nav.js' %}"></script>
+  <script src="{% version_static 'circuitMoto/js/footer.js' %}" defer></script>
+  <script src="{% version_static 'circuitMoto/admin/js/backup-modal.js' %}" defer></script>
+  
+  {% block scripts %}{% endblock %}
+
+  <!-- Bouton Remonter en haut -->
+  <button id="backTop" class="back-top" aria-label="{% trans "Remonter en haut" %}" aria-hidden="true" hidden>
+    <span class="sr-only">{% trans "Remonter en haut" %}</span>
+    <!-- icône flèche -->
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <script>
+    // Back-to-top : apparition + progression + scroll doux
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('backTop');
+      if (!btn) return;
+
+      btn.hidden = false;         // évite le FOUC
+      const threshold = 320;      // px avant d'afficher
+
+      const update = () => {
+        const y = window.scrollY || document.documentElement.scrollTop;
+        const h = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const pct = Math.min(100, Math.max(0, (y / h) * 100));
+        btn.style.setProperty('--p', pct + '%');
+        if (y > threshold) {
+          btn.dataset.show = '1';
+          btn.setAttribute('aria-hidden', 'false');
+        } else {
+          btn.dataset.show = '0';
+          btn.setAttribute('aria-hidden', 'true');
+        }
+      };
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+
+      btn.addEventListener('click', () => {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) window.scrollTo(0, 0);
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
+
+</body>
+</html>

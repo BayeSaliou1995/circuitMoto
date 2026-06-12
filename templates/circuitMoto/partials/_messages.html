@@ -1,0 +1,35 @@
+{% if messages %}
+    <div class="messages-center" role="status" aria-live="polite">
+        <div class="msg-stack">
+        {% for message in messages %}
+            {% with t=message.tags|default:"info" %}
+            <div class="msg-card
+                {% if 'error' in t %}error{% elif 'warning' in t %}warning{% elif 'success' in t %}success{% else %}info{% endif %}"
+                data-type="{{ t }}">
+            <div class="msg-ico" aria-hidden="true">
+                {% if 'error' in t %}
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+                </svg>
+                {% elif 'warning' in t %}
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m12 9 0 4"/><path d="m12 17 .01 0"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                </svg>
+                {% elif 'success' in t %}
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.1V12A10 10 0 1 1 12 2"/><path d="m9 12 2 2 4-4"/>
+                </svg>
+                {% else %}
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+                </svg>
+                {% endif %}
+            </div>
+            <div class="msg-text">{{ message|linebreaksbr }}</div>
+            <button type="button" class="msg-close" aria-label="Fermer l’alerte">×</button>
+            </div>
+            {% endwith %}
+        {% endfor %}
+        </div>
+    </div>
+{% endif %}

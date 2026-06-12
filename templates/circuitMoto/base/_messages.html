@@ -1,0 +1,16 @@
+{# templates/circuitMoto/base/_messages.html #}
+{% if messages %}
+<div class="messages-center" role="status" aria-live="polite">
+  <div class="msg-stack">
+    {% for message in messages %}
+      {% with t=message.tags|default:"info" %}
+      <div class="msg-card {% if 'error' in t %}error{% elif 'warning' in t %}warning{% elif 'success' in t %}success{% else %}info{% endif %}">
+        <div class="msg-ico" aria-hidden="true"></div>
+        <div class="msg-text">{{ message|linebreaksbr }}</div>
+        <button type="button" class="msg-close" aria-label="Fermer l’alerte">×</button>
+      </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

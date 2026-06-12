@@ -1,0 +1,28 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+  {% include "circuitMoto/partials/_error_style.html" %}
+
+  <div class="err-wrap">
+    <div class="err-card">
+      <div class="err-hero">
+        <span class="err-code"><span class="err-chip">403</span> Vérification CSRF échouée</span>
+        <div class="err-halo"></div>
+      </div>
+      <div class="err-body">
+        <p class="err-msg">Le jeton de sécurité de votre formulaire n’a pas été validé.</p>
+        {% if reason %}<p class="err-muted">Détail : {{ reason }}</p>{% endif %}
+        <ul class="err-muted" style="margin:10px 0 0 18px;">
+          <li>Rechargez la page puis réessayez.</li>
+          <li>Fermez les anciens onglets du site si plusieurs sont ouverts.</li>
+          <li>Videz le cache/cookies si le problème persiste.</li>
+        </ul>
+        <div class="err-actions">
+          <a class="btn btn-primary" href="/">Aller à l’accueil</a>
+        </div>
+
+        {% include "circuitMoto/partials/_error_support.html" %}
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

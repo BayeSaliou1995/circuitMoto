@@ -1,0 +1,432 @@
+{# templates/circuitMoto/admin/dashboard.html #}
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load humanize static version_static %}
+
+{% block title %}Dashboard admin — Pulsion Horizon{% endblock %}
+{% block body_class %}bo-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bo-dashboard">
+
+  <section class="bo-hero reveal">
+    <div class="bo-hero__content">
+      <div class="bo-kicker">Administration</div>
+      <h1 class="bo-hero__title">Vue d’ensemble du back-office</h1>
+      <p class="bo-hero__text">
+        Suivi global des circuits, inscriptions, paiements, documents, demandes clients et abonnés newsletter.
+      </p>
+
+      <div class="bo-hero__chips">
+        <span class="hero-chip">{{ stats.nb_circuits_a_venir }} circuit{{ stats.nb_circuits_a_venir|pluralize }} à venir</span>
+        <span class="hero-chip">{{ stats.nb_documents_attente }} document{{ stats.nb_documents_attente|pluralize }} à traiter</span>
+        <span class="hero-chip">{{ stats.nb_contacts_non_traites }} demande{{ stats.nb_contacts_non_traites|pluralize }} non traitée{{ stats.nb_contacts_non_traites|pluralize }}</span>
+        <span class="hero-chip">{{ stats.nb_newsletter_total }} email{{ stats.nb_newsletter_total|pluralize }} newsletter</span>
+      </div>
+    </div>
+
+    <div class="bo-hero__side">
+      <div class="hero-panel">
+        <div class="hero-panel__label">Taux validation</div>
+        <div class="hero-panel__value">{{ stats.taux_validation }}%</div>
+        <div class="hero-panel__progress"><span style="width: {{ stats.taux_validation }}%"></span></div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel__label">Taux encaissement</div>
+        <div class="hero-panel__value">{{ stats.taux_encaissement }}%</div>
+        <div class="hero-panel__progress is-success"><span style="width: {{ stats.taux_encaissement }}%"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="kpi-grid">
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">🗺️</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Circuits</div>
+        <div class="kpi-card__value">{{ stats.nb_circuits }}</div>
+        <div class="kpi-card__meta">{{ stats.nb_circuits_a_venir }} à venir</div>
+      </div>
+    </article>
+
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">🧾</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Inscriptions</div>
+        <div class="kpi-card__value">{{ stats.nb_inscriptions }}</div>
+        <div class="kpi-card__meta">{{ stats.nb_inscriptions_validees }} validées</div>
+      </div>
+    </article>
+
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">👥</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Personnes</div>
+        <div class="kpi-card__value">{{ stats.nb_personnes }}</div>
+        <div class="kpi-card__meta">base contacts</div>
+      </div>
+    </article>
+
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">📄</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Documents en attente</div>
+        <div class="kpi-card__value">{{ stats.nb_documents_attente }}</div>
+        <div class="kpi-card__meta">à vérifier</div>
+      </div>
+    </article>
+
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">💬</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Demandes contact</div>
+        <div class="kpi-card__value">{{ stats.nb_contacts_non_traites }}</div>
+        <div class="kpi-card__meta">non traitées</div>
+      </div>
+    </article>
+
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">📬</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Newsletter</div>
+        <div class="kpi-card__value">{{ stats.nb_newsletter_total }}</div>
+        <div class="kpi-card__meta">{{ stats.nb_newsletter_active }} actifs</div>
+      </div>
+    </article>
+
+    <article class="kpi-card reveal">
+      <div class="kpi-card__icon">🏍️</div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__label">Balades 1 jour</div>
+        <div class="kpi-card__value">{{ stats.nb_balades_total }}</div>
+        <div class="kpi-card__meta">{{ stats.nb_balades_actives }} active{{ stats.nb_balades_actives|pluralize }}</div>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="quick-actions reveal">
+    <div class="section-head">
+      <div>
+        <h2>Actions rapides</h2>
+        <p>Accès direct aux opérations les plus fréquentes.</p>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+      <a href="{% url 'bo_circuit_create' %}" class="quick-card">
+        <span class="quick-card__icon">➕</span>
+        <span class="quick-card__title">Créer un circuit</span>
+        <span class="quick-card__text">Ajouter un nouveau départ</span>
+      </a>
+
+      <a href="{% url 'bo_inscription_list' %}" class="quick-card">
+        <span class="quick-card__icon">📋</span>
+        <span class="quick-card__title">Voir les inscriptions</span>
+        <span class="quick-card__text">Suivre tous les dossiers</span>
+      </a>
+
+      <a href="{% url 'bo_personne_list' %}" class="quick-card">
+        <span class="quick-card__icon">🧑</span>
+        <span class="quick-card__title">Base personnes</span>
+        <span class="quick-card__text">Pilotes, passagers, contacts</span>
+      </a>
+
+      <a href="{% url 'bo_emailing' %}" class="quick-card">
+        <span class="quick-card__icon">✉️</span>
+        <span class="quick-card__title">Emailing</span>
+        <span class="quick-card__text">Envoyer une communication</span>
+      </a>
+
+      <a href="{% url 'bo_stats' %}" class="quick-card">
+        <span class="quick-card__icon">📈</span>
+        <span class="quick-card__title">Statistiques</span>
+        <span class="quick-card__text">Analyse détaillée</span>
+      </a>
+
+      <a href="{% url 'bo_newsletter_broadcast' %}" class="quick-card">
+        <span class="quick-card__icon">🚀</span>
+        <span class="quick-card__title">Newsletter</span>
+        <span class="quick-card__text">Campagnes d’envoi</span>
+      </a>
+
+      <a href="{% url 'bo_balade_list' %}" class="quick-card">
+        <span class="quick-card__icon">🏍️</span>
+        <span class="quick-card__title">Gérer les balades</span>
+        <span class="quick-card__text">Créer et modifier les balades d’un jour</span>
+      </a>
+
+      <a href="{% url 'bo_demande_balade_list' %}" class="quick-card">
+        <span class="quick-card__icon">📨</span>
+        <span class="quick-card__title">Demandes balades</span>
+        <span class="quick-card__text">Voir les sélections clients</span>
+      </a>
+
+      <a href="{% url 'bo_demande_balade_list' %}" class="quick-card">
+        <span class="quick-card__icon">📨</span>
+        <span class="quick-card__title">Demandes balades</span>
+        <span class="quick-card__text">{{ stats.nb_demandes_balades_non_traitees }} à traiter</span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+
+    <details class="panel panel-fold reveal" open>
+      <summary class="panel-summary">
+        <div>
+          <h2>Prochains circuits</h2>
+          <p>Départs imminents et niveau de remplissage.</p>
+        </div>
+        <span class="panel-summary__meta">{{ prochains|length }} affichés</span>
+      </summary>
+
+
+      <details class="panel panel-fold reveal" open>
+        <summary class="panel-summary">
+          <div>
+            <h2>Prochaines balades 1 jour</h2>
+            <p>Sorties publiées et prêtes à être proposées aux clients.</p>
+          </div>
+          <span class="panel-summary__meta">{{ prochaines_balades|length }} affichées</span>
+        </summary>
+
+        {% if prochaines_balades %}
+          <div class="stack-list stack-list--limited" data-limit="4">
+            {% for b in prochaines_balades %}
+              <div class="trip-row {% if forloop.counter > 4 %}is-extra{% endif %}">
+                <div class="trip-row__main">
+                  <div class="trip-row__title">
+                    {{ b.titre }}
+                    {% if b.est_bientot %}
+                      <span class="mini-badge is-warning">bientôt</span>
+                    {% endif %}
+                  </div>
+                  <div class="trip-row__meta">
+                    {{ b.date_label }}
+                    {% if b.guide %}· Guide : {{ b.guide }}{% endif %}
+                  </div>
+                </div>
+
+                <div class="trip-row__side">
+                  <a href="{% url 'bo_balade_edit' b.id %}" class="mini-link">Modifier</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          {% if prochaines_balades|length > 4 %}
+            <button type="button"
+                    class="btn-toggle-more"
+                    data-target-closest=".panel"
+                    data-label-more="Voir plus"
+                    data-label-less="Voir moins">
+              Voir plus
+            </button>
+          {% endif %}
+
+          <div class="panel-actions-inline">
+            <a href="{% url 'bo_balade_create' %}" class="mini-link">+ Nouvelle balade</a>
+            <a href="{% url 'bo_balade_list' %}" class="mini-link">Voir toutes les balades</a>
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <p>Aucune balade active à venir.</p>
+            <p><a href="{% url 'bo_balade_create' %}" class="mini-link">Créer la première balade</a></p>
+          </div>
+        {% endif %}
+      </details>
+
+
+      {% if prochains %}
+        <div class="stack-list stack-list--limited" data-limit="4">
+          {% for c in prochains %}
+            <div class="trip-row {% if forloop.counter > 4 %}is-extra{% endif %}">
+              <div class="trip-row__main">
+                <div class="trip-row__title">
+                  {{ c.nom }}
+                  {% if c.est_bientot %}
+                    <span class="mini-badge is-warning">bientôt</span>
+                  {% endif %}
+                </div>
+                <div class="trip-row__meta">
+                  {{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}
+                  · {{ c.nb }}/{{ c.capacite }} inscrits
+                  · {{ c.places_restantes }} place{{ c.places_restantes|pluralize }} restante{{ c.places_restantes|pluralize }}
+                </div>
+              </div>
+
+              <div class="trip-row__side">
+                <div class="progress-line"><span style="width: {{ c.pct }}%"></span></div>
+                <div class="trip-row__pct">{{ c.pct }}%</div>
+                <a href="{% url 'bo_circuit_detail' c.id %}" class="mini-link">Détails</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if prochains|length > 4 %}
+          <button type="button" class="btn-toggle-more" data-target-closest=".panel" data-label-more="Voir plus" data-label-less="Voir moins">
+            Voir plus
+          </button>
+        {% endif %}
+      {% else %}
+        <div class="empty-state"><p>Aucun circuit publié à venir.</p></div>
+      {% endif %}
+    </details>
+
+    <details class="panel panel-fold reveal" open>
+      <summary class="panel-summary">
+        <div>
+          <h2>Points d’attention</h2>
+          <p>Ce qui mérite une action rapide.</p>
+        </div>
+      </summary>
+
+      <div class="alert-stack">
+
+
+        <div class="alert-card">
+          <div class="alert-card__label">Demandes balades à traiter</div>
+          <div class="alert-card__value">{{ stats.nb_demandes_balades_non_traitees }}</div>
+        </div>
+
+        <div class="alert-card">
+          <div class="alert-card__label">Documents en attente</div>
+          <div class="alert-card__value">{{ stats.nb_documents_attente }}</div>
+        </div>
+
+        <div class="alert-card">
+          <div class="alert-card__label">Demandes non traitées</div>
+          <div class="alert-card__value">{{ stats.nb_contacts_non_traites }}</div>
+        </div>
+
+        <div class="alert-card">
+          <div class="alert-card__label">Circuits quasi complets</div>
+          <div class="alert-card__value">{{ stats.circuits_quasi_complets }}</div>
+        </div>
+
+        <div class="alert-card">
+          <div class="alert-card__label">Circuits complets</div>
+          <div class="alert-card__value">{{ stats.circuits_complets }}</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="panel panel-fold reveal" open>
+      <summary class="panel-summary">
+        <div>
+          <h2>Dernières inscriptions</h2>
+          <p>Les dossiers les plus récents du système.</p>
+        </div>
+      </summary>
+      <div id="dashboard-recents-container">
+        {% include "circuitMoto/admin/partials/dashboard/_inscriptions_recentes.html" %}
+      </div>
+    </details>
+
+    <details class="panel panel-fold reveal" open>
+      <summary class="panel-summary">
+        <div>
+          <h2>Documents à valider</h2>
+          <p>Les prochains fichiers à contrôler.</p>
+        </div>
+      </summary>
+      <div id="dashboard-documents-container">
+        {% include "circuitMoto/admin/partials/dashboard/_documents_attente.html" %}
+      </div>
+    </details>
+
+    <details class="panel panel-fold reveal" open>
+      <summary class="panel-summary">
+        <div>
+          <h2>Demandes de contact</h2>
+          <p>Messages récents à traiter.</p>
+        </div>
+      </summary>
+      <div id="dashboard-contacts-container">
+        {% include "circuitMoto/admin/partials/dashboard/_contacts_recents.html" %}
+      </div>
+    </details>
+
+    <details class="panel panel-fold reveal" open>
+      <summary class="panel-summary">
+        <div>
+          <h2>Emails newsletter</h2>
+          <p>Adresses inscrites à la newsletter.</p>
+        </div>
+      </summary>
+      <div id="dashboard-newsletter-container">
+        {% include "circuitMoto/admin/partials/dashboard/_newsletter_list.html" %}
+      </div>
+    </details>
+
+  </section>
+
+  <section class="status-columns reveal">
+    <div class="status-column">
+      <div class="status-column__head">
+        <h3>Publiés</h3>
+        <span>{{ publies|length }}</span>
+      </div>
+      <div class="status-column__body">
+        {% for c in publies %}
+          <a href="{% url 'bo_circuit_detail' c.id %}" class="status-item">
+            <strong>{{ c.nom }}</strong>
+            <small>{{ c.date_debut|date:"d/m/Y" }}</small>
+          </a>
+        {% empty %}
+          <div class="empty-mini">Aucun circuit publié.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="status-column">
+      <div class="status-column__head">
+        <h3>Brouillons</h3>
+        <span>{{ brouillons|length }}</span>
+      </div>
+      <div class="status-column__body">
+        {% for c in brouillons %}
+          <a href="{% url 'bo_circuit_detail' c.id %}" class="status-item">
+            <strong>{{ c.nom }}</strong>
+            <small>{{ c.modifie_le|date:"d/m/Y H:i" }}</small>
+          </a>
+        {% empty %}
+          <div class="empty-mini">Aucun brouillon.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="status-column">
+      <div class="status-column__head">
+        <h3>Archivés</h3>
+        <span>{{ archives|length }}</span>
+      </div>
+      <div class="status-column__body">
+        {% for c in archives %}
+          <a href="{% url 'bo_circuit_detail' c.id %}" class="status-item">
+            <strong>{{ c.nom }}</strong>
+            <small>{{ c.date_debut|date:"d/m/Y" }}</small>
+          </a>
+        {% empty %}
+          <div class="empty-mini">Aucun archive.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/dashboard.js' %}"></script>
+{% endblock %}

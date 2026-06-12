@@ -1,0 +1,136 @@
+{# templates/circuitMoto/admin/partials/_payment_reminder_modal_form.html #}
+
+<form class="js-payment-reminder-form" method="post" action="{% url 'bo_personne_detail' personne.id %}">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="ins_payment_reminder_send">
+  {{ form.ins_id }}
+
+  <div class="paysum-panel">
+    <div class="paysum-panel-head">
+      <div>
+        <div class="paysum-kicker">Préparation de l’email</div>
+        <h3 class="paysum-title">Rappel paiement</h3>
+      </div>
+      <div class="paysum-chip">Vérification avant envoi</div>
+    </div>
+
+    <div class="paysum-grid">
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Destinataire</div>
+        <hr class="paysum-separator">
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">{{ form.recipient_role.label }}</label>
+        {{ form.recipient_role }}
+        {% if form.recipient_role.errors %}<div class="paysum-error">{{ form.recipient_role.errors }}</div>{% endif %}
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">Email</label>
+        <input type="text" class="paysum-input" value="{{ recipient_email|default:'—' }}" readonly>
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Contenu</div>
+        <hr class="paysum-separator">
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">{{ form.sujet.label }}</label>
+        <input
+          type="text"
+          name="{{ form.sujet.name }}"
+          value="{{ form.sujet.value|default_if_none:'' }}"
+          class="paysum-input">
+        {% if form.sujet.errors %}<div class="paysum-error">{{ form.sujet.errors }}</div>{% endif %}
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">{{ form.intro_message.label }}</label>
+        <textarea
+          name="{{ form.intro_message.name }}"
+          rows="4"
+          class="paysum-textarea">{{ form.intro_message.value|default_if_none:'' }}</textarea>
+        {% if form.intro_message.errors %}<div class="paysum-error">{{ form.intro_message.errors }}</div>{% endif %}
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">{{ form.total_attendu.label }}</label>
+        <input
+          type="number"
+          name="{{ form.total_attendu.name }}"
+          value="{{ form.total_attendu.value|default_if_none:'' }}"
+          step="0.01"
+          class="paysum-input paysum-input--number"
+          readonly>
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">{{ form.total_paye.label }}</label>
+        <input
+          type="number"
+          name="{{ form.total_paye.name }}"
+          value="{{ form.total_paye.value|default_if_none:'' }}"
+          step="0.01"
+          class="paysum-input paysum-input--number"
+          readonly>
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">{{ form.montant_restant.label }}</label>
+        <input
+          type="number"
+          name="{{ form.montant_restant.name }}"
+          value="{{ form.montant_restant.value|default_if_none:'' }}"
+          step="0.01"
+          class="paysum-input paysum-input--number"
+          readonly>
+      </div>
+
+      <div class="paysum-col">
+        <label class="paysum-label">{{ form.situation_label.label }}</label>
+        <input
+          type="text"
+          name="{{ form.situation_label.name }}"
+          value="{{ form.situation_label.value|default_if_none:'' }}"
+          class="paysum-input"
+          readonly>
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-checkline">
+          {{ form.inclure_detail_paiements }} <span>{{ form.inclure_detail_paiements.label }}</span>
+        </label>
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-checkline">
+          {{ form.inclure_infos_paiement }} <span>{{ form.inclure_infos_paiement.label }}</span>
+        </label>
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">{{ form.infos_paiement_custom.label }}</label>
+        {{ form.infos_paiement_custom }}
+      </div>
+
+      <div class="paysum-col paysum-col--full">
+        <label class="paysum-label">{{ form.note_client.label }}</label>
+        {{ form.note_client }}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="paysum-col paysum-col--full">
+          <div class="paysum-error">{{ form.non_field_errors }}</div>
+        </div>
+      {% endif %}
+
+      <div class="paysum-col paysum-col--full">
+        <div class="paysum-section-title">Aperçu de l’email</div>
+        <hr class="paysum-separator">
+        <div id="payrem-live-preview"></div>
+      </div>
+    </div>
+  </div>
+</form>

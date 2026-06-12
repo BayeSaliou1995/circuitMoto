@@ -1,0 +1,25 @@
+
+
+NOUVEAU MESSAGE CONTACT
+
+Nom       : {{ cm.nom }} {{ cm.prenom }}
+Email     : {{ cm.email }}
+Téléphone : {{ cm.telephone|default:"—" }}
+Adresse   : {{ cm.adresse|default:"—" }}
+
+Intéressé par un circuit ? {{ cm.interesse_circuit|yesno:"Oui,Non" }}
+Statut    : {{ cm.get_statut_circuit_display|default:"—" }}
+
+{% if cm.circuit %}
+Circuit   : {{ cm.circuit.code }} — {{ site_url }}{{ cm.circuit.get_absolute_url }}
+{% else %}
+Circuit   : —
+{% endif %}
+
+
+Type      : {{ cm.get_type_demande_display }}
+Message   :
+{{ cm.message }}
+
+-- 
+IP: {{ cm.ip }} • UA: {{ cm.user_agent }}

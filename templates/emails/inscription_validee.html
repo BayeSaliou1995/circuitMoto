@@ -1,0 +1,109 @@
+{# templates/circuitMoto/emails/inscription_validee.html #}
+
+<!doctype html>
+<html lang="fr">
+  <body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:#f7f7fb; padding:24px;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;">
+
+      <tr>
+        <td style="padding:24px 24px 8px 24px;">
+          <h1 style="margin:0 0 8px;font-size:20px;color:#111827;">
+            Inscription confirmée
+          </h1>
+          <p style="margin:0;color:#6b7280;">
+            {{ c.nom }}
+            <span style="color:#9ca3af;">({{ c.code }})</span>
+            {% if circuit_dates %} — <strong>{{ circuit_dates }}</strong>{% endif %}
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:0 24px;">
+          <p style="line-height:1.6;color:#111827;">
+            Bonjour {{ dest_name }},
+          </p>
+
+          <p style="line-height:1.6;color:#111827;">
+            Ton inscription au séjour <strong>{{ c.nom }}</strong>
+            {% if circuit_dates %} — <strong>{{ circuit_dates }}</strong>{% endif %}
+            {% if c.nb_jours %} ({{ c.nb_jours }} jours){% endif %}
+            est bien <strong>confirmée</strong> suite à la réception de ton versement.
+            Nous te remercions sincèrement pour la confiance que tu accordes à notre organisation.
+          </p>
+
+          <h2 style="margin:20px 0 8px;font-size:16px;color:#111827;">
+            Côté pratique
+          </h2>
+
+          <h3 style="margin:12px 0 4px;font-size:14px;color:#111827;">
+            Rendez-vous / Logistique
+          </h3>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 10px;">
+            <strong>📅 {% if c.date_debut %}{{ c.date_debut|date:"d/m/Y" }}{% else %}Jour 1{% endif %} – Matin</strong><br>
+            {{ rdv_text|linebreaksbr }}
+          </p>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 12px;">
+            Une réunion d’information sera organisée environ <strong>10 jours avant le départ</strong>
+            afin de te transmettre toutes les informations utiles concernant le séjour
+            et de faire connaissance avec l’équipe et les autres participants.
+          </p>
+
+          <h3 style="margin:12px 0 4px;font-size:14px;color:#111827;">
+            Organisation du circuit
+          </h3>
+          <p style="line-height:1.6;color:#111827;margin:0 0 12px;">
+            {{ organisation_text|linebreaksbr }}
+          </p>
+
+          <h3 style="margin:12px 0 4px;font-size:14px;color:#111827;">
+            Documents &amp; Conseils
+          </h3>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 8px;">
+            Merci de prévoir :
+          </p>
+
+          <ul style="margin:0 0 12px 18px;color:#111827;line-height:1.6;">
+            {% for item in checklist_items %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 16px;">
+            Un véhicule suiveur accompagnera le groupe pour le transport des bagages
+            <em>(si le nombre de participants est suffisant)</em>.
+          </p>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 16px;">
+            Nous reviendrons vers toi prochainement afin de finaliser ton dossier et, si nécessaire, le suivi des paiements.
+          </p>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 16px;">
+            Dans l’attente, n’hésite pas à nous contacter si tu as la moindre question.
+          </p>
+
+          <p style="line-height:1.6;color:#111827;margin:0 0 10px;">
+            À très bientôt,<br>
+            <strong>L’équipe d’organisation</strong>
+          </p>
+
+          <p style="margin:0 0 20px;line-height:1.6;">
+            <a href="{{ edit_url }}" style="display:inline-block;padding:10px 14px;border-radius:10px;background:#3b82f6;color:#fff;text-decoration:none;">
+              Compléter / mettre à jour mon dossier
+            </a>
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:12px 24px 20px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;">
+          Email automatique — merci de ne pas répondre directement à ce message.
+        </td>
+      </tr>
+
+    </table>
+  </body>
+</html>

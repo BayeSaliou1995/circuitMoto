@@ -1,0 +1,59 @@
+{# templates/emails/balades_demande_admin.html #}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nouvelle demande balades</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 12px 35px rgba(16,24,40,.08);">
+          <tr>
+            <td style="padding:28px 28px 18px;background:linear-gradient(135deg,#0f172a,#2563eb);color:#fff;">
+              <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;">Pulsion Horizon</div>
+              <h1 style="margin:8px 0 0;font-size:26px;line-height:1.2;">Nouvelle demande de programmes</h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:28px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0 10px;">
+                <tr>
+                  <td style="width:160px;font-weight:700;color:#334155;">Nom</td>
+                  <td>{{ demande.prenom }} {{ demande.nom }}</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;color:#334155;">E-mail</td>
+                  <td>{{ demande.email }}</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;color:#334155;">Téléphone</td>
+                  <td>{{ demande.telephone|default:"Non renseigné" }}</td>
+                </tr>
+              </table>
+
+              <h2 style="margin:28px 0 14px;font-size:20px;color:#0f172a;">Balades sélectionnées</h2>
+
+              {% for b in selected_balades %}
+                <div style="margin:0 0 12px;padding:16px 18px;border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;">
+                  <div style="font-size:13px;font-weight:700;color:#2563eb;margin-bottom:6px;">{{ b.date_humaine }}</div>
+                  <div style="font-size:16px;font-weight:700;color:#0f172a;">{{ b.titre }}</div>
+                  <div style="font-size:13px;color:#64748b;margin-top:6px;">Guide : {{ b.guide|default:"libre" }}</div>
+                </div>
+              {% endfor %}
+
+              <h2 style="margin:28px 0 10px;font-size:20px;color:#0f172a;">Commentaire</h2>
+              <div style="padding:16px 18px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;color:#334155;">
+                {{ demande.commentaire|default:"Aucun commentaire."|linebreaksbr }}
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

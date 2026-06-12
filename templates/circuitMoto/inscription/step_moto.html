@@ -1,0 +1,83 @@
+{# templates/circuitMoto/inscription/step_moto.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Moto du pilote" %}</h2>
+    <p class="step-subtitle">{% trans "Renseignez les informations concernant votre moto." %}</p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Informations moto" %}</h3>
+        <p class="section-subtitle">{% trans "Ces infos nous aident pour l'organisation et l'identification." %}</p>
+      </header>
+
+      {# ✅ 3 champs sur la même ligne #}
+      <div class="grid-3 grid-tight grid-3-moto">
+        <div class="form-group">
+          <label for="{{ form.marque.id_for_label }}" class="required">{{ form.marque.label }}</label>
+          {{ form.marque }}
+          {{ form.marque.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.modele.id_for_label }}">{{ form.modele.label }}</label>
+          {{ form.modele }}
+          {{ form.modele.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.immatriculation.id_for_label }}">{{ form.immatriculation.label }}</label>
+          {{ form.immatriculation }}
+          {{ form.immatriculation.errors }}
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

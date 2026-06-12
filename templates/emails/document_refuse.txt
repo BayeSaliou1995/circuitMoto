@@ -1,0 +1,9 @@
+Bonjour {{ ins.pilote.prenom }},
+
+Votre document « {{ doc.get_type_document_display }} » a été refusé.
+{% if raison %}Raison : {{ raison }}{% endif %}
+
+Envoyer un nouveau document :
+{{ upload_url }}
+
+— Pulsion Horizon

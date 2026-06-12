@@ -1,0 +1,34 @@
+{% if newsletter_page_obj %}
+  <div class="newsletter-list">
+    {% for sub in newsletter_page_obj %}
+      <div class="newsletter-row">
+        <div class="newsletter-row__main">
+          <div class="newsletter-row__email">{{ sub.email }}</div>
+          <div class="newsletter-row__meta">
+            Source : {{ sub.source|default:"footer" }} · ajouté le {{ sub.created_at|date:"d/m/Y H:i" }}
+          </div>
+        </div>
+
+        <div class="newsletter-row__side">
+          {% if sub.is_active %}
+            <span class="status-pill status-valide">Actif</span>
+          {% else %}
+            <span class="status-pill status-annulee">Inactif</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="ajax-pagination">
+    {% if newsletter_page_obj.has_previous %}
+      <button class="ajax-page-btn" data-section="newsletter" data-page="{{ newsletter_page_obj.previous_page_number }}">Précédent</button>
+    {% endif %}
+    <span>Page {{ newsletter_page_obj.number }} / {{ newsletter_page_obj.paginator.num_pages }}</span>
+    {% if newsletter_page_obj.has_next %}
+      <button class="ajax-page-btn" data-section="newsletter" data-page="{{ newsletter_page_obj.next_page_number }}">Suivant</button>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="empty-state"><p>Aucun email newsletter.</p></div>
+{% endif %}

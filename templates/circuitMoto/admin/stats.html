@@ -1,0 +1,1172 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static %}
+{% block title %}Back-office — Statistiques{% endblock %}
+
+{% block content %}
+<section class="stats-container">
+  <!-- En-tête avec design amélioré -->
+  <div class="stats-header">
+    <div class="header-content">
+      <h1 class="page-title">Statistiques & Analytics</h1>
+      <p class="subtitle">Vue d'ensemble dynamique : activités, finances et capacités</p>
+    </div>
+    
+    <form class="date-range-form" method="get">
+      <div class="date-inputs">
+        <div class="input-group">
+          <label for="start-date">De</label>
+          <input type="month" id="start-date" name="start" value="{{ start|date:'Y-m' }}">
+        </div>
+        <div class="input-group">
+          <label for="end-date">À</label>
+          <input type="month" id="end-date" name="end" value="{{ end|date:'Y-m' }}">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9m-9 9a9 9 0 0 1 9-9"/>
+          </svg>
+          Mettre à jour
+        </button>
+        <a href="{% url 'bo_stats' %}" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Réinitialiser
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- KPIs avec design moderne -->
+  <div class="kpis-grid">
+    <div class="kpi-card" data-aos="fade-up" data-aos-delay="100">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Inscriptions</span>
+        <span class="kpi-value" data-kpi="inscriptions">—</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" data-aos="fade-up" data-aos-delay="150">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Validées</span>
+        <span class="kpi-value" data-kpi="validees">—</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" data-aos="fade-up" data-aos-delay="200">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Circuits</span>
+        <span class="kpi-value" data-kpi="circuits">—</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" data-aos="fade-up" data-aos-delay="250">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Personnes</span>
+        <span class="kpi-value" data-kpi="personnes">—</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" data-aos="fade-up" data-aos-delay="300">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Attendu (tous)</span>
+        <span class="kpi-value" data-kpi="attendu">—</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" data-aos="fade-up" data-aos-delay="350">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Encaissé (tous)</span>
+        <span class="kpi-value" data-kpi="encaisse">—</span>
+      </div>
+    </div>
+
+    <div class="kpi-card wide" data-aos="fade-up" data-aos-delay="400">
+      <div class="kpi-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/>
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-label">Taux d'encaissement</span>
+        <div class="kpi-meter">
+          <div class="kpi-meter-bar" data-kpi-meter></div>
+        </div>
+        <span class="kpi-meter-val" data-kpi="taux">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grille de graphiques -->
+  <div class="charts-grid">
+    <div class="chart-card" data-aos="fade-up" data-aos-delay="100">
+      <div class="chart-header">
+        <h3>Inscriptions par mois</h3>
+        <div class="chart-tooltip">Évolution mensuelle des inscriptions</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="chartIns"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card" data-aos="fade-up" data-aos-delay="150">
+      <div class="chart-header">
+        <h3>Attendu vs Encaissé</h3>
+        <div class="chart-tooltip">Sommes par mois (échéances / paiements)</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="chartCash"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card" data-aos="fade-up" data-aos-delay="200">
+      <div class="chart-header">
+        <h3>Nouvelles personnes</h3>
+        <div class="chart-tooltip">Nouveaux inscrits par mois</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="chartPeople"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card pie" data-aos="fade-up" data-aos-delay="250">
+      <div class="chart-header">
+        <h3>Inscriptions — répartition</h3>
+        <div class="chart-tooltip">Répartition par statut</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="pieIns"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card pie" data-aos="fade-up" data-aos-delay="300">
+      <div class="chart-header">
+        <h3>Documents — répartition</h3>
+        <div class="chart-tooltip">Statut des documents</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="pieDocs"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card pie" data-aos="fade-up" data-aos-delay="350">
+      <div class="chart-header">
+        <h3>Circuits — répartition</h3>
+        <div class="chart-tooltip">Répartition par statut</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="pieCircuits"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des circuits à venir -->
+  <div class="table-card" data-aos="fade-up">
+    <div class="table-header">
+      <h3>Prochains circuits — occupation</h3>
+      <div class="table-subtitle">Top 10 par date</div>
+    </div>
+    <div class="table-container">
+      <div class="table">
+        <div class="table-row header">
+          <div class="table-cell">Code</div>
+          <div class="table-cell">Nom</div>
+          <div class="table-cell">Début</div>
+          <div class="table-cell">Capacité</div>
+          <div class="table-cell">Inscrits</div>
+          <div class="table-cell">Occupation</div>
+        </div>
+        <div class="table-body" id="upcomingTable"></div>
+        <div class="table-footer">
+            <div class="results-info" id="upcomingInfo"></div>
+            <nav class="pagination" id="upcomingPager" aria-label="Pagination des circuits"></nav>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ data|json_script:"stats-data" }}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<script>
+(function(){
+  // Initialize animations
+  AOS.init({
+    duration: 600,
+    once: true,
+    easing: 'ease-out-quad'
+  });
+
+  const data = JSON.parse(document.getElementById('stats-data').textContent);
+
+  // Helpers
+  const nf = new Intl.NumberFormat('fr-FR');
+  const nfMoney = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+
+  // Inject KPIs with animation
+  for (const k of Object.keys(data.kpis)) {
+    const el = document.querySelector(`[data-kpi="${k}"]`);
+    if (!el) continue;
+    
+    if (k === "attendu" || k === "encaisse") {
+      el.textContent = nfMoney.format(data.kpis[k]);
+    } else if (k === "taux") {
+      el.textContent = nf.format(data.kpis[k]) + " %";
+    } else {
+      el.textContent = nf.format(data.kpis[k]);
+    }
+  }
+  
+  // Animate meter
+  const meter = document.querySelector("[data-kpi-meter]");
+  if (meter) {
+    setTimeout(() => {
+      meter.style.width = Math.min(100, Math.max(0, data.kpis.taux)) + "%";
+    }, 500);
+  }
+
+  // Charts options
+  const baseOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { 
+        display: true,
+        position: 'top',
+        labels: {
+          usePointStyle: true,
+          padding: 20
+        }
+      },
+      tooltip: { 
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: { size: 14 },
+        bodyFont: { size: 13 },
+        padding: 12,
+        callbacks: {
+          label: ctx => {
+            const v = ctx.parsed.y ?? ctx.parsed;
+            return (ctx.dataset && /€|XOF|CFA/.test(ctx.dataset.label)) ? nfMoney.format(v) : nf.format(v);
+          }
+        }
+      }
+    },
+    scales: {
+      x: { 
+        grid: { display: false },
+        ticks: { maxRotation: 0 }
+      },
+      y: { 
+        beginAtZero: true,
+        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+      }
+    }
+  };
+
+  // Inscriptions chart
+  new Chart($("#chartIns"), {
+    type: 'line',
+    data: {
+      labels: data.range.labels,
+      datasets: [
+        { 
+          label: 'Inscriptions', 
+          data: data.series.inscriptions, 
+          fill: true,
+          tension: 0.4,
+          backgroundColor: 'rgba(79, 70, 229, 0.1)',
+          borderColor: 'rgba(79, 70, 229, 1)',
+          borderWidth: 2,
+          pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+          pointBorderColor: '#fff',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: baseOpts
+  });
+
+  // Cashflow chart
+  new Chart($("#chartCash"), {
+    type: 'bar',
+    data: {
+      labels: data.range.labels,
+      datasets: [
+        { 
+          type: 'bar',  
+          label: 'Attendu',  
+          data: data.series.attendu,
+          backgroundColor: 'rgba(79, 70, 229, 0.7)',
+          borderColor: 'rgba(79, 70, 229, 1)',
+          borderWidth: 1
+        },
+        { 
+          type: 'line', 
+          label: 'Encaissé', 
+          data: data.series.encaisse, 
+          tension: 0.4,
+          borderColor: 'rgba(16, 185, 129, 1)',
+          borderWidth: 3,
+          pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+          pointBorderColor: '#fff',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: baseOpts
+  });
+
+  // People chart
+  new Chart($("#chartPeople"), {
+    type: 'line',
+    data: {
+      labels: data.range.labels,
+      datasets: [
+        { 
+          label: 'Personnes', 
+          data: data.series.personnes, 
+          fill: true,
+          tension: 0.4,
+          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+          borderColor: 'rgba(139, 92, 246, 1)',
+          borderWidth: 2,
+          pointBackgroundColor: 'rgba(139, 92, 246, 1)',
+          pointBorderColor: '#fff',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: baseOpts
+  });
+
+  // Pie charts
+  function toPieData(items, choicesMap){
+    const labels = items.map(x => (choicesMap[x.statut] || x.statut));
+    const values = items.map(x => x.c);
+    const backgroundColors = [
+      'rgba(79, 70, 229, 0.8)',
+      'rgba(139, 92, 246, 0.8)',
+      'rgba(16, 185, 129, 0.8)',
+      'rgba(245, 158, 11, 0.8)',
+      'rgba(239, 68, 68, 0.8)'
+    ];
+    return { labels, values, backgroundColors };
+  }
+
+  const mapIns  = { "OPTION":"Option", "VALIDE":"Validée", "ANNULEE":"Annulée", "TERMINEE":"Terminée" };
+  const mapDoc  = { "EN_ATTENTE":"En attente", "VALIDE":"Validé", "REFUSE":"Refusé" };
+  const mapCirc = { "BROUILLON":"Brouillon", "PUBLIE":"Publié", "ARCHIVE":"Archivé" };
+
+  function createPieChart(canvas, items, map){
+    const {labels, values, backgroundColors} = toPieData(items, map);
+    new Chart(canvas, {
+      type: 'doughnut',
+      data: { 
+        labels, 
+        datasets: [{ 
+          data: values,
+          backgroundColor: backgroundColors,
+          borderColor: '#fff',
+          borderWidth: 2,
+          hoverOffset: 12
+        }] 
+      },
+      options: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: { 
+          legend: { 
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              usePointStyle: true
+            }
+          } 
+        }
+      }
+    });
+  }
+
+  createPieChart($("#pieIns"), data.repartitions.inscriptions, mapIns);
+  createPieChart($("#pieDocs"), data.repartitions.documents, mapDoc);
+  createPieChart($("#pieCircuits"), data.repartitions.circuits, mapCirc);
+
+})();
+</script>
+
+<script>
+(function(){
+  const data = JSON.parse(document.getElementById('stats-data').textContent);
+
+  // URL template générée par Django → transformée en URL finale côté JS
+  const DETAIL_URL_TEMPLATE = "{% url 'bo_circuit_detail' 0 %}";
+  const detailUrl = (id) => DETAIL_URL_TEMPLATE.replace(/0\/?$/, String(id) + "/");
+
+  const nf = new Intl.NumberFormat('fr-FR');
+  const fmtDate = s => new Date(s).toLocaleDateString('fr-FR');
+
+  const PAGE_SIZE = 5;
+  const upcoming = Array.isArray(data.upcoming) ? data.upcoming : [];
+
+  const tbody = document.getElementById("upcomingTable");
+  const pager = document.getElementById("upcomingPager");
+  const info  = document.getElementById("upcomingInfo");
+
+  if (!tbody) return;
+
+  let currentPage = 1;
+  const total = upcoming.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  function renderRows(rows){
+    tbody.innerHTML = "";
+    rows.forEach((c, index) => {
+      const row = document.createElement('div');
+      row.className = 'table-row';
+      row.style.animationDelay = `${index * 50}ms`;
+      row.innerHTML = `
+        <div class="table-cell code" data-label="Code">
+          <a href="${detailUrl(c.id)}">${c.code}</a>
+        </div>
+        <div class="table-cell" data-label="Nom">${c.nom}</div>
+        <div class="table-cell" data-label="Début">${fmtDate(c.date_debut)}</div>
+        <div class="table-cell" data-label="Capacité">${nf.format(c.capacite)}</div>
+        <div class="table-cell" data-label="Inscrits">${nf.format(c.nb)}</div>
+        <div class="table-cell" data-label="Occupation">
+          <div class="progress-bar"><div class="progress-fill" style="width:${c.pct}%"></div></div>
+          <span class="progress-text">${c.pct}%</span>
+        </div>`;
+      tbody.appendChild(row);
+    });
+  }
+
+  function updateInfo(){
+    if (!info) return;
+    if (!total) {
+      info.textContent = "Aucun circuit à venir";
+    } else if (total <= PAGE_SIZE) {
+      info.textContent = `${total} circuit${total>1?'s':''}`;
+    } else {
+      info.textContent = `${total} circuits — page ${currentPage}/${totalPages}`;
+    }
+  }
+
+  function ellipsis(){
+    const e = document.createElement('span');
+    e.className = 'dots';
+    e.setAttribute('aria-hidden', 'true');
+    e.textContent = '…';
+    return e;
+  }
+
+  function pageBtn(label, page, {disabled=false, active=false, aria=null}={}){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'page-btn' + (active?' active':'') + (disabled?' disabled':'');
+    b.textContent = label;
+    if (aria) b.setAttribute('aria-label', aria);
+    b.disabled = !!disabled;
+    if (!disabled && !active) b.addEventListener('click', () => go(page));
+    return b;
+  }
+
+  function buildPager(){
+    if (!pager) return;
+    if (total <= PAGE_SIZE) {
+      pager.style.display = 'none';
+      pager.innerHTML = '';
+      return;
+    }
+    pager.style.display = 'flex';
+    pager.innerHTML = '';
+
+    // Première / Précédente
+    pager.append(
+      pageBtn('«', 1, {disabled: currentPage===1, aria: 'Première page'}),
+      pageBtn('‹', Math.max(1, currentPage-1), {disabled: currentPage===1, aria: 'Page précédente'})
+    );
+
+    // Fenêtre de pages autour de la courante
+    const win = 2;
+    let start = Math.max(1, currentPage - win);
+    let end   = Math.min(totalPages, currentPage + win);
+
+    if (start > 1) {
+      pager.append(pageBtn('1', 1, {active: currentPage===1}));
+      if (start > 2) pager.append(ellipsis());
+    }
+
+    for (let p = start; p <= end; p++) {
+      pager.append(pageBtn(String(p), p, {active: p===currentPage}));
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) pager.append(ellipsis());
+      pager.append(pageBtn(String(totalPages), totalPages, {active: currentPage===totalPages}));
+    }
+
+    // Suivante / Dernière
+    pager.append(
+      pageBtn('›', Math.min(totalPages, currentPage+1), {disabled: currentPage===totalPages, aria: 'Page suivante'}),
+      pageBtn('»', totalPages, {disabled: currentPage===totalPages, aria: 'Dernière page'})
+    );
+  }
+
+  function slicePage(p){
+    const start = (p - 1) * PAGE_SIZE;
+    return upcoming.slice(start, start + PAGE_SIZE);
+  }
+
+  function go(p){
+    if (p < 1 || p > totalPages) return;
+    currentPage = p;
+    renderRows(slicePage(currentPage));
+    buildPager();
+    updateInfo();
+    // scroll doux vers le tableau
+    tbody.parentElement.parentElement.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  // Init
+  renderRows(slicePage(currentPage));
+  buildPager();
+  updateInfo();
+})();
+</script>
+
+<style>
+    :root {
+    --primary: #4361ee;
+    --primary-light: rgba(67, 97, 238, 0.1);
+    --primary-dark: #3a56d4;
+    --secondary: #8b5cf6;
+    --accent: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --text-lighter: #b2bec3;
+    --bg: #ffffff;
+    --bg-card: #ffffff;
+    --border: #dfe6e9;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    [data-theme="dark"] {
+    --primary: #5e72e4;
+    --primary-light: rgba(94, 114, 228, 0.15);
+    --primary-dark: #4d5fd0;
+    --secondary: #a78bfa;
+    --text: #edf2f7;
+    --text-light: #a0aec0;
+    --text-lighter: #718096;
+    --bg: #1a202c;
+    --bg-card: #2d3748;
+    --border: #4a5563;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Layout */
+    .stats-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--bg);
+    color: var(--text);
+    }
+
+    .stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    }
+
+    .header-content {
+    flex: 1;
+    }
+
+    .page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    }
+
+    .subtitle {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 1.1rem;
+    }
+
+    .date-range-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    }
+
+    .date-inputs {
+    display: flex;
+    gap: 1rem;
+    }
+
+    .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    }
+
+    .input-group label {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    }
+
+    .input-group input {
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+    }
+
+    .input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    }
+
+    .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    cursor: pointer;
+    }
+
+    .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+    }
+
+    .btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+    }
+
+    /* KPIs Grid */
+    .kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    }
+
+    .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    }
+
+    .kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+    }
+
+    .kpi-card.wide {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    }
+
+    .kpi-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    border-radius: var(--radius-md);
+    color: var(--primary);
+    }
+
+    .kpi-content {
+    flex: 1;
+    }
+
+    .kpi-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    }
+
+    .kpi-meter {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    }
+
+    .kpi-meter-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+    }
+
+    .kpi-meter-val {
+    font-weight: 800;
+    color: var(--text);
+    min-width: 60px;
+    text-align: right;
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    }
+
+    .chart-card {
+    grid-column: span 4;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    }
+
+    .chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    }
+
+    .chart-card.pie {
+    grid-column: span 4;
+    }
+
+    .chart-header {
+    margin-bottom: 1.5rem;
+    }
+
+    .chart-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    color: var(--text);
+    }
+
+    .chart-tooltip {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    }
+
+    .chart-container {
+    flex: 1;
+    min-height: 300px;
+    position: relative;
+    }
+
+    /* Table */
+    .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    }
+
+    .table-header {
+    margin-bottom: 1.5rem;
+    }
+
+    .table-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    color: var(--text);
+    }
+
+    .table-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    }
+
+    .table-container {
+    overflow-x: auto;
+    }
+
+    .table {
+    width: 100%;
+    border-collapse: collapse;
+    }
+
+    .table-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 0.8fr 0.8fr 1.2fr;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    animation: slideIn 0.5s ease-out;
+    animation-fill-mode: both;
+    }
+
+    .table-row.header {
+    background: var(--primary-light);
+    border-radius: var(--radius-md);
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--text);
+    }
+
+    .table-cell {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    }
+
+    .table-cell.code a {
+    font-weight: 700;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: var(--transition);
+    }
+
+    .table-cell.code a:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    }
+
+    .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    }
+
+    .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+    }
+
+    .progress-text {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 600;
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .chart-card {
+        grid-column: span 6;
+    }
+    
+    .chart-card.pie {
+        grid-column: span 6;
+    }
+    
+    .kpis-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    .stats-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.5rem;
+    }
+    
+    .table-row {
+        grid-template-columns: 1fr 1.5fr 1fr 0.8fr 0.8fr 1.2fr;
+        gap: 0.75rem;
+    }
+    }
+
+    @media (max-width: 768px) {
+    .stats-container {
+        padding: 1.5rem;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card {
+        grid-column: span 12;
+    }
+    
+    .kpis-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .kpi-card.wide {
+        grid-column: span 1;
+    }
+    
+    .date-inputs {
+        flex-direction: column;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .table-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
+    .table-row.header {
+        display: none;
+    }
+    
+    .table-cell {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .table-cell::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-light);
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+    }
+
+    @media (max-width: 480px) {
+    .stats-container {
+        padding: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+    }
+    
+    .kpi-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .kpi-card.wide {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    }
+
+    .table-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:1rem;
+    gap:1rem;
+    }
+
+    .results-info{
+    color:var(--text-light);
+    font-size:.95rem;
+    }
+
+    .pagination{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    flex-wrap:wrap;
+    }
+
+    .page-btn{
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    padding:.5rem .75rem;
+    border-radius:var(--radius-sm);
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--transition);
+    box-shadow:var(--shadow-sm);
+    }
+
+    .page-btn:hover{
+    transform:translateY(-2px);
+    border-color:var(--primary);
+    color:var(--primary);
+    background:var(--primary-light);
+    box-shadow:var(--shadow-md);
+    }
+
+    .page-btn.active{
+    background:linear-gradient(135deg, var(--primary), var(--secondary));
+    color:#fff;
+    border-color:transparent;
+    box-shadow:var(--shadow-md);
+    cursor:default;
+    }
+
+    .page-btn.disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    }
+
+    .dots{
+    padding:.5rem .25rem;
+    color:var(--text-light);
+    }
+
+    /* Mobile : pagination centrée */
+    @media (max-width: 768px){
+    .table-footer{
+        flex-direction:column;
+        align-items:stretch;
+    }
+    .pagination{
+        justify-content:center;
+    }
+    }
+
+
+</style>
+{% endblock %}

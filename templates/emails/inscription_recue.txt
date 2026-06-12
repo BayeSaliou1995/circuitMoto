@@ -1,0 +1,19 @@
+{# templates/emails/inscription_recue.txt #}
+
+Bonjour {{ ins.pilote.prenom }},
+
+Nous avons bien reçu votre demande d’inscription pour « {{ ins.circuit.nom }} ».
+Référence dossier : {{ ins.id_public }}
+
+Compléter / corriger mon dossier :
+{{ edit_url }}
+
+{% if has_infos_paiement %}
+Paiement : {{ paiement_libelle }}
+{{ infos_paiement }}
+{% else %}
+Paiement : Les coordonnées de paiement vous seront communiquées par e-mail sous peu.
+{% endif %}
+
+
+— Pulsion Horizon

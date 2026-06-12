@@ -1,0 +1,31 @@
+{# templates/circuitMoto/programme_2027_success.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Sélection reçue | Pré Programme 2027{% endblock %}
+{% block meta_description %}Votre sélection pour le Pré Programme 2027 Pulsion Horizon a bien été reçue.{% endblock %}
+{% block body_class %}page-programme-2027{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/programme_2027.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="p27-page">
+  <div class="p27-shell">
+    <article class="p27-success">
+      <span class="p27-kicker">Pré Programme 2027</span>
+      <h1>Votre sélection a bien été reçue</h1>
+      <p>
+        Merci pour votre retour. Nous avons reçu vos circuits d'intérêt et votre niveau d'envie.
+        L'équipe Pulsion Horizon pourra ainsi vous recontacter lorsque les programmes et réservations avanceront.
+      </p>
+      <div class="p27-success__actions">
+        <a href="{% url 'programme_2027' %}" class="p27-btn">Modifier une nouvelle sélection</a>
+        <a href="{% url 'home' %}" class="p27-btn p27-btn--secondary">Retour à l'accueil</a>
+      </div>
+    </article>
+  </div>
+</section>
+{% endblock %}

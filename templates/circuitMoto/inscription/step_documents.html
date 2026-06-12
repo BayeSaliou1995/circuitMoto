@@ -1,0 +1,157 @@
+{# templates/circuitMoto/inscription/step_documents.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Documents à téléverser" %}</h2>
+    <p class="step-subtitle">{% trans "Ajoutez les documents nécessaires. Les formats acceptés sont PDF et images (JPG/PNG)." %}</p>
+  </div>
+
+  <div class="doc-guidelines" role="status" aria-live="polite">
+    <ul>
+      <li><strong>{% trans "Formats acceptés :" %}</strong> {% trans "PDF, JPG/JPEG, PNG." %}</li>
+      <li><strong>{% trans "Taille max par fichier :" %}</strong> <span id="js-max-mb">…</span> Mo.</li>
+      <li>{% trans "Si un document existe déjà," %} <strong>{% trans "laisse le champ vide" %}</strong> {% trans "pour le conserver." %}</li>
+      <li>{% trans "Les noms trop longs/avec caractères spéciaux peuvent être" %} <strong>{% trans "raccourcis/normalisés automatiquement" %}</strong>{% trans " lors de l’enregistrement." %}</li>
+      <li>{% trans "Astuce : pour les photos, privilégie un export “Qualité moyenne” (1–3 Mo) — plus rapide et parfaitement lisible." %}</li>
+    </ul>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="form-step" id="doc-form">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Téléversement des fichiers" %}</h3>
+        <p class="section-subtitle">{% trans "Tu peux conserver un fichier existant en laissant le champ vide." %}</p>
+      </header>
+
+      <div class="docs-grid">
+        {% for field in form %}
+          {% with attrs=field.field.widget.attrs %}
+          <div class="doc-field">
+
+            <label for="{{ field.id_for_label }}" class="{% if field.field.required %}required{% endif %}">
+              {{ field.label }}
+            </label>
+
+            {# Fichier existant #}
+            {% if attrs.data_existing %}
+              <div class="current-file">
+                <div class="current-file-main">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+
+                  <a href="{{ attrs.data_existing_url }}" target="_blank" rel="noopener">
+                    {{ attrs.data_existing_name|default:"Voir le fichier" }}
+                  </a>
+
+                  {% if attrs.data_existing_status %}
+                    <span class="badge">{{ attrs.data_existing_status }}</span>
+                  {% endif %}
+                </div>
+
+                <button type="button"
+                        class="btn btn-sm btn-secondary js-replace"
+                        data-target="{{ field.id_for_label }}">
+                  {% trans "Remplacer" %}
+                </button>
+
+                <div class="helptext">{% trans "Laisse vide pour conserver." %}</div>
+              </div>
+            {% endif %}
+
+            {# Zone upload #}
+            <div class="file-upload" {% if attrs.data_existing %}data-collapsed="1"{% endif %}>
+              <div class="file-upload-btn">
+                <div class="file-upload-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                </div>
+
+                <span class="file-upload-text">{% trans "Cliquer pour téléverser" %}</span>
+
+                {# input file Django #}
+                {{ field }}
+
+                <div class="file-name">{% trans "Aucun fichier sélectionné" %}</div>
+              </div>
+
+              <div class="file-meta">
+                <span class="chip chip-accept">
+                  {% trans "Formats :" %} {{ attrs.accept|default:".pdf,.jpg,.jpeg,.png" }}
+                </span>
+
+                <span class="chip chip-max">
+                  {% trans "Max :" %}
+                  <span class="js-max-by-input" data-fallback="{{ attrs.data_max_mb|default:'0' }}">
+                    {{ attrs.data_max_mb|default:'0' }}
+                  </span> Mo
+                </span>
+
+                <button type="button" class="btn btn-xs btn-ghost js-clear" data-target="{{ field.id_for_label }}">
+                  {% trans "Retirer" %}
+                </button>
+              </div>
+
+              <div class="preview" data-for="{{ field.id_for_label }}" hidden>
+                <img alt="{% trans 'Aperçu' %}" referrerpolicy="no-referrer">
+                <div class="preview-info"></div>
+              </div>
+
+              <div class="inline-warning" data-for="{{ field.id_for_label }}" hidden></div>
+            </div>
+
+            {% if field.help_text %}
+              <div class="helptext">{{ field.help_text }}</div>
+            {% endif %}
+
+            {{ field.errors }}
+          </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary" id="submit-btn">
+        {% trans "Suivant" %}
+      </button>
+
+      <div id="uploading" class="uploading" hidden>
+        ⏳ {% trans "Téléversement en cours… merci de patienter" %}
+      </div>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

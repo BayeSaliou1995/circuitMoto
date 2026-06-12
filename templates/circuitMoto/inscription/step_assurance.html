@@ -1,0 +1,109 @@
+{# templates/circuitMoto/inscription/step_assurance.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Assurance" %}</h2>
+    <p class="step-subtitle">{% trans "Renseignez vos informations d'assurance moto." %}</p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Police d'assurance" %}</h3>
+        <p class="section-subtitle">
+          {% trans "Ces informations peuvent être utiles en cas d'urgence." %}
+        </p>
+      </header>
+
+      {# ✅ Ligne 1 : Type + Compagnie #}
+      <div class="grid-2 grid-tight">
+        <div class="form-group">
+          <label for="{{ form.type.id_for_label }}" class="required">{{ form.type.label }}</label>
+          {{ form.type }}
+          {{ form.type.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.compagnie.id_for_label }}">{{ form.compagnie.label }}</label>
+          {{ form.compagnie }}
+          {{ form.compagnie.errors }}
+        </div>
+      </div>
+
+      {# ✅ Ligne 2 : N° police + Tel urgence assureur #}
+      <div class="grid-2 grid-tight">
+        <div class="form-group">
+          <label for="{{ form.numero_police.id_for_label }}">{{ form.numero_police.label }}</label>
+          {{ form.numero_police }}
+          {{ form.numero_police.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.telephone_urgence.id_for_label }}">{{ form.telephone_urgence.label }}</label>
+          {{ form.telephone_urgence }}
+          {{ form.telephone_urgence.errors }}
+        </div>
+      </div>
+
+      {# ✅ Ligne 3 : Validité #}
+      <div class="grid-2 grid-tight">
+        <div class="form-group">
+          <label for="{{ form.valide_du.id_for_label }}">{{ form.valide_du.label }}</label>
+          {{ form.valide_du }}
+          {{ form.valide_du.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.valide_au.id_for_label }}">{{ form.valide_au.label }}</label>
+          {{ form.valide_au }}
+          {{ form.valide_au.errors }}
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

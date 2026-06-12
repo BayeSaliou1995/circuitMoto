@@ -1,0 +1,34 @@
+{% if inscriptions_recentes_page %}
+  <div class="table-lite">
+    {% for ins in inscriptions_recentes_page %}
+      <div class="table-lite__row">
+        <div class="table-lite__main">
+          <div class="table-lite__title">
+            {{ ins.pilote.prenom }} {{ ins.pilote.nom }}
+            {% if ins.passager %}
+              <span class="table-lite__muted">+ passager</span>
+            {% endif %}
+          </div>
+          <div class="table-lite__meta">
+            {{ ins.circuit.nom }} · {{ ins.cree_le|date:"d/m/Y H:i" }}
+          </div>
+        </div>
+        <div class="table-lite__end">
+          <span class="status-pill status-{{ ins.statut|lower }}">{{ ins.get_statut_display }}</span>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="ajax-pagination">
+    {% if inscriptions_recentes_page.has_previous %}
+      <button class="ajax-page-btn" data-section="recents" data-page="{{ inscriptions_recentes_page.previous_page_number }}">Précédent</button>
+    {% endif %}
+    <span>Page {{ inscriptions_recentes_page.number }} / {{ inscriptions_recentes_page.paginator.num_pages }}</span>
+    {% if inscriptions_recentes_page.has_next %}
+      <button class="ajax-page-btn" data-section="recents" data-page="{{ inscriptions_recentes_page.next_page_number }}">Suivant</button>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="empty-state"><p>Aucune inscription récente.</p></div>
+{% endif %}

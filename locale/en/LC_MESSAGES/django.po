@@ -1,0 +1,1980 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-30 23:32+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\circuitMoto\forms.py:17
+msgid "Numéro de téléphone invalide."
+msgstr "Invalid phone number."
+
+#: .\circuitMoto\forms.py:25 .\circuitMoto\forms.py:406
+#: .\circuitMoto\models.py:264 .\templates\circuitMoto\contact.html:599
+#: .\templates\circuitMoto\inscription\succes.html:51
+#: .\templates\contact.html:72
+msgid "Circuit"
+msgstr "Circuit"
+
+#: .\circuitMoto\forms.py:27
+msgid "Sélectionnez votre circuit."
+msgstr "Select your circuit."
+
+#: .\circuitMoto\forms.py:28
+msgid "— Choisir —"
+msgstr "— Choose —"
+
+#: .\circuitMoto\forms.py:58 .\circuitMoto\models.py:808
+#: .\templates\circuitMoto\contact.html:509 .\templates\contact.html:30
+msgid "Prénom"
+msgstr "First name"
+
+#: .\circuitMoto\forms.py:59 .\circuitMoto\models.py:809
+#: .\templates\circuitMoto\contact.html:521
+#: .\templates\circuitMoto\inscription\succes.html:54
+#: .\templates\contact.html:35
+msgid "Nom"
+msgstr "Last name"
+
+#: .\circuitMoto\forms.py:60 .\circuitMoto\models.py:810
+#: .\templates\circuitMoto\contact.html:533 .\templates\contact.html:40
+#, fuzzy
+#| msgid "Emailing"
+msgid "Email"
+msgstr "Emailing"
+
+#: .\circuitMoto\forms.py:61 .\circuitMoto\models.py:811
+#: .\templates\circuitMoto\contact.html:545 .\templates\contact.html:45
+msgid "Téléphone"
+msgstr "Phone"
+
+#: .\circuitMoto\forms.py:71 .\circuitMoto\forms.py:131
+msgid "N° passeport ou identité"
+msgstr "Passport or ID number"
+
+#: .\circuitMoto\forms.py:72 .\circuitMoto\forms.py:130
+msgid "Nationalité"
+msgstr "Nationality"
+
+#: .\circuitMoto\forms.py:74 .\circuitMoto\models.py:812
+#: .\templates\circuitMoto\contact.html:557 .\templates\contact.html:50
+msgid "Adresse"
+msgstr "Address"
+
+#: .\circuitMoto\forms.py:75
+#, fuzzy
+#| msgid "Code option"
+msgid "Code postal"
+msgstr "Option code"
+
+#: .\circuitMoto\forms.py:76
+msgid "Localité"
+msgstr "Locality"
+
+#: .\circuitMoto\forms.py:77
+msgid "Pays"
+msgstr "Country"
+
+#: .\circuitMoto\forms.py:92
+msgid "Groupe sanguin"
+msgstr "Blood type"
+
+#: .\circuitMoto\forms.py:93
+msgid "— Non renseigné —"
+msgstr "— Not specified —"
+
+#: .\circuitMoto\forms.py:96
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:76
+msgid "Hypertension artérielle"
+msgstr "High blood pressure"
+
+#: .\circuitMoto\forms.py:97
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:84
+msgid "Asthme"
+msgstr "Asthma"
+
+#: .\circuitMoto\forms.py:98
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:92
+msgid "Épilepsie"
+msgstr "Epilepsy"
+
+#: .\circuitMoto\forms.py:99
+msgid "Eczéma/irritations"
+msgstr "Eczema/irritations"
+
+#: .\circuitMoto\forms.py:100
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:108
+msgid "Vertiges"
+msgstr "Dizziness"
+
+#: .\circuitMoto\forms.py:101
+msgid "Notes médicales"
+msgstr "Medical notes"
+
+#: .\circuitMoto\forms.py:108
+#: .\templates\circuitMoto\inscription\succes.html:83
+msgid "Marque"
+msgstr "Brand"
+
+#: .\circuitMoto\forms.py:109
+#: .\templates\circuitMoto\inscription\succes.html:84
+msgid "Modèle"
+msgstr "Model"
+
+#: .\circuitMoto\forms.py:110
+#: .\templates\circuitMoto\inscription\succes.html:85
+msgid "Immatriculation"
+msgstr "License plate"
+
+#: .\circuitMoto\forms.py:117
+msgid "Je voyage avec un passager"
+msgstr "I am traveling with a passenger"
+
+#: .\circuitMoto\forms.py:124
+#, fuzzy
+#| msgid "Prix Passager"
+msgid "Prénom du passager"
+msgstr "Passenger price"
+
+#: .\circuitMoto\forms.py:125
+#, fuzzy
+#| msgid "Tarif passager"
+msgid "Nom du passager"
+msgstr "Passenger price"
+
+#: .\circuitMoto\forms.py:126
+#, fuzzy
+#| msgid "Tarif passager"
+msgid "Email du passager"
+msgstr "Passenger price"
+
+#: .\circuitMoto\forms.py:127
+msgid "Téléphone du passager"
+msgstr "Passenger phone"
+
+#: .\circuitMoto\forms.py:128
+#, fuzzy
+#| msgid "Date de fin"
+msgid "Date de naissance"
+msgstr "End date"
+
+#: .\circuitMoto\forms.py:139
+#, python-brace-format
+msgid "Prix unitaire : {price} {currency}"
+msgstr "Unit price: {price} {currency}"
+
+#: .\circuitMoto\forms.py:161 .\circuitMoto\forms.py:169
+#: .\templates\circuitMoto\home.html:2439
+#: .\templates\circuitMoto\inscription\succes.html:65
+#: .\templates\circuitMoto\inscription\succes.html:138
+#: .\templates\circuitMoto\inscription\succes.html:249
+msgid "Pilote"
+msgstr "Rider"
+
+#: .\circuitMoto\forms.py:180 .\circuitMoto\forms.py:188
+#: .\templates\circuitMoto\home.html:2447
+#: .\templates\circuitMoto\inscription\succes.html:98
+#: .\templates\circuitMoto\inscription\succes.html:138
+#: .\templates\circuitMoto\inscription\succes.html:251
+msgid "Passager"
+msgstr "Passengers"
+
+#: .\circuitMoto\forms.py:240
+#, fuzzy
+#| msgid "Type d'assurance"
+msgid "Type d’assurance"
+msgstr "Insurance type"
+
+#: .\circuitMoto\forms.py:241
+#: .\templates\circuitMoto\inscription\succes.html:165
+msgid "Compagnie"
+msgstr "Company"
+
+#: .\circuitMoto\forms.py:242
+msgid "N° de police"
+msgstr "Policy number"
+
+#: .\circuitMoto\forms.py:246
+#, fuzzy
+#| msgid "N° d'urgence (assureur)"
+msgid "N° d’urgence (assureur)"
+msgstr "Emergency number (insurer)"
+
+#: .\circuitMoto\forms.py:276
+msgid "La compagnie est requise si vous êtes déjà assuré."
+msgstr "Insurance company is required if you are already insured."
+
+#: .\circuitMoto\forms.py:279
+#, fuzzy
+#| msgid "Période d'assurance invalide."
+msgid "Période d’assurance invalide."
+msgstr "Invalid insurance period."
+
+#: .\circuitMoto\forms.py:287
+msgid "Contact 1 — Nom"
+msgstr "Contact 1 — Name"
+
+#: .\circuitMoto\forms.py:288
+msgid "Contact 1 — Lien de parenté"
+msgstr "Contact 1 — Relationship"
+
+#: .\circuitMoto\forms.py:289
+msgid "Contact 1 — Téléphone"
+msgstr "Contact 1 — Phone"
+
+#: .\circuitMoto\forms.py:291
+msgid "Contact 2 — Nom"
+msgstr "Contact 2 — Name"
+
+#: .\circuitMoto\forms.py:292
+msgid "Contact 2 — Lien de parenté"
+msgstr "Contact 2 — Relationship"
+
+#: .\circuitMoto\forms.py:293
+msgid "Contact 2 — Téléphone"
+msgstr "Contact 2 — Phone"
+
+#: .\circuitMoto\forms.py:302
+#, fuzzy
+#| msgid "Carte d'identité"
+msgid "Carte d’identité"
+msgstr "Identity card"
+
+#: .\circuitMoto\forms.py:303
+msgid "Permis de conduire"
+msgstr "Driver's license"
+
+#: .\circuitMoto\forms.py:304
+msgid "Carte grise"
+msgstr "Vehicle registration"
+
+#: .\circuitMoto\forms.py:305
+#, fuzzy
+#| msgid "Attestation d'assurance"
+msgid "Attestation d’assurance"
+msgstr "Insurance certificate"
+
+#: .\circuitMoto\forms.py:306
+msgid "Certificat médical"
+msgstr "Medical certificate"
+
+#: .\circuitMoto\forms.py:356
+msgid "J’ai lu et j’accepte la décharge et les CGV"
+msgstr "I have read and accept the waiver and Terms & Conditions"
+
+#: .\circuitMoto\forms.py:400 .\circuitMoto\models.py:816
+msgid "Statut du circuit"
+msgstr "Circuit status"
+
+#: .\circuitMoto\forms.py:402 .\templates\circuitMoto\contact.html:695
+#: .\templates\contact.html:154
+msgid "Choisir"
+msgstr "Choose"
+
+#: .\circuitMoto\forms.py:412 .\circuitMoto\models.py:815
+msgid "Intéressé par un circuit ?"
+msgstr "Interested in a circuit?"
+
+#: .\circuitMoto\forms.py:417 .\circuitMoto\models.py:820
+#: .\templates\circuitMoto\contact.html:613 .\templates\contact.html:80
+msgid "Type de demande"
+msgstr "Request type"
+
+#: .\circuitMoto\forms.py:423
+msgid "J’accepte d’être contacté par Pulsion Horizon"
+msgstr "I agree to be contacted by Pulsion Horizon"
+
+#: .\circuitMoto\forms.py:454
+#, fuzzy
+#| msgid "Voir le programme"
+msgid "Votre prénom"
+msgstr "View the itinerary"
+
+#: .\circuitMoto\forms.py:455
+msgid "Votre nom"
+msgstr "Your name"
+
+#: .\circuitMoto\forms.py:458
+msgid "Adresse complète"
+msgstr "Complete address"
+
+#: .\circuitMoto\forms.py:475
+msgid "Choisissez un statut."
+msgstr "Choose a status."
+
+#: .\circuitMoto\forms.py:477
+msgid "Choisissez un circuit."
+msgstr "Choose a circuit."
+
+#: .\circuitMoto\forms.py:480
+msgid "Message trop court (10 caractères minimum)."
+msgstr "Message too short (minimum 10 characters)."
+
+#: .\circuitMoto\models.py:210
+msgid "Brouillon"
+msgstr "Draft"
+
+#: .\circuitMoto\models.py:211
+msgid "Publié"
+msgstr "Published"
+
+#: .\circuitMoto\models.py:212
+msgid "Archivé"
+msgstr "Archived"
+
+#: .\circuitMoto\models.py:215
+msgid "Nom du circuit"
+msgstr "Circuit name"
+
+#: .\circuitMoto\models.py:216
+#: .\templates\circuitMoto\inscription\succes.html:55
+msgid "Code"
+msgstr "Code"
+
+#: .\circuitMoto\models.py:216
+msgid "Ex : corse-2025-06"
+msgstr "e.g., corse-2025-06"
+
+#: .\circuitMoto\models.py:217
+msgid "Date de début"
+msgstr "Start date"
+
+#: .\circuitMoto\models.py:218
+msgid "Date de fin"
+msgstr "End date"
+
+#: .\circuitMoto\models.py:219 .\circuitMoto\models.py:309
+#: .\templates\circuitMoto\home.html:2403
+msgid "Description"
+msgstr "Description"
+
+#: .\circuitMoto\models.py:220
+msgid "Infos de rendez-vous"
+msgstr "Meeting information"
+
+#: .\circuitMoto\models.py:221
+msgid "Capacité (participants)"
+msgstr "Participants"
+
+#: .\circuitMoto\models.py:222 .\templates\circuitMoto\circuit_detail.html:1498
+#: .\templates\circuitMoto\inscription\succes.html:57
+msgid "Devise"
+msgstr "Currency"
+
+#: .\circuitMoto\models.py:225
+msgid "Prix pilote (unitaire)"
+msgstr "Rider price (unit)"
+
+#: .\circuitMoto\models.py:226
+msgid "Prix passager (unitaire)"
+msgstr "Passenger price (unit)"
+
+#: .\circuitMoto\models.py:230
+msgid "Acompte 1 (par personne)"
+msgstr "Deposit 1 (per person)"
+
+#: .\circuitMoto\models.py:231 .\circuitMoto\models.py:235
+msgid "Montant fixe par personne, dans la devise du circuit."
+msgstr "Fixed amount per person, in the circuit's currency."
+
+#: .\circuitMoto\models.py:234
+msgid "Acompte 2 (par personne)"
+msgstr "Deposit 2 (per person)"
+
+#: .\circuitMoto\models.py:238
+msgid "Acompte 2 : J-jours avant départ"
+msgstr "Deposit 2: D-days before departure"
+
+#: .\circuitMoto\models.py:239
+msgid "Ex: 60 pour J-60."
+msgstr "e.g., 60 for D-60."
+
+#: .\circuitMoto\models.py:242
+msgid "Solde : J-jours avant départ"
+msgstr "Balance: D-days before departure"
+
+#: .\circuitMoto\models.py:243
+msgid "Ex: 30 pour J-30."
+msgstr "e.g., 30 for D-30."
+
+#: .\circuitMoto\models.py:247
+msgid "Programme (jour par jour)"
+msgstr "Itinerary (day by day)"
+
+#: .\circuitMoto\models.py:248 .\templates\circuitMoto\circuit_detail.html:1530
+#: .\templates\circuitMoto\circuit_detail.html:1567
+msgid "Kilométrages indicatifs"
+msgstr "Indicative distances"
+
+#: .\circuitMoto\models.py:249 .\templates\circuitMoto\circuit_detail.html:1230
+msgid "Le prix comprend"
+msgstr "Price includes"
+
+#: .\circuitMoto\models.py:250 .\templates\circuitMoto\circuit_detail.html:1239
+msgid "Le prix ne comprend pas"
+msgstr "Price excludes"
+
+#: .\circuitMoto\models.py:251
+msgid "Échéancier (texte libre)"
+msgstr "Installment plan (free text)"
+
+#: .\circuitMoto\models.py:254
+msgid "Infos paiement (virement/CGV)"
+msgstr "Payment Info (Bank Transfer/T&Cs)"
+
+#: .\circuitMoto\models.py:256
+msgid ""
+"Texte libre : coordonnées bancaires, référence, CGV, barème annulation, etc."
+msgstr "Free text: bank details, reference, T&Cs, cancellation fees, etc."
+
+#: .\circuitMoto\models.py:259
+msgid "Durée de validité d’option (jours)"
+msgstr "Option validity period (days)"
+
+#: .\circuitMoto\models.py:260 .\templates\circuitMoto\contact.html:587
+#: .\templates\contact.html:67
+msgid "Statut"
+msgstr "Status"
+
+#: .\circuitMoto\models.py:265 .\templates\circuitMoto\base\_nav.html:39
+#: .\templates\circuitMoto\base\_nav.html:245
+msgid "Circuits"
+msgstr "Tours"
+
+#: .\circuitMoto\models.py:273
+msgid "La date de fin ne peut pas être antérieure à la date de début."
+msgstr "The end date cannot be earlier than the start date."
+
+#: .\circuitMoto\models.py:276
+msgid "Les délais d’échéance doivent être des jours positifs (J-N)."
+msgstr "The due-date offsets must be positive day counts (D-N)."
+
+#: .\circuitMoto\models.py:294
+msgid "Hébergement (chambre single, etc.)"
+msgstr "Accommodation (single room, etc.)"
+
+#: .\circuitMoto\models.py:295
+msgid "Cabine ferry"
+msgstr "Ferry cabin"
+
+#: .\circuitMoto\models.py:296
+msgid "Nuit d’étape"
+msgstr "Stopover night"
+
+#: .\circuitMoto\models.py:297
+msgid "Autre option"
+msgstr "Other option"
+
+#: .\circuitMoto\models.py:301
+msgid "Code option"
+msgstr "Option code"
+
+#: .\circuitMoto\models.py:302
+msgid "Intitulé"
+msgstr "Title"
+
+#: .\circuitMoto\models.py:303
+msgid "Catégorie"
+msgstr "Category"
+
+#: .\circuitMoto\models.py:304
+#: .\templates\circuitMoto\inscription\succes.html:130
+msgid "Prix unitaire"
+msgstr "Unit price"
+
+#: .\circuitMoto\models.py:305
+msgid "Facturé par personne"
+msgstr "Billed per person"
+
+#: .\circuitMoto\models.py:306
+msgid "Quantité variable"
+msgstr "Variable quantity"
+
+#: .\circuitMoto\models.py:307
+msgid "Quantité min."
+msgstr "Min. quantity"
+
+#: .\circuitMoto\models.py:308
+msgid "Quantité max (0 = illimitée)"
+msgstr "Max quantity (0 = unlimited)"
+
+#: .\circuitMoto\models.py:317
+msgid "Option de circuit"
+msgstr "Circuit option"
+
+#: .\circuitMoto\models.py:318
+msgid "Options de circuit"
+msgstr "Circuit options"
+
+#: .\circuitMoto\models.py:801
+msgid "Demande d’information"
+msgstr "Information Request"
+
+#: .\circuitMoto\models.py:802
+msgid "Réclamation"
+msgstr "Complaint"
+
+#: .\circuitMoto\models.py:803
+msgid "Demande de devis"
+msgstr "Quote Request"
+
+#: .\circuitMoto\models.py:804
+msgid "Autre"
+msgstr "Other"
+
+#: .\circuitMoto\models.py:821 .\templates\circuitMoto\contact.html:626
+msgid "Votre message"
+msgstr "Your message"
+
+#: .\circuitMoto\models.py:824
+msgid "J’accepte d’être contacté"
+msgstr "I agree to be contacted"
+
+#: .\circuitMoto\models.py:825
+msgid "Traité"
+msgstr "Processed"
+
+#: .\circuitMoto\models.py:826
+msgid "Adresse IP"
+msgstr "IP Address"
+
+#: .\circuitMoto\models.py:827
+msgid "User-Agent"
+msgstr "User-Agent"
+
+#: .\circuitMoto\models.py:831
+msgid "Message de contact"
+msgstr "Contact Message"
+
+#: .\circuitMoto\models.py:832
+msgid "Messages de contact"
+msgstr "Contact Messages"
+
+#: .\circuitMoto\validators.py:24
+msgid "Ce mot de passe a déjà été utilisé. Veuillez en choisir un autre."
+msgstr "This password has already been used. Please choose another one."
+
+#: .\circuitMoto\validators.py:33
+msgid ""
+"Vous avez déjà utilisé ce mot de passe récemment. Choisissez-en un différent."
+msgstr "You have used this password recently. Please choose a different one."
+
+#: .\circuitMoto\validators.py:38
+msgid "Vous ne pouvez pas réutiliser vos anciens mots de passe."
+msgstr "You cannot reuse your previous passwords."
+
+#: .\circuitMoto\views.py:245
+#, python-format
+msgid "Étape %(n)s sur %(m)s"
+msgstr "Step %(n)s of %(m)s"
+
+#: .\circuitMoto\views.py:1735
+msgid "Trop de demandes récentes depuis votre adresse IP. Réessayez plus tard."
+msgstr "Too many recent requests from your IP address. Please try again later."
+
+#: .\circuitMoto\views.py:1757
+msgid "Votre demande a bien été reçue"
+msgstr "Your request has been received."
+
+#: .\circuitMoto\views.py:1764
+msgid "Merci ! Votre message a bien été envoyé."
+msgstr "Thank you! Your message has been sent successfully."
+
+#: .\templates\circuitMoto\auth\login.html:14
+msgid "Connexion Circuit Moto"
+msgstr "Motorcycle Circuit Login"
+
+#: .\templates\circuitMoto\auth\login.html:16
+msgid "Accédez à votre espace participant"
+msgstr "Access your participant area"
+
+#: .\templates\circuitMoto\auth\login.html:30
+msgid "Nom d'utilisateur"
+msgstr "Username"
+
+#: .\templates\circuitMoto\auth\login.html:43
+msgid "Mot de passe"
+msgstr "Password"
+
+#: .\templates\circuitMoto\auth\login.html:45
+#, fuzzy
+#| msgid "Changer mon mot de passe"
+msgid "Afficher le mot de passe"
+msgstr "Change my password"
+
+#: .\templates\circuitMoto\auth\login.html:58
+msgid "Se souvenir de moi"
+msgstr "Remember me"
+
+#: .\templates\circuitMoto\auth\login.html:60
+msgid "Mot de passe oublié ?"
+msgstr "Forgot password?"
+
+#: .\templates\circuitMoto\auth\login.html:65
+#: .\templates\circuitMoto\base\_nav.html:196
+#: .\templates\circuitMoto\base\_nav.html:404
+msgid "Connexion"
+msgstr "Log in"
+
+#: .\templates\circuitMoto\base\_footer.html:14
+#, fuzzy
+#| msgid "Circuit"
+msgid "CircuitMoto"
+msgstr "Circuit"
+
+#: .\templates\circuitMoto\base\_footer.html:16
+msgid ""
+"Bons plans, dates & actus pour vos circuits moto. Restez informé des "
+"dernières actualités."
+msgstr ""
+"Deals, dates & news for your motorcycle track days. Stay informed with the "
+"latest updates."
+
+#: .\templates\circuitMoto\base\_footer.html:40
+msgid "Restez connecté"
+msgstr "Stay connected"
+
+#: .\templates\circuitMoto\base\_footer.html:41
+msgid ""
+"Abonnez-vous à notre newsletter pour recevoir les dernières actualités, "
+"offres spéciales et conseils pour vos circuits moto."
+msgstr ""
+"Subscribe to our newsletter to receive the latest news, special offers, and "
+"tips for your motorcycle track days."
+
+#: .\templates\circuitMoto\base\_footer.html:48
+msgid "Votre e-mail…"
+msgstr "Your email…"
+
+#: .\templates\circuitMoto\base\_footer.html:54
+msgid "S'inscrire"
+msgstr "Register"
+
+#: .\templates\circuitMoto\base\_footer.html:65
+msgid "CircuitMoto. Tous droits réservés."
+msgstr "CircuitMoto. All rights reserved."
+
+#: .\templates\circuitMoto\base\_footer.html:67
+msgid "CGV"
+msgstr "Terms & Conditions"
+
+#: .\templates\circuitMoto\base\_footer.html:68
+msgid "Confidentialité"
+msgstr "Privacy"
+
+#: .\templates\circuitMoto\base\_footer.html:69
+msgid "Mentions légales"
+msgstr "Legal Notice"
+
+#: .\templates\circuitMoto\base\_footer.html:70
+#: .\templates\circuitMoto\contact.html:4 .\templates\contact.html:4
+msgid "Contact"
+msgstr "Contact"
+
+#: .\templates\circuitMoto\base\_nav.html:12
+#: .\templates\circuitMoto\base\_nav.html:453
+msgid "Navigation principale"
+msgstr "Main navigation"
+
+#: .\templates\circuitMoto\base\_nav.html:27
+#: .\templates\circuitMoto\base\_nav.html:236
+msgid "Accueil"
+msgstr "Home"
+
+#: .\templates\circuitMoto\base\_nav.html:34
+#: .\templates\circuitMoto\base\_nav.html:241
+msgid "Participants"
+msgstr "Participants"
+
+#: .\templates\circuitMoto\base\_nav.html:50
+#: .\templates\circuitMoto\base\_nav.html:252
+msgid "Nouveau circuit"
+msgstr "New tour"
+
+#: .\templates\circuitMoto\base\_nav.html:55
+msgid "Stats"
+msgstr "Stats"
+
+#: .\templates\circuitMoto\base\_nav.html:65
+#: .\templates\circuitMoto\base\_nav.html:71
+#: .\templates\circuitMoto\base\_nav.html:334
+#: .\templates\circuitMoto\base\_nav.html:339
+msgid "Paramètres"
+msgstr "Settings"
+
+#: .\templates\circuitMoto\base\_nav.html:73
+#: .\templates\circuitMoto\base\_nav.html:341
+msgid "Envois d’e-mails"
+msgstr "Email sending"
+
+#: .\templates\circuitMoto\base\_nav.html:76
+#: .\templates\circuitMoto\base\_nav.html:344
+msgid "Pause globale"
+msgstr "Global pause"
+
+#: .\templates\circuitMoto\base\_nav.html:83
+#: .\templates\circuitMoto\base\_nav.html:351
+msgid "Pilotes"
+msgstr "Riders"
+
+#: .\templates\circuitMoto\base\_nav.html:90
+#: .\templates\circuitMoto\base\_nav.html:358
+msgid "Passagers"
+msgstr "Passengers"
+
+#: .\templates\circuitMoto\base\_nav.html:102
+#: .\templates\circuitMoto\base\_nav.html:370
+msgid "Créer un utilisateur staff (complet)"
+msgstr "Create a staff user (full)"
+
+#: .\templates\circuitMoto\base\_nav.html:106
+#: .\templates\circuitMoto\base\_nav.html:373
+msgid "Emailing"
+msgstr "Emailing"
+
+#: .\templates\circuitMoto\base\_nav.html:114
+#: .\templates\circuitMoto\base\_nav.html:380
+msgid "Changer mon mot de passe"
+msgstr "Change my password"
+
+#: .\templates\circuitMoto\base\_nav.html:125
+#: .\templates\circuitMoto\base\_nav.html:260
+msgid "Programmes"
+msgstr "Tours"
+
+#: .\templates\circuitMoto\base\_nav.html:131
+#: .\templates\circuitMoto\base\_nav.html:266
+msgid "Programmes à venir"
+msgstr "Upcoming tours"
+
+#: .\templates\circuitMoto\base\_nav.html:147
+#: .\templates\circuitMoto\base\_nav.html:280
+msgid "Aucun circuit à venir"
+msgstr "No upcoming tours"
+
+#: .\templates\circuitMoto\base\_nav.html:151
+#: .\templates\circuitMoto\base\_nav.html:285
+msgid "Tous les circuits"
+msgstr "All tours"
+
+#: .\templates\circuitMoto\base\_nav.html:157
+#: .\templates\circuitMoto\base\_nav.html:291
+#: .\templates\circuitMoto\home.html:2618
+msgid "Déjà inscrit ?"
+msgstr "Already registered?"
+
+#: .\templates\circuitMoto\base\_nav.html:165
+#: .\templates\circuitMoto\base\_nav.html:297
+msgid "Nos circuits"
+msgstr "Our tours"
+
+#: .\templates\circuitMoto\base\_nav.html:168
+#: .\templates\circuitMoto\base\_nav.html:300
+#: .\templates\circuitMoto\circuit_detail.html:1376
+msgid "S’inscrire"
+msgstr "Register"
+
+#: .\templates\circuitMoto\base\_nav.html:184
+#: .\templates\circuitMoto\base\_nav.html:392
+msgid "Back-office"
+msgstr "Back office"
+
+#: .\templates\circuitMoto\base\_nav.html:191
+#: .\templates\circuitMoto\base\_nav.html:399
+msgid "Déconnexion"
+msgstr "Log out"
+
+#: .\templates\circuitMoto\base\_nav.html:207
+msgid "FR"
+msgstr "FR"
+
+#: .\templates\circuitMoto\base\_nav.html:209
+msgid "EN"
+msgstr "EN"
+
+#: .\templates\circuitMoto\base\_nav.html:216
+msgid "Ouvrir le menu"
+msgstr "Open menu"
+
+#: .\templates\circuitMoto\base\_nav.html:255
+msgid "Statistiques"
+msgstr "Statistics"
+
+#: .\templates\circuitMoto\base\_nav.html:310
+#: .\templates\circuitMoto\base\_nav.html:315
+msgid "Langue"
+msgstr "Language"
+
+#: .\templates\circuitMoto\base\_nav.html:321
+msgid "Français"
+msgstr "French"
+
+#: .\templates\circuitMoto\base\_nav.html:325
+msgid "English"
+msgstr "English"
+
+#: .\templates\circuitMoto\circuit_detail.html:1171
+#: .\templates\circuitMoto\home.html:2351
+msgid "Presque complet"
+msgstr "Almost full"
+
+#: .\templates\circuitMoto\circuit_detail.html:1173
+#: .\templates\circuitMoto\home.html:2207
+#: .\templates\circuitMoto\home.html:2353
+msgid "Peu de places"
+msgstr "Few spots left"
+
+#: .\templates\circuitMoto\circuit_detail.html:1175
+#: .\templates\circuitMoto\home.html:2209
+#: .\templates\circuitMoto\home.html:2355
+msgid "Disponible"
+msgstr "Available"
+
+#: .\templates\circuitMoto\circuit_detail.html:1188
+msgid "Dates du circuit"
+msgstr "New tour"
+
+#: .\templates\circuitMoto\circuit_detail.html:1206
+msgid "Prix Pilote"
+msgstr "Rider price"
+
+#: .\templates\circuitMoto\circuit_detail.html:1215
+msgid "Prix Passager"
+msgstr "Passenger price"
+
+#: .\templates\circuitMoto\circuit_detail.html:1223
+#: .\templates\circuitMoto\circuit_detail.html:1372
+#: .\templates\circuitMoto\circuit_detail.html:1576
+#: .\templates\circuitMoto\home.html:2462
+msgid "Modalités de paiement"
+msgstr "Payment terms"
+
+#: .\templates\circuitMoto\circuit_detail.html:1289
+#: .\templates\circuitMoto\circuit_detail.html:1367
+#: .\templates\circuitMoto\circuit_detail.html:1445
+msgid "Tarifs & Options"
+msgstr "Prices & Options"
+
+#: .\templates\circuitMoto\circuit_detail.html:1290
+msgid "Voir le détail"
+msgstr "View details"
+
+#: .\templates\circuitMoto\circuit_detail.html:1295
+#: .\templates\circuitMoto\inscription\succes.html:253
+msgid "Options"
+msgstr "Options"
+
+#: .\templates\circuitMoto\circuit_detail.html:1303
+msgid "Tout voir"
+msgstr "See All"
+
+#: .\templates\circuitMoto\circuit_detail.html:1312
+msgid "Places réservées"
+msgstr "Reserved spots"
+
+#: .\templates\circuitMoto\circuit_detail.html:1317
+msgid "Tarif pilote"
+msgstr "Rider price"
+
+#: .\templates\circuitMoto\circuit_detail.html:1322
+msgid "Tarif passager"
+msgstr "Passenger price"
+
+#: .\templates\circuitMoto\circuit_detail.html:1333
+msgid "Réserver ma place"
+msgstr "Book My Spot"
+
+#: .\templates\circuitMoto\circuit_detail.html:1340
+msgid "Voir le programme"
+msgstr "View the itinerary"
+
+#: .\templates\circuitMoto\circuit_detail.html:1348
+msgid "Partager"
+msgstr "share"
+
+#: .\templates\circuitMoto\circuit_detail.html:1365
+msgid "Présentation"
+msgstr "Overview"
+
+#: .\templates\circuitMoto\circuit_detail.html:1366
+#: .\templates\circuitMoto\home.html:2417
+msgid "Programme"
+msgstr "Itinerary"
+
+#: .\templates\circuitMoto\circuit_detail.html:1368
+msgid "Infos pratiques"
+msgstr "Practical info"
+
+#: .\templates\circuitMoto\circuit_detail.html:1370
+msgid "Kilométrages"
+msgstr "Distances"
+
+#: .\templates\circuitMoto\circuit_detail.html:1389
+msgid "Découvrez ce circuit exceptionnel"
+msgstr "Discover this exceptional tour"
+
+#: .\templates\circuitMoto\circuit_detail.html:1400
+msgid "Road-book détaillé"
+msgstr "Detailed roadbook"
+
+#: .\templates\circuitMoto\circuit_detail.html:1402
+msgid "Road-book & fichiers GPS fournis avant le départ"
+msgstr "Roadbook & GPS files provided before departure"
+
+#: .\templates\circuitMoto\circuit_detail.html:1416
+msgid "Jour"
+msgstr "Day"
+
+#: .\templates\circuitMoto\circuit_detail.html:1425
+msgid "Programme en cours de finalisation — contactez-nous pour plus d’infos."
+msgstr "Itinerary being finalized — contact us for more information."
+
+#: .\templates\circuitMoto\circuit_detail.html:1434
+msgid "Réserver maintenant"
+msgstr "Book now"
+
+#: .\templates\circuitMoto\circuit_detail.html:1449
+msgid "Forfait Pilote"
+msgstr "Rider package"
+
+#: .\templates\circuitMoto\circuit_detail.html:1457
+msgid "Forfait Passager"
+msgstr "Passenger package"
+
+#: .\templates\circuitMoto\circuit_detail.html:1466
+msgid "Options additionnelles"
+msgstr "Additional options"
+
+#: .\templates\circuitMoto\circuit_detail.html:1479
+msgid "par personne"
+msgstr "per person"
+
+#: .\templates\circuitMoto\circuit_detail.html:1480
+msgid "quantité variable"
+msgstr "variable quantity"
+
+#: .\templates\circuitMoto\circuit_detail.html:1494
+msgid "Infos pratiques & Rendez-vous"
+msgstr "Practical info & Meeting point"
+
+#: .\templates\circuitMoto\circuit_detail.html:1502
+#: .\templates\circuitMoto\inscription\succes.html:56
+msgid "Dates"
+msgstr "Dates"
+
+#: .\templates\circuitMoto\circuit_detail.html:1507
+msgid "Durée"
+msgstr "Duration"
+
+#: .\templates\circuitMoto\circuit_detail.html:1508
+#: .\templates\circuitMoto\home.html:2472
+msgid "jours"
+msgstr "days"
+
+#: .\templates\circuitMoto\circuit_detail.html:1512
+msgid "Capacité"
+msgstr "Capacity"
+
+#: .\templates\circuitMoto\circuit_detail.html:1513
+msgid "places"
+msgstr "spots"
+
+#: .\templates\circuitMoto\circuit_detail.html:1541
+#: .\templates\circuitMoto\inscription\succes.html:127
+msgid "Option"
+msgstr "Option"
+
+#: .\templates\circuitMoto\circuit_detail.html:1550
+msgid "Total (base)"
+msgstr "Total (base)"
+
+#: .\templates\circuitMoto\circuit_detail.html:1551
+#: .\templates\circuitMoto\circuit_detail.html:1556
+msgid "km"
+msgstr "km"
+
+#: .\templates\circuitMoto\circuit_detail.html:1555
+msgid "Total avec options"
+msgstr "Total with options"
+
+#: .\templates\circuitMoto\circuit_detail.html:1593
+msgid "Partager ce circuit"
+msgstr "Share this tour"
+
+#: .\templates\circuitMoto\circuit_detail.html:1597
+msgid "Facebook"
+msgstr "Facebook"
+
+#: .\templates\circuitMoto\circuit_detail.html:1598
+msgid "Twitter"
+msgstr "Twitter"
+
+#: .\templates\circuitMoto\circuit_detail.html:1599
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: .\templates\circuitMoto\circuit_detail.html:1600
+msgid "Copier le lien"
+msgstr "Copy link"
+
+#: .\templates\circuitMoto\circuits_list.html:6
+msgid "Nos circuits à venir — Pulsion Horizon"
+msgstr "Our upcoming tours — Pulsion Horizon"
+
+#: .\templates\circuitMoto\circuits_list.html:7
+msgid ""
+"Découvrez tous les circuits moto Pulsion Horizon à venir et réservez votre "
+"place."
+msgstr ""
+"Discover all upcoming Pulsion Horizon motorcycle tours and reserve your spot."
+
+#: .\templates\circuitMoto\circuits_list.html:8
+#: .\templates\circuitMoto\circuits_list.html:15
+msgid "Nos circuits à venir"
+msgstr "No upcoming tours"
+
+#: .\templates\circuitMoto\circuits_list.html:9
+msgid ""
+"Parcourez les circuits moto ouverts aux inscriptions et trouvez votre "
+"prochaine aventure."
+msgstr ""
+"Browse the motorcycle tours open for registration and find your next "
+"adventure."
+
+#: .\templates\circuitMoto\circuits_list.html:16
+msgid "Dates, pays, niveaux — trouvez votre prochaine virée."
+msgstr "Dates, countries, skill levels — find your next ride."
+
+#: .\templates\circuitMoto\circuits_list.html:22
+msgid "Chercher un lieu, un code, un mot-clé…"
+msgstr "Search for a location, a code, a keyword…"
+
+#: .\templates\circuitMoto\circuits_list.html:52
+msgid "circuit"
+msgstr "Tour"
+
+#: .\templates\circuitMoto\circuits_list.html:52
+msgid "disponible"
+msgstr "available"
+
+#: .\templates\circuitMoto\circuits_list.html:54
+msgid "Résultats pour"
+msgstr "Results for"
+
+#: .\templates\circuitMoto\circuits_list.html:77
+msgid "Dès"
+msgstr "From"
+
+#: .\templates\circuitMoto\circuits_list.html:88
+msgid "Capacité limitée"
+msgstr "Limited capacity"
+
+#: .\templates\circuitMoto\circuits_list.html:95
+#: .\templates\circuitMoto\home.html:2326
+msgid "Explorer et s'inscrire"
+msgstr "Explore and register"
+
+#: .\templates\circuitMoto\circuits_list.html:161
+msgid "Aucun circuit trouvé"
+msgstr "No circuits found"
+
+#: .\templates\circuitMoto\circuits_list.html:162
+msgid "Aucun résultat pour"
+msgstr "No results for"
+
+#: .\templates\circuitMoto\circuits_list.html:162
+msgid "Aucun circuit ouvert aux inscriptions pour le moment."
+msgstr "No circuits currently open for registration."
+
+#: .\templates\circuitMoto\circuits_list.html:168
+msgid "Voir tous les circuits"
+msgstr "View all circuits"
+
+#: .\templates\circuitMoto\contact.html:479
+msgid "Contact Premium"
+msgstr "Premium Contact"
+
+#: .\templates\circuitMoto\contact.html:481 .\templates\contact.html:9
+msgid "Contactez-nous"
+msgstr "Contact Us"
+
+#: .\templates\circuitMoto\contact.html:483
+msgid ""
+"Une question sur un circuit, un devis personnalisé, ou simplement l'envie de "
+"partager votre passion ? Notre équipe d'experts vous répond sous 24h."
+msgstr ""
+"A question about a circuit, a personalized quote, or simply the desire to "
+"share your passion? Our team of experts will respond within 24 hours."
+
+#: .\templates\circuitMoto\contact.html:574
+msgid "Je suis intéressé par un circuit moto"
+msgstr "I am interested in a motorcycle circuit"
+
+#: .\templates\circuitMoto\contact.html:639
+msgid ""
+"J'accepte que mes informations soient utilisées pour être recontacté dans le "
+"cadre de ma demande."
+msgstr ""
+"I agree that my information may be used to be contacted again regarding my "
+"request."
+
+#: .\templates\circuitMoto\contact.html:651
+msgid "Envoyer mon message"
+msgstr "Send my message"
+
+#: .\templates\circuitMoto\contact.html:660
+msgid "Ce champ est obligatoire"
+msgstr "This field is required"
+
+#: .\templates\circuitMoto\contact.html:661
+msgid "Format d'email invalide"
+msgstr "Invalid email format"
+
+#: .\templates\circuitMoto\contact.html:706
+msgid "Chargement..."
+msgstr "Loading..."
+
+#: .\templates\circuitMoto\contact.html:711
+msgid "Choisir un circuit"
+msgstr "Select a tour"
+
+#: .\templates\circuitMoto\contact.html:725
+msgid "Erreur de chargement"
+msgstr "Error loading"
+
+#: .\templates\circuitMoto\contact.html:859
+msgid "Envoi en cours..."
+msgstr "Sending..."
+
+#: .\templates\circuitMoto\home.html:2045
+msgid "Circuits Moto"
+msgstr "Motorcycle Track Days"
+
+#: .\templates\circuitMoto\home.html:2051
+msgid "L'aventure vous attend"
+msgstr "Adventure awaits you"
+
+#: .\templates\circuitMoto\home.html:2052
+msgid "Découvrez l'exceptionnel"
+msgstr "Discover the exceptional"
+
+#: .\templates\circuitMoto\home.html:2053
+msgid "Vivez l'intensité"
+msgstr "Live the intensity"
+
+#: .\templates\circuitMoto\home.html:2054
+msgid "Roulez vers l'inconnu"
+msgstr "Ride into the unknown"
+
+#: .\templates\circuitMoto\home.html:2059
+msgid "Choisissez votre aventure et inscrivez-vous en quelques clics"
+msgstr "Choose your adventure and register in a few clicks"
+
+#: .\templates\circuitMoto\home.html:2064
+msgid "Circuits disponibles"
+msgstr "Available circuits"
+
+#: templates/circuitMoto/home.html:2068
+msgid "Inscriptions"
+msgstr "Registrations"
+
+#: .\templates\circuitMoto\home.html:2105
+msgid "Filtres avancés"
+msgstr "Advanced filters"
+
+#: .\templates\circuitMoto\home.html:2106
+msgid "Affinez votre recherche"
+msgstr "Refine your search"
+
+#: .\templates\circuitMoto\home.html:2114
+#, fuzzy
+#| msgid "Réinitialiser"
+msgid "Réinitialiser les filtres"
+msgstr "Reset"
+
+#: .\templates\circuitMoto\home.html:2121
+msgid "Réinitialiser"
+msgstr "Reset"
+
+#: .\templates\circuitMoto\home.html:2131
+msgid "Nom, code ou lieu"
+msgstr "Name, code or location"
+
+#: .\templates\circuitMoto\home.html:2144
+msgid "À partir du"
+msgstr "From"
+
+#: .\templates\circuitMoto\home.html:2158
+msgid "Date (plus proche)"
+msgstr "Date (earliest first)"
+
+#: .\templates\circuitMoto\home.html:2159
+msgid "Prix (croissant)"
+msgstr "Price (low to high)"
+
+#: .\templates\circuitMoto\home.html:2160
+msgid "Prix (décroissant)"
+msgstr "Price (high to low)"
+
+#: .\templates\circuitMoto\home.html:2161
+#: .\templates\circuitMoto\home.html:2269
+msgid "Places disponibles"
+msgstr "Available spots"
+
+#: .\templates\circuitMoto\home.html:2163
+msgid "Trier par"
+msgstr "Sort by"
+
+#: .\templates\circuitMoto\home.html:2173
+msgid "Filtres actifs:"
+msgstr "Active filters:"
+
+#: .\templates\circuitMoto\home.html:2205
+msgid "Complet"
+msgstr "Sold out"
+
+#: .\templates\circuitMoto\home.html:2231
+msgid "Aperçu rapide"
+msgstr "Quick view"
+
+#: .\templates\circuitMoto\home.html:2287
+#: .\templates\circuitMoto\home.html:2385
+msgid "À partir de"
+msgstr "Starting from"
+
+#: .\templates\circuitMoto\home.html:2292
+msgid "passager"
+msgstr "passenger"
+
+#: .\templates\circuitMoto\home.html:2304
+msgid "Options disponibles"
+msgstr "Available options"
+
+#: .\templates\circuitMoto\home.html:2433
+msgid "Tarifs"
+msgstr "Pricing"
+
+#: .\templates\circuitMoto\home.html:2442
+msgid "Populaire"
+msgstr "Popular"
+
+#: .\templates\circuitMoto\home.html:2471
+msgid "Acompte 1"
+msgstr "Deposit 1"
+
+#: .\templates\circuitMoto\home.html:2471
+msgid "personne à l'inscription"
+msgstr "per person upon registration"
+
+#: .\templates\circuitMoto\home.html:2472
+msgid "option valable"
+msgstr "valid for"
+
+#: .\templates\circuitMoto\home.html:2478
+msgid "Acompte 2"
+msgstr "Deposit 2"
+
+#: .\templates\circuitMoto\home.html:2478
+msgid "personne à J"
+msgstr "per person at D"
+
+#: .\templates\circuitMoto\home.html:2484
+msgid "Solde"
+msgstr "Balance due"
+
+#: .\templates\circuitMoto\home.html:2484
+msgid "à J"
+msgstr "at D"
+
+#: .\templates\circuitMoto\home.html:2500
+msgid "Coordonnées de paiement"
+msgstr "Payment details"
+
+#: .\templates\circuitMoto\home.html:2518
+msgid "Explorer"
+msgstr "Explore"
+
+#: .\templates\circuitMoto\home.html:2526
+msgid "Réserver"
+msgstr "Book"
+
+#: .\templates\circuitMoto\home.html:2552
+msgid "Aucun circuit disponible"
+msgstr "No circuits available"
+
+#: .\templates\circuitMoto\home.html:2553
+msgid "Revenez plus tard pour découvrir nos prochaines aventures"
+msgstr "Check back later to discover our upcoming adventures"
+
+#: .\templates\circuitMoto\home.html:2555
+msgid "Actualiser la page"
+msgstr "Refresh page"
+
+#: .\templates\circuitMoto\home.html:2570
+#: .\templates\circuitMoto\home.html:2577
+#: .\templates\circuitMoto\inscription\step_assurance.html:63
+#: .\templates\circuitMoto\inscription\step_circuit.html:36
+#: .\templates\circuitMoto\inscription\step_contacts.html:68
+#: .\templates\circuitMoto\inscription\step_decharge.html:84
+#: .\templates\circuitMoto\inscription\step_documents.html:89
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:122
+#: .\templates\circuitMoto\inscription\step_moto.html:42
+#: .\templates\circuitMoto\inscription\step_options.html:56
+#: .\templates\circuitMoto\inscription\step_passager.html:49
+#: .\templates\circuitMoto\inscription\step_passager_choix.html:39
+#: .\templates\circuitMoto\inscription\step_pilote.html:97
+msgid "Précédent"
+msgstr "Previous"
+
+#: .\templates\circuitMoto\home.html:2595
+#: .\templates\circuitMoto\home.html:2602
+#: .\templates\circuitMoto\inscription\step_assurance.html:67
+#: .\templates\circuitMoto\inscription\step_circuit.html:40
+#: .\templates\circuitMoto\inscription\step_contacts.html:72
+#: .\templates\circuitMoto\inscription\step_documents.html:91
+#: .\templates\circuitMoto\inscription\step_moto.html:46
+#: .\templates\circuitMoto\inscription\step_options.html:60
+#: .\templates\circuitMoto\inscription\step_passager.html:51
+#: .\templates\circuitMoto\inscription\step_passager_choix.html:43
+#: .\templates\circuitMoto\inscription\step_pilote.html:101
+msgid "Suivant"
+msgstr "Next"
+
+#: .\templates\circuitMoto\home.html:2619
+msgid "Retrouvez votre inscription avec votre numéro de référence"
+msgstr "Find your registration with your reference number"
+
+#: .\templates\circuitMoto\home.html:2626
+#: .\templates\circuitMoto\inscription\lookup.html:25
+msgid "Votre référence (UUID)"
+msgstr "Your reference (UUID)"
+
+#: .\templates\circuitMoto\home.html:2633
+msgid "Modifier mon inscription"
+msgstr "Modify my registration"
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:4
+msgid "Déclaration – Décharge"
+msgstr "Declaration – Liability Waiver"
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:7
+msgid "Référence du voyage :"
+msgstr "Trip reference:"
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:8
+#, python-format
+msgid ""
+"\n"
+"      %(name)s — du %(start)s au %(end)s\n"
+"    "
+msgstr ""
+"\n"
+"      %(name)s — from %(start)s to %(end)s\n"
+"    "
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:14
+msgid ""
+"Je déclare être en bonne santé et avoir pris connaissance de la fiche "
+"technique (et du programme) de la randonnée en moto organisée."
+msgstr ""
+"I declare that I am in good health and have read the technical sheet (and "
+"the programme) of the organised motorcycle tour."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:15
+msgid ""
+"Je déclare être en possession d’un permis de conduire valable pour le "
+"véhicule utilisé."
+msgstr "I declare that I hold a driving licence valid for the vehicle used."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:16
+msgid ""
+"Je m’engage à suivre la randonnée, me conformer aux instructions données "
+"lors des briefings et celles des road-books, et rouler dans le respect de "
+"l’environnement et du matériel utilisé durant le circuit."
+msgstr ""
+"I undertake to follow the tour, comply with the instructions given during "
+"briefings and those in the roadbooks, and ride with respect for the "
+"environment and the equipment used during the tour."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:17
+msgid ""
+"Je déclare abandonner tout recours, tant pour moi-même que pour mes ayants "
+"droit, héritiers, proches (parents, conjoint, enfants) et nos assureurs "
+"envers les organisateurs de la randonnée, les autres participants, les "
+"préposés, le personnel, les bénévoles et chargés de mission visés ci-dessus, "
+"pour tout dommage que je subisse avant, pendant et après la randonnée."
+msgstr ""
+"I declare that I waive any claim, both for myself and for my beneficiaries, "
+"heirs, relatives (parents, spouse, children) and our insurers, against the "
+"organisers of the tour, the other participants, appointees, staff, "
+"volunteers and agents mentioned above, for any damage I may suffer before, "
+"during and after the tour."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:18
+msgid ""
+"Je m’engage à ne pas conduire sous l’influence d’alcool ni d’autres drogues "
+"ou stimulants."
+msgstr ""
+"I undertake not to ride under the influence of alcohol or any other drugs or "
+"stimulants."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:19
+msgid ""
+"Je m’engage à avoir pris connaissance du circuit proposé par l’organisation "
+"et à être conscient de mes capacités de pilotage pour participer à ce type "
+"de circuit."
+msgstr ""
+"I undertake to have reviewed the route proposed by the organiser and to be "
+"aware of my riding abilities to participate in this type of tour."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:20
+msgid "Je dégage l’organisation de toute responsabilité en cas d’accident."
+msgstr ""
+"I release the organiser from all liability in the event of an accident."
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:24
+msgid ""
+"\n"
+"    Le participant déclare avoir pris connaissance des Conditions Générales "
+"de Vente de Pulsion Horizon\n"
+"    (lic 00619/MTTA/DRT/CDAV/CBAV) ainsi que des informations ci-jointes et "
+"les accepte.\n"
+"    "
+msgstr ""
+"\n"
+"    The participant declares that they have read Pulsion Horizon’s General "
+"Terms and Conditions of Sale\n"
+"    (lic 00619/MTTA/DRT/CDAV/CBAV) as well as the attached information and "
+"accepts them.\n"
+"    "
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:31
+#, python-format
+msgid ""
+"\n"
+"      Lieu et date : ……………………… — %(today)s\n"
+"    "
+msgstr ""
+"\n"
+"      Place and date: ……………………… — %(today)s\n"
+"    "
+
+#: .\templates\circuitMoto\inscription\_decharge_contenu.html:34
+#, python-format
+msgid ""
+"\n"
+"      Nom et prénom : <strong>%(first)s %(last)s</strong>\n"
+"    "
+msgstr ""
+"\n"
+"      First and last name: <strong>%(first)s %(last)s</strong>\n"
+"    "
+
+#: .\templates\circuitMoto\inscription\base\base_inscription.html:81
+msgid "Étapes"
+msgstr "Steps"
+
+#: .\templates\circuitMoto\inscription\base\base_inscription.html:114
+#: .\templates\circuitMoto\inscription\base\base_inscription.html:115
+msgid "Remonter en haut"
+msgstr "Back to top"
+
+#: .\templates\circuitMoto\inscription\lookup.html:11
+#, fuzzy
+#| msgid "Déjà inscrit ?"
+msgid "Déjà inscrit"
+msgstr "Already registered?"
+
+#: .\templates\circuitMoto\inscription\lookup.html:12
+#, fuzzy
+#| msgid "Modifier mon inscription"
+msgid "Retrouvez et modifiez votre inscription"
+msgstr "Modify my registration"
+
+#: .\templates\circuitMoto\inscription\lookup.html:14
+msgid ""
+"Saisissez votre référence (UUID). Nous vous redirigeons directement vers "
+"votre dossier."
+msgstr ""
+"Enter your reference (UUID). We will redirect you directly to your file."
+
+#: .\templates\circuitMoto\inscription\lookup.html:30
+msgid "Coller"
+msgstr "Paste"
+
+#: .\templates\circuitMoto\inscription\lookup.html:32
+msgid "Copiez/collez la référence reçue dans l'email de confirmation."
+msgstr "Copy/paste the reference received in the confirmation email."
+
+#: .\templates\circuitMoto\inscription\lookup.html:37
+#, fuzzy
+#| msgid "Modifier mon inscription"
+msgid "Ouvrir mon inscription"
+msgstr "Modify my registration"
+
+#: .\templates\circuitMoto\inscription\lookup.html:40
+msgid "Scanner un QR"
+msgstr "Scan a QR code"
+
+#: .\templates\circuitMoto\inscription\lookup.html:63
+msgid "Scanner votre QR code"
+msgstr "Scan your QR code"
+
+#: .\templates\circuitMoto\inscription\lookup.html:70
+msgid ""
+"Le QR doit contenir l'URL ou l'UUID. Lecture locale (aucune donnée envoyée)."
+msgstr ""
+"The QR must contain the URL or the UUID. Processed locally (no data is sent)."
+
+#: .\templates\circuitMoto\inscription\step_assurance.html:5
+#: .\templates\circuitMoto\inscription\succes.html:159
+msgid "Assurance"
+msgstr "Insurance"
+
+#: .\templates\circuitMoto\inscription\step_assurance.html:6
+msgid "Renseignez vos informations d'assurance moto."
+msgstr "Fill in your motorcycle insurance details."
+
+#: .\templates\circuitMoto\inscription\step_circuit.html:5
+msgid "Choix du circuit"
+msgstr "Circuit Selection"
+
+#: .\templates\circuitMoto\inscription\step_circuit.html:6
+msgid "Sélectionnez le circuit auquel vous souhaitez participer."
+msgstr "Select the circuit you wish to participate in."
+
+#: .\templates\circuitMoto\inscription\step_contacts.html:4
+#: .\templates\circuitMoto\inscription\succes.html:182
+msgid "Contacts d'urgence"
+msgstr "Emergency Contacts"
+
+#: .\templates\circuitMoto\inscription\step_contacts.html:5
+msgid "Veuillez indiquer deux personnes à contacter en cas d'urgence."
+msgstr "Please provide two people to contact in case of emergency."
+
+#: .\templates\circuitMoto\inscription\step_contacts.html:18
+msgid "Contact 1"
+msgstr "Contact 1"
+
+#: .\templates\circuitMoto\inscription\step_contacts.html:40
+msgid "Contact 2"
+msgstr "Contact 2"
+
+#: .\templates\circuitMoto\inscription\step_decharge.html:4
+msgid "Décharge & conditions"
+msgstr "Waiver & Terms"
+
+#: .\templates\circuitMoto\inscription\step_decharge.html:18
+msgid "Veuillez lire la décharge et les CGV"
+msgstr "Please read the waiver and Terms & Conditions"
+
+#: .\templates\circuitMoto\inscription\step_decharge.html:40
+msgid "Signature électronique"
+msgstr "Electronic Signature"
+
+#: .\templates\circuitMoto\inscription\step_decharge.html:41
+msgid ""
+"Signez dans le cadre ci-dessous (doigt ou souris). Utilisez « Effacer » pour "
+"recommencer."
+msgstr "Sign in the box below (finger or mouse). Use « Clear » to start over."
+
+#: .\templates\circuitMoto\inscription\step_decharge.html:52
+msgid "Signature enregistrée précédemment :"
+msgstr "Previously saved signature:"
+
+#: .\templates\circuitMoto\inscription\step_decharge.html:86
+msgid "Finaliser l'inscription"
+msgstr "Finalize registration"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:4
+msgid "Documents à téléverser"
+msgstr "Documents to upload"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:8
+msgid "Formats acceptés :"
+msgstr "Accepted formats:"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:8
+msgid "PDF, JPG/JPEG, PNG."
+msgstr "PDF, JPG/JPEG, PNG."
+
+#: .\templates\circuitMoto\inscription\step_documents.html:9
+msgid "Taille max par fichier :"
+msgstr "Max size per file:"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:10
+msgid "Si un document existe déjà,"
+msgstr "If a document already exists,"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:10
+msgid "laisse le champ vide"
+msgstr "leave the field empty"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:10
+msgid "pour le conserver."
+msgstr "to keep it."
+
+#: .\templates\circuitMoto\inscription\step_documents.html:11
+msgid "Les noms trop longs/avec caractères spéciaux peuvent être"
+msgstr "Names that are too long/with special characters may be"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:11
+msgid "raccourcis/normalisés automatiquement"
+msgstr "shortened/normalized automatically"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:11
+msgid " lors de l’enregistrement."
+msgstr " when saving."
+
+#: .\templates\circuitMoto\inscription\step_documents.html:12
+msgid ""
+"Astuce : pour les photos, privilégie un export “Qualité moyenne” (1–3 Mo) — "
+"plus rapide et parfaitement lisible."
+msgstr ""
+"Tip: for photos, prefer exporting at “Medium quality” (1–3 MB) — faster and "
+"perfectly readable."
+
+#: .\templates\circuitMoto\inscription\step_documents.html:47
+msgid "Remplacer le fichier"
+msgstr "Replace file"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:49
+msgid "Laisse vide pour conserver."
+msgstr "Leave empty to keep it."
+
+#: .\templates\circuitMoto\inscription\step_documents.html:62
+msgid "Cliquer pour téléverser"
+msgstr "Click to upload"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:64
+msgid "Aucun fichier sélectionné"
+msgstr "No file selected"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:68
+msgid "Formats :"
+msgstr "Formats:"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:69
+msgid "Max :"
+msgstr "Max:"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:70
+msgid "Retirer"
+msgstr "Remove"
+
+#: .\templates\circuitMoto\inscription\step_documents.html:92
+msgid "Téléversement en cours… merci de patienter"
+msgstr "Upload in progress… please wait"
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:6
+msgid "Informations médicales"
+msgstr "Medical information"
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:12
+msgid ""
+"Ces informations restent strictement confidentielles et ne sont utilisées "
+"qu'en cas d'urgence médicale."
+msgstr ""
+"This information remains strictly confidential and is used only in case of "
+"medical emergency."
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:51
+msgid "Important pour les soins d'urgence"
+msgstr "Important for emergency care"
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:65
+msgid "Allergies, traitements, antécédents importants..."
+msgstr "Allergies, treatments, significant medical history..."
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:70
+msgid "Conditions médicales"
+msgstr "Medical Conditions"
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:100
+msgid "Problèmes cutanés"
+msgstr "Skin conditions"
+
+#: .\templates\circuitMoto\inscription\step_infos_medicales.html:126
+msgid "Continuer"
+msgstr "Continue"
+
+#: .\templates\circuitMoto\inscription\step_moto.html:4
+msgid "Moto du pilote"
+msgstr "Rider's motorcycle"
+
+#: .\templates\circuitMoto\inscription\step_moto.html:5
+msgid "Renseignez les informations concernant votre moto."
+msgstr "Enter your motorcycle details."
+
+#: .\templates\circuitMoto\inscription\step_options.html:4
+msgid "Options du circuit"
+msgstr "Circuit Options"
+
+#: .\templates\circuitMoto\inscription\step_options.html:5
+msgid ""
+"Sélectionnez les options supplémentaires que vous souhaitez ajouter à votre "
+"inscription."
+msgstr ""
+"Select the additional options you would like to add to your registration."
+
+#: .\templates\circuitMoto\inscription\step_options.html:45
+msgid "Aucune option disponible pour ce circuit."
+msgstr "No options available for this tour."
+
+#: .\templates\circuitMoto\inscription\step_passager.html:6
+msgid "Informations du passager"
+msgstr "Passenger Information"
+
+#: .\templates\circuitMoto\inscription\step_passager_choix.html:4
+msgid "Voyage avec passager ?"
+msgstr "Traveling with passenger?"
+
+#: .\templates\circuitMoto\inscription\step_passager_choix.html:5
+msgid "Indiquez si vous serez accompagné d'un passager pendant le circuit."
+msgstr "Indicate if you will be accompanied by a passenger during the circuit."
+
+#: .\templates\circuitMoto\inscription\step_pilote.html:6
+msgid "Informations du pilote"
+msgstr "Rider Information"
+
+#: .\templates\circuitMoto\inscription\step_pilote.html:7
+msgid "Veuillez renseigner vos informations personnelles."
+msgstr "Please provide your personal information."
+
+#: .\templates\circuitMoto\inscription\succes.html:18
+msgid "Inscription confirmée"
+msgstr "Registration Confirmed"
+
+#: .\templates\circuitMoto\inscription\succes.html:19
+msgid "Votre demande a bien été enregistrée"
+msgstr "Your request has been successfully registered"
+
+#: .\templates\circuitMoto\inscription\succes.html:25
+msgid "Référence"
+msgstr "Reference"
+
+#: .\templates\circuitMoto\inscription\succes.html:27
+msgid "Copier"
+msgstr "Copy"
+
+#: .\templates\circuitMoto\inscription\succes.html:43
+msgid "Résumé de votre inscription"
+msgstr "Summary of your registration"
+
+#: .\templates\circuitMoto\inscription\succes.html:78
+msgid "Moto"
+msgstr "Motorcycle"
+
+#: .\templates\circuitMoto\inscription\succes.html:88
+msgid "Informations sur la moto non renseignées"
+msgstr "Motorcycle information not provided"
+
+#: .\templates\circuitMoto\inscription\succes.html:115
+msgid "Options sélectionnées"
+msgstr "Selected options"
+
+#: .\templates\circuitMoto\inscription\succes.html:120
+msgid "Récap : Options"
+msgstr "Summary: Options"
+
+#: .\templates\circuitMoto\inscription\succes.html:128
+msgid "Bénéficiaire"
+msgstr "Beneficiary"
+
+#: .\templates\circuitMoto\inscription\succes.html:129
+msgid "Quantité"
+msgstr "Quantity"
+
+#: .\templates\circuitMoto\inscription\succes.html:131
+#: .\templates\circuitMoto\inscription\succes.html:254
+msgid "Total"
+msgstr "Total"
+
+#: .\templates\circuitMoto\inscription\succes.html:148
+msgid "Aucune option supplémentaire sélectionnée"
+msgstr "No additional options selected"
+
+#: .\templates\circuitMoto\inscription\succes.html:164
+msgid "Type"
+msgstr "Type"
+
+#: .\templates\circuitMoto\inscription\succes.html:166
+msgid "N° police"
+msgstr "Policy No."
+
+#: .\templates\circuitMoto\inscription\succes.html:168
+msgid "Validité"
+msgstr "Validity"
+
+#: .\templates\circuitMoto\inscription\succes.html:172
+msgid "Informations d'assurance non renseignées"
+msgstr "Insurance information not provided"
+
+#: .\templates\circuitMoto\inscription\succes.html:197
+msgid "Aucun contact enregistré"
+msgstr "No contacts registered"
+
+#: .\templates\circuitMoto\inscription\succes.html:209
+msgid "Documents fournis"
+msgstr "Documents provided"
+
+#: .\templates\circuitMoto\inscription\succes.html:226
+msgid "(fichier manquant)"
+msgstr "(file missing)"
+
+#: .\templates\circuitMoto\inscription\succes.html:232
+msgid "Les documents seront vérifiés par l'organisation."
+msgstr "Documents will be verified by the organization."
+
+#: .\templates\circuitMoto\inscription\succes.html:234
+msgid "Aucun document transmis"
+msgstr "No documents submitted"
+
+#: .\templates\circuitMoto\inscription\succes.html:244
+msgid "Montant estimatif"
+msgstr "Estimated amount"
+
+#: .\templates\circuitMoto\inscription\succes.html:261
+msgid "Sous-total"
+msgstr "Subtotal"
+
+#: .\templates\circuitMoto\inscription\succes.html:265
+msgid "Total estimé"
+msgstr "Estimated total"
+
+#: .\templates\circuitMoto\inscription\succes.html:277
+msgid "Échéancier prévisionnel"
+msgstr "Provisional payment schedule"
+
+#: .\templates\circuitMoto\inscription\succes.html:286
+msgid "Premier acompte"
+msgstr "First deposit"
+
+#: .\templates\circuitMoto\inscription\succes.html:287
+msgid "Payé :"
+msgstr "Paid:"
+
+#: .\templates\circuitMoto\inscription\succes.html:287
+msgid "Oui"
+msgstr "Yes"
+
+#: .\templates\circuitMoto\inscription\succes.html:287
+msgid "Non"
+msgstr "No"
+
+#: .\templates\circuitMoto\inscription\succes.html:290
+msgid "Montant"
+msgstr "Amount"
+
+#: .\templates\circuitMoto\inscription\succes.html:295
+msgid "Date du 1er paiement"
+msgstr "First payment date"
+
+#: .\templates\circuitMoto\inscription\succes.html:301
+msgid "Date du solde à payer"
+msgstr "Balance due date"
+
+#: .\templates\circuitMoto\inscription\succes.html:308
+msgid "L’acompte est calculé par personne:"
+msgstr "The deposit is calculated per person:"
+
+#: .\templates\circuitMoto\inscription\succes.html:315
+msgid "Aucune échéance générée"
+msgstr "No payment schedule generated"
+
+#: .\templates\circuitMoto\inscription\succes.html:320
+msgid "Paiement accepté"
+msgstr "Payment accepted"
+
+#: .\templates\circuitMoto\inscription\succes.html:322
+msgid "Virement bancaire"
+msgstr "Bank transfer"
+
+#: .\templates\circuitMoto\inscription\succes.html:327
+msgid "Coordonnées & mentions"
+msgstr "Contact details & information"
+
+#: .\templates\circuitMoto\inscription\succes.html:331
+msgid "Les coordonnées bancaires vous seront communiquées par e-mail."
+msgstr "Banking details will be provided to you by email."
+
+#: .\templates\circuitMoto\inscription\succes.html:344
+msgid "Décharge signée"
+msgstr "Waiver signed"
+
+#: .\templates\circuitMoto\inscription\succes.html:349
+msgid "Signataire"
+msgstr "Signatory"
+
+#: .\templates\circuitMoto\inscription\succes.html:350
+msgid "Signée le"
+msgstr "Signed on"
+
+#: .\templates\circuitMoto\inscription\succes.html:358
+msgid "Décharge non retrouvée"
+msgstr "Waiver not found"
+
+#: .\templates\circuitMoto\inscription\succes.html:365
+msgid "Imprimer"
+msgstr "Print"
+
+#: .\templates\circuitMoto\inscription\succes.html:368
+msgid "Modifier l'inscription"
+msgstr "Modify registration"
+
+#: .\templates\circuitMoto\inscription\succes.html:372
+msgid "Nouvelle inscription"
+msgstr "New registration"
+
+#: .\templates\circuitMoto\inscription\succes.html:375
+msgid "Retour à l'accueil"
+msgstr "Return to homepage"
+
+#: .\templates\contact.html:10
+msgid ""
+"Une question sur un circuit, un devis, une réclamation ? Dites-nous tout."
+msgstr "A question about a circuit, a quote, a complaint? Tell us everything."
+
+#: .\templates\contact.html:60
+msgid "Je suis intéressé par un circuit"
+msgstr "I am interested in a circuit"
+
+#: .\templates\contact.html:87
+msgid "Message"
+msgstr "Message"
+
+#: .\templates\contact.html:94
+msgid "J’accepte d’être contacté par Pulsion Horizon."
+msgstr "I agree to be contacted by Pulsion Horizon."
+
+#: .\templates\contact.html:100
+msgid "Envoyer"
+msgstr "Send"
+
+#~ msgid "Pays à découvrir"
+#~ msgstr "Countries to discover"
+
+#~ msgid "Prochaines dates"
+#~ msgstr "Upcoming dates"
+
+#~ msgid "Explorer et s’inscrire"
+#~ msgstr "Explore and register"
+
+#~ msgid "Inscription à un circuit moto"
+#~ msgstr "Motorcycle circuit registration"
+
+#~ msgid "J'accepte d'être contacté par Pulsion Horizon"
+#~ msgstr "I agree to be contacted by Pulsion Horizon"

@@ -1,0 +1,112 @@
+{# templates/emails/paiement_resume_compose.html #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Récapitulatif de paiement</title>
+</head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a;">
+  <div style="max-width:680px;margin:0 auto;padding:24px;">
+    <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;overflow:hidden;">
+      <div style="padding:24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;">
+        <h1 style="margin:0;font-size:24px;">Point sur votre paiement</h1>
+        <p style="margin:8px 0 0;opacity:.95;">{{ circuit.nom }} — {{ circuit.code }}</p>
+      </div>
+
+      <div style="padding:24px;">
+        <p style="margin-top:0;">Bonjour {{ dest_name }},</p>
+
+        <p>
+          Voici votre situation actuelle de paiement pour votre inscription au circuit
+          <strong>{{ circuit.nom }}</strong>.
+        </p>
+
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:18px 0;">
+          <tr>
+            <td style="padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
+              <div style="font-size:13px;color:#64748b;">Total attendu</div>
+              <div style="font-size:20px;font-weight:700;">{{ total_attendu_fmt }} {{ ins.devise }}</div>
+            </td>
+          </tr>
+        </table>
+
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0 12px;">
+          <tr>
+            <td style="padding:14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;">
+              <div style="font-size:13px;color:#475569;">Déjà payé</div>
+              <div style="font-size:18px;font-weight:700;color:#1d4ed8;">{{ total_paye_fmt }} {{ ins.devise }}</div>
+            </td>
+          </tr>
+
+          {% if situation == "reste" %}
+          <tr>
+            <td style="padding:14px;background:#fff7ed;border:1px solid #fdba74;border-radius:12px;">
+              <div style="font-size:13px;color:#9a3412;">Reste à payer</div>
+              <div style="font-size:18px;font-weight:700;color:#c2410c;">{{ reste_a_payer_fmt }} {{ ins.devise }}</div>
+            </td>
+          </tr>
+          {% elif situation == "trop_percu" %}
+          <tr>
+            <td style="padding:14px;background:#ecfdf5;border:1px solid #86efac;border-radius:12px;">
+              <div style="font-size:13px;color:#166534;">Trop-perçu constaté</div>
+              <div style="font-size:18px;font-weight:700;color:#15803d;">{{ trop_percu_fmt }} {{ ins.devise }}</div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td style="padding:14px;background:#ecfdf5;border:1px solid #86efac;border-radius:12px;">
+              <div style="font-size:13px;color:#166534;">Situation</div>
+              <div style="font-size:18px;font-weight:700;color:#15803d;">Votre inscription est soldée</div>
+            </td>
+          </tr>
+          {% endif %}
+        </table>
+
+        <h2 style="font-size:18px;margin:24px 0 12px;">Détail des paiements enregistrés</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="8" style="border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="background:#f8fafc;">
+              <th align="left" style="border:1px solid #e2e8f0;">Libellé</th>
+              <th align="left" style="border:1px solid #e2e8f0;">Attendu</th>
+              <th align="left" style="border:1px solid #e2e8f0;">Payé</th>
+              <th align="left" style="border:1px solid #e2e8f0;">Date</th>
+              <th align="left" style="border:1px solid #e2e8f0;">Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in paiements %}
+            <tr>
+              <td style="border:1px solid #e2e8f0;">{{ p.get_libelle_display }}</td>
+              <td style="border:1px solid #e2e8f0;">{{ p.montant_du }} {{ ins.devise }}</td>
+              <td style="border:1px solid #e2e8f0;">{{ p.montant_encaisse }} {{ ins.devise }}</td>
+              <td style="border:1px solid #e2e8f0;">{{ p.encaisse_le|date:"d/m/Y"|default:"—" }}</td>
+              <td style="border:1px solid #e2e8f0;">{{ p.get_statut_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" style="border:1px solid #e2e8f0;color:#64748b;">Aucun paiement enregistré pour le moment.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% if has_infos_paiement %}
+          <div style="margin-top:24px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
+            <div style="font-weight:700;margin-bottom:8px;">Informations de paiement</div>
+            <div style="white-space:pre-line;">{{ infos_paiement }}</div>
+          </div>
+        {% endif %}
+
+        <div style="margin-top:24px;">
+          <a href="{{ edit_url }}" style="display:inline-block;padding:12px 18px;background:#2563eb;color:#fff;text-decoration:none;border-radius:12px;font-weight:700;">
+            Revoir mon inscription
+          </a>
+        </div>
+
+        <p style="margin-top:24px;">Bien cordialement,<br>L’équipe Pulsion Horizon</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

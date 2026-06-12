@@ -1,0 +1,259 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+<section class="page-head">
+  <h2 class="page-title">Personnes</h2>
+
+  <form method="get" class="toolbar pro" role="search" aria-label="Recherche de personnes">
+    <label class="sr-only" for="q">Rechercher</label>
+    <div class="search-field">
+      <svg class="search-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="q" name="q" value="{{ q|default_if_none:'' }}" placeholder="Nom, email, téléphone…" autocomplete="off">
+      {% if q %}
+        <a class="clear" href="{% url 'bo_personne_list' %}" aria-label="Effacer la recherche">×</a>
+      {% endif %}
+    </div>
+
+    <button class="btn btn-primary" type="submit">Rechercher</button>
+    <a class="btn btn-accent" href="{% url 'bo_personne_create' %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Nouvelle personne
+    </a>
+  </form>
+
+  <div class="subline">
+    {% if q %}<span class="hint">Filtre&nbsp;: «&nbsp;{{ q }}&nbsp;»</span>{% endif %}
+    <span class="count">{{ total_count|default:personnes|length }} résultat{{ total_count|default:personnes|length|pluralize }}</span>
+  </div>
+</section>
+
+<div class="card smart-table">
+  {% if personnes %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Référence</th>
+          <th>Personne</th>
+          <th>Email</th>
+          <th>Circuits (récents)</th>
+          <th class="th-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in personnes %}
+        <tr>
+          <td data-label="Référence"><span class="ref">REF-{{ p.id }}</span></td>
+
+          <td data-label="Personne">
+            <div class="person">
+              <span class="avatar" aria-hidden="true">
+                {{ p.prenom|first|default:"?" }}{{ p.nom|first|default:"" }}
+              </span>
+              <div class="who">
+                <div class="name">{{ p.nom|upper }} {{ p.prenom }}</div>
+                {% if p.telephone %}<div class="meta">{{ p.telephone }}</div>{% endif %}
+              </div>
+            </div>
+          </td>
+
+          <td data-label="Email">
+            {% if p.email %}
+              <a class="link" href="mailto:{{ p.email }}">{{ p.email }}</a>
+            {% else %}—{% endif %}
+          </td>
+
+          <td data-label="Circuits (récents)">
+            <div class="chips">
+              {# Pilote #}
+              {% for ins in p.inscriptions_pilote.all|slice:":3" %}
+                <span class="chip">
+                  <span class="dot dot-p"></span>P · {{ ins.circuit.code }}
+                </span>
+              {% empty %}{% endfor %}
+
+              {# Passager #}
+              {% for ins in p.inscriptions_passager.all|slice:":3" %}
+                <span class="chip chip-soft">
+                  <span class="dot dot-ps"></span>PS · {{ ins.circuit.code }}
+                </span>
+              {% empty %}{% endfor %}
+
+              {% with total=p.inscriptions_pilote.count|add:p.inscriptions_passager.count %}
+                {% if total == 0 %}
+                  <span class="chip chip-muted">—</span>
+                {% elif total > 6 %}
+                  <span class="chip chip-muted">+{{ total|add:-6 }}</span>
+                {% endif %}
+              {% endwith %}
+            </div>
+          </td>
+
+          <td data-label="Actions" class="actions-td">
+            <a class="btn btn-primary" href="{% url 'bo_personne_detail' p.id %}">Détails</a>
+
+            <details class="inline-dropdown pop">
+              <summary class="btn btn-secondary">Inscrire</summary>
+              <div class="dropdown" role="menu">
+                {% if circuits %}
+                  <form method="post" action="{% url 'bo_inscrire_personne' p.id %}">
+                    {% csrf_token %}
+                    <label class="sr-only" for="c-{{ p.id }}">Sélectionner un circuit</label>
+                    <select id="c-{{ p.id }}" name="circuit_id" required>
+                      {% for c in circuits %}
+                        <option value="{{ c.id }}">{{ c.nom }} ({{ c.date_debut|date:"d/m" }} → {{ c.date_fin|date:"d/m" }})</option>
+                      {% endfor %}
+                    </select>
+                    <button class="btn btn-primary block">Valider</button>
+                  </form>
+                {% else %}
+                  <em>Aucun circuit disponible.</em>
+                {% endif %}
+                <a class="btn btn-light block" href="{% url 'inscription_create_start' %}?personne={{ p.id }}">Nouvelle inscription (pré-remplie)</a>
+              </div>
+            </details>
+          </td>
+          
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 15h8M8 11h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <h3>Aucune personne</h3>
+      <p>Commencez par ajouter votre premier contact.</p>
+      <a class="btn btn-accent" href="{% url 'bo_personne_create' %}">Ajouter une personne</a>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  /* Page head */
+  .page-head{ display:grid; gap:.35rem; margin-bottom:.75rem; }
+  .page-title{ margin:0; }
+  .subline{ display:flex; gap:.75rem; align-items:center; color:var(--text-light); font-size:.92rem; }
+  .subline .count{ margin-left:auto; font-weight:600; color:var(--text); }
+
+  /* Toolbar / Search */
+  .toolbar.pro{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
+  .search-field{
+    position:relative; min-width:min(420px, 100%); flex:1 1 320px;
+  }
+  .search-field input{
+    width:100%; padding:.75rem 2.5rem .75rem 2.25rem; border:1px solid var(--border);
+    border-radius:12px; background:var(--bg); color:var(--text); transition:var(--transition);
+  }
+  .search-field input:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(59,130,246,.2); }
+  .search-ico{
+    position:absolute; left:.65rem; top:50%; transform:translateY(-50%); width:18px; height:18px; opacity:.7;
+  }
+  .search-field .clear{
+    position:absolute; right:.5rem; top:50%; transform:translateY(-50%);
+    display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:28px; border-radius:8px; background:var(--secondary); color:var(--text); text-decoration:none;
+  }
+  .btn{ display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-accent{
+    background:linear-gradient(135deg, var(--primary), #8b5cf6); color:#fff; border:0;
+    padding:.7rem 1rem; border-radius:12px; font-weight:700;
+  }
+  .btn-accent:hover{ filter:brightness(1.03); transform:translateY(-1px); }
+  .btn-light{ background:var(--secondary); color:var(--text); }
+  .btn.block{ width:100%; margin-top:.5rem; }
+
+  /* Table modernisée */
+  .smart-table{ padding:0; overflow:hidden; }
+  .table-wrap{ overflow:auto; }
+  table{ width:100%; border-collapse:separate; border-spacing:0; }
+  thead th{
+    position:sticky; top:0; z-index:1; background:var(--bg); color:var(--text);
+    text-align:left; font-weight:700; padding: .9rem .9rem; border-bottom:1px solid var(--border);
+  }
+  tbody td{
+    padding:.85rem .9rem; border-bottom:1px solid var(--border); vertical-align:middle;
+  }
+  tbody tr:hover{ background:color-mix(in oklab, var(--primary) 6%, transparent); }
+  .th-actions{ width:220px; }
+  .ref{ font-variant-numeric:tabular-nums; font-weight:700; letter-spacing:.2px; }
+  .link{ color:inherit; text-decoration:underline dotted; text-underline-offset:2px; }
+  .person{ display:flex; gap:.65rem; align-items:center; }
+  .avatar{
+    width:36px; height:36px; border-radius:10px; display:inline-grid; place-items:center;
+    background:color-mix(in oklab, var(--primary) 25%, var(--secondary));
+    color:#fff; font-weight:800; letter-spacing:.3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .who .name{ font-weight:700; line-height:1.2; }
+  .who .meta{ font-size:.85rem; color:var(--text-light); }
+
+  /* Chips */
+  .chips{ display:flex; gap:.35rem; flex-wrap:wrap; }
+  .chip{ display:inline-flex; align-items:center; gap:.35rem; border-radius:999px; padding:.25rem .6rem; font-size:.85rem;
+         background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; }
+  .chip-soft{ background:#ecfeff; color:#155e75; border-color:#cffafe; }
+  .chip-muted{ background:#f4f4f5; color:#3f3f46; border-color:#e4e4e7; }
+  [data-theme="dark"] .chip{ background:#1f2a5a; color:#dbe4ff; border-color:#263068; }
+  [data-theme="dark"] .chip-soft{ background:#113a40; color:#99f6e4; border-color:#134e4a; }
+  [data-theme="dark"] .chip-muted{ background:#3f3f46; color:#e5e7eb; border-color:#52525b; }
+  .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dot-p{ background:#6366f1; }
+  .dot-ps{ background:#06b6d4; }
+
+  /* Actions */
+  .actions-td{ display:flex; gap:.4rem; align-items:center; }
+  .inline-dropdown{ display:inline; position:relative; }
+  .inline-dropdown > summary{ list-style:none; cursor:pointer; }
+  .inline-dropdown > summary::-webkit-details-marker{ display:none; }
+  .inline-dropdown .dropdown{
+    position:absolute; inset:auto 0 auto auto; translate:0 .4rem;
+    background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:.8rem; width:min(320px, 92vw);
+    box-shadow:0 12px 32px rgba(0,0,0,.18); display:none;
+  }
+  .inline-dropdown[open] .dropdown{ display:block; }
+  .inline-dropdown select{ width:100%; padding:.6rem .7rem; border:1px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text); }
+  .inline-dropdown .btn-light{ margin-top:.5rem; }
+
+  /* Empty state */
+  .empty{ padding:2.5rem 1.25rem; text-align:center; display:grid; gap:.5rem; }
+  .empty svg{ width:42px; height:42px; margin:0 auto; opacity:.65; }
+  .empty h3{ margin:.25rem 0 0; }
+  .empty p{ color:var(--text-light); margin:0 0 .5rem; }
+
+  /* Mobile: table -> cartes empilées */
+  @media (max-width: 860px){
+    thead{ display:none; }
+    tbody tr{ display:grid; gap:.65rem; padding: .8rem; border-bottom:1px solid var(--border); }
+    tbody td{ border:none; padding:0; display:flex; justify-content:space-between; gap:.75rem; }
+    tbody td::before{
+      content: attr(data-label);
+      color:var(--text-light); font-size:.85rem; min-width:8.5rem;
+    }
+    .actions-td{ flex-direction:column; align-items:stretch; gap:.35rem; }
+    .th-actions{ width:auto; }
+  }
+</style>
+
+<script>
+  // UX : "/" focus la recherche, "Escape" nettoie si plein, click extérieur ferme le <details>
+  (function(){
+    const q = document.getElementById('q');
+
+    document.addEventListener('keydown', (e)=>{
+      if (e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) {
+        e.preventDefault(); q?.focus();
+      } else if (e.key === 'Escape' && q && q.value) {
+        q.value = '';
+      }
+    });
+
+    // Fermer les dropdowns quand on clique ailleurs ou ESC
+    function closeAll(){ document.querySelectorAll('details.pop[open]').forEach(d=> d.removeAttribute('open')); }
+    document.addEventListener('click', (e)=>{
+      const d = e.target.closest('details.pop');
+      document.querySelectorAll('details.pop[open]').forEach(x=>{ if(x!==d) x.removeAttribute('open'); });
+    });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAll(); });
+  })();
+</script>
+{% endblock %}

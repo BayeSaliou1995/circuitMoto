@@ -1,0 +1,1649 @@
+{# templates/circuitMoto/admin/circuits_list.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+
+{% block content %}
+
+  <div class="circuit-admin-container">
+    <!-- En-tête avec animation améliorée -->
+    <header class="admin-header">
+      <div class="header-content">
+        <h1 class="admin-title gradient-text">Gestion des Circuits</h1>
+        <p class="admin-subtitle">Créez, modifiez et organisez vos circuits moto</p>
+      </div>
+      <a href="{% url 'bo_circuit_create' %}" class="btn btn-primary btn-create pulse-on-hover">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nouveau circuit
+      </a>
+    </header>
+
+    <!-- Barre de filtres avancés avec design moderne -->
+    <div class="filter-card glass-effect">
+      <div class="filter-header">
+        <h3 class="filter-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Filtres avancés
+        </h3>
+        <button class="filter-reset btn-text">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Réinitialiser
+        </button>
+      </div>
+      
+      <div class="filter-grid">
+        <div class="filter-group">
+          <div class="input-container">
+            <input type="text" name="q" id="q" value="{{ q }}" placeholder=" " class="filter-input">
+            <label for="q" class="floating-label">Recherche</label>
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="input-container">
+            <input type="date" id="fromDate" class="filter-input" placeholder=" ">
+            <label for="fromDate" class="floating-label">Date de début</label>
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="input-container">
+            <input type="date" id="toDate" class="filter-input" placeholder=" ">
+            <label for="toDate" class="floating-label">Date de fin</label>
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="input-container">
+            <select id="statut" class="filter-input">
+              <option value="">Tous les statuts</option>
+              <option value="PUBLIE">Publié</option>
+              <option value="BROUILLON">Brouillon</option>
+              <option value="ARCHIVE">Archivé</option>
+            </select>
+            <label for="statut" class="floating-label">Statut</label>
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="8 12 12 16 16 12"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="input-container">
+            <select id="devise" class="filter-input">
+              <option value="">Toutes les devises</option>
+              <option value="XOF">XOF</option>
+              <option value="EUR">EUR</option>
+            </select>
+            <label for="devise" class="floating-label">Devise</label>
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M16 8a6 6 0 0 1-6 6"/>
+              <path d="M12 6v6"/>
+            </svg>
+          </div>
+        </div>
+        
+        {% comment %} <div class="filter-group">
+          <div class="input-container">
+            <select id="sort" class="filter-input">
+              <option value="-date">Plus récent</option>
+              <option value="date">Plus ancien</option>
+              <option value="nom">Nom (A-Z)</option>
+              <option value="-cap">Capacité (↓)</option>
+              <option value="cap">Capacité (↑)</option>
+            </select>
+            <label for="sort" class="floating-label">Trier par</label>
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M7 12h10M5 18h14"/>
+            </svg>
+          </div>
+        </div> {% endcomment %}
+
+      </div>
+      
+      <div class="filter-footer">
+        <div class="footer-row">
+          <div class="footer-left">
+            <div class="counter" aria-live="polite">
+              Affichés : <strong id="counter">{{ circuits|length }}</strong>
+              / <strong>{{ paginator.count|default:circuits|length }}</strong>
+            </div>
+          </div>
+
+          <div class="footer-right pagination-controls-inline">
+            <div class="control">
+              <label class="control-label sr-only" for="per">Taille</label>
+              <select id="per" class="filter-input mini" data-autosubmit>
+                <option value="10" {% if per == 10 %}selected{% endif %}>10 / page</option>
+                <option value="20" {% if per == 20 %}selected{% endif %}>20 / page</option>
+                <option value="50" {% if per == 50 %}selected{% endif %}>50 / page</option>
+                <option value="100" {% if per == 100 %}selected{% endif %}>100 / page</option>
+              </select>
+            </div>
+
+            <div class="control">
+              <label class="control-label sr-only" for="sortLocal">Trier (local)</label>
+              <select id="sortLocal" class="filter-input">
+                <option value="-date">Plus récent</option>
+                <option value="date">Plus ancien</option>
+                <option value="nom">Nom (A-Z)</option>
+                <option value="-cap">Capacité (↓)</option>
+                <option value="cap">Capacité (↑)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Barre de scroll horizontale en haut (sync avec le tableau) -->
+    <div class="table-scroll-top" id="tableScrollTop" aria-hidden="true">
+      <div class="scroll-inner" id="tableScrollTopInner"></div>
+    </div>
+
+
+    <!-- Vue tableau (principale) avec design amélioré -->
+    <div class="table-container" id="tableContainer">
+      <table class="circuit-table">
+        <thead>
+          <tr>
+            <th class="col-name">Nom</th>
+            <th class="col-code">Code</th>
+            <th class="col-dates">Dates</th>
+            <th class="col-capacity">Capacité</th>
+            <th class="col-currency">Devise</th>
+            <th class="col-registrations">Inscriptions</th>
+            <th class="col-status">Statut</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="circuit-rows">
+          {% for c in circuits %}
+          <tr class="circuit-row animate-in"
+              data-name="{{ c.nom|lower }} {{ c.code|lower }} {{ c.description|lower }}"
+              data-date="{{ c.date_debut|date:'Y-m-d' }}"
+              data-datefin="{{ c.date_fin|date:'Y-m-d' }}"
+              data-statut="{{ c.statut }}"
+              data-devise="{{ c.devise }}"
+              data-cap="{{ c.capacite|default:0 }}">
+            <td class="cell-name">
+              <a href="{% url 'bo_circuit_edit' c.pk %}" class="circuit-link">
+                <span class="circuit-name">{{ c.nom_i18n }}</span>
+                {% if c.description %}
+                <span class="circuit-desc">{{ c.description|truncatewords:5 }}</span>
+                {% endif %}
+              </a>
+            </td>
+            <td class="cell-code">
+              <span class="code-badge">#{{ c.code }}</span>
+            </td>
+            <td class="cell-dates">
+              <div class="date-range">
+                <span class="date-start">{{ c.date_debut|date:"d/m/Y" }}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"/>
+                </svg>
+                <span class="date-end">{{ c.date_fin|date:"d/m/Y" }}</span>
+              </div>
+            </td>
+            <td class="cell-capacity">
+              <div class="capacity-progress">
+                {% comment %} <div class="progress-container">
+                  <div class="progress-bar" style="width: {% widthratio c.nb c.capacite 100 %}%">
+                    <div class="progress-wave"></div>
+                  </div>
+                </div> {% endcomment %}
+                <span class="capacity-text">{{ c.nb }}/{{ c.capacite }}</span>
+              </div>
+            </td>
+            <td class="cell-currency">
+              <span class="currency-badge">{{ c.devise }}</span>
+            </td>
+            <td class="cell-registrations">
+              <span class="registrations-count">{{ c.nb }}</span>
+            </td>
+            <td class="cell-status">
+              <span class="status-badge status-{{ c.statut|lower }}">
+                {% if c.statut == "PUBLIE" %}Publié{% elif c.statut == "BROUILLON" %}Brouillon{% else %}Archivé{% endif %}
+              </span>
+            </td>
+            <td class="cell-actions">
+              <div class="action-buttons">
+                <a href="{% url 'bo_circuit_edit' c.pk %}" class="btn-action btn-edit" title="Modifier">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                </a>
+                <a href="{% url 'bo_inscription_list' %}?q={{ c.nom|urlencode }}" class="btn-action btn-view" title="Voir inscrits">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr class="empty-row">
+            <td colspan="8">
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+                <h3>Aucun circuit trouvé</h3>
+                <p>Créez votre premier circuit ou modifiez vos filtres</p>
+                <a href="{% url 'bo_circuit_create' %}" class="btn btn-primary">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  Créer un circuit
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if is_paginated %}
+    <nav class="pagination-bar">
+      <div class="pagi-info">
+        Page <strong>{{ page_obj.number }}</strong> / {{ paginator.num_pages }}
+      </div>
+      <ul class="pagi">
+        {% if page_obj.has_previous %}
+          <li><a class="pagi-btn" href="?{% if querystring %}{{ querystring }}&{% endif %}page=1" aria-label="Première">«</a></li>
+          <li><a class="pagi-btn" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Précédente">‹</a></li>
+        {% else %}
+          <li class="disabled"><span class="pagi-btn">«</span></li>
+          <li class="disabled"><span class="pagi-btn">‹</span></li>
+        {% endif %}
+
+        {# Fenêtre centrée #}
+        {% with total=paginator.num_pages current=page_obj.number %}
+          {% if current > 2 %}
+            <li><a class="pagi-num" href="?{% if querystring %}{{ querystring }}&{% endif %}page=1">1</a></li>
+            {% if current > 3 %}<li class="ellipsis">…</li>{% endif %}
+          {% endif %}
+
+          {% for num in paginator.page_range %}
+            {% if num >= current|add:"-1" and num <= current|add:"1" %}
+              {% if num == current %}
+                <li class="active"><span class="pagi-num">{{ num }}</span></li>
+              {% else %}
+                <li><a class="pagi-num" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if current < total|add:"-1" %}
+            {% if current < total|add:"-2" %}<li class="ellipsis">…</li>{% endif %}
+            <li><a class="pagi-num" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ total }}">{{ total }}</a></li>
+          {% endif %}
+        {% endwith %}
+
+        {% if page_obj.has_next %}
+          <li><a class="pagi-btn" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Suivante">›</a></li>
+          <li><a class="pagi-btn" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ paginator.num_pages }}" aria-label="Dernière">»</a></li>
+        {% else %}
+          <li class="disabled"><span class="pagi-btn">›</span></li>
+          <li class="disabled"><span class="pagi-btn">»</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+
+
+    <!-- Vue mobile (alternative) -->
+    <div class="mobile-grid">
+      {% for c in circuits %}
+      <div class="mobile-card animate-in"
+          data-name="{{ c.nom|lower }} {{ c.code|lower }} {{ c.description|lower }}"
+          data-date="{{ c.date_debut|date:'Y-m-d' }}"
+          data-datefin="{{ c.date_fin|date:'Y-m-d' }}"
+          data-statut="{{ c.statut }}"
+          data-devise="{{ c.devise }}"
+          data-cap="{{ c.capacite|default:0 }}">
+        <div class="card-header">
+          <div class="card-title-section">
+            <h3 class="card-title">{{ c.nom }}</h3>
+            <span class="card-code">#{{ c.code }}</span>
+          </div>
+          <span class="status-badge status-{{ c.statut|lower }}">
+            {% if c.statut == "PUBLIE" %}Publié{% elif c.statut == "BROUILLON" %}Brouillon{% else %}Archivé{% endif %}
+          </span>
+        </div>
+        
+        <div class="card-content">
+          {% if c.description %}
+          <p class="card-description">{{ c.description|truncatewords:15 }}</p>
+          {% endif %}
+          
+          <div class="card-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              {{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}
+            </div>
+            
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+              {{ c.nb }}/{{ c.capacite }} participants
+            </div>
+            
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M16 8a6 6 0 0 1-6 6"/>
+                <path d="M12 6v6"/>
+              </svg>
+              {{ c.devise }}
+            </div>
+          </div>
+          
+          <div class="capacity-progress">
+            <div class="progress-container">
+              <div class="progress-bar" data-pct="{% widthratio c.nb c.capacite 100 %}" style="width:0%">
+                <div class="progress-wave"></div>
+              </div>
+
+            </div>
+            <span class="capacity-text">{{ c.nb }}/{{ c.capacite }} ({% widthratio c.nb c.capacite 100 %}%)</span>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <a href="{% url 'bo_circuit_edit' c.pk %}" class="btn btn-outline btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Modifier
+          </a>
+          <a href="{% url 'bo_inscription_list' %}?q={{ c.nom|urlencode }}" class="btn btn-primary btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            Voir inscrits
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="mobile-empty">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h3>Aucun circuit trouvé</h3>
+          <p>Créez votre premier circuit ou modifiez vos filtres</p>
+          <a href="{% url 'bo_circuit_create' %}" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Créer un circuit
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: rgba(67, 97, 238, 0.1);
+      --primary-dark: #3a56d4;
+      --secondary: #8b5cf6;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --text-lighter: #b2bec3;
+      --bg: #ffffff;
+      --bg-card: #ffffff;
+      --border: #dfe6e9;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --transition-slow: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    [data-theme="dark"] {
+      --primary: #5e72e4;
+      --primary-light: rgba(94, 114, 228, 0.15);
+      --primary-dark: #4d5fd0;
+      --secondary: #a78bfa;
+      --text: #edf2f7;
+      --text-light: #a0aec0;
+      --text-lighter: #718096;
+      --bg: #1a202c;
+      --bg-card: #2d3748;
+      --border: #4a5563;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    :root { --bg-card-rgb: 255,255,255; }
+    [data-theme="dark"] { --bg-card-rgb: 45,55,72; }
+
+
+    /* Layout */
+    .circuit-admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition-slow);
+    }
+
+    /* En-tête */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      animation: slideInDown 0.6s ease-out;
+    }
+
+    .header-content {
+      flex: 1;
+    }
+
+    .admin-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 200% auto;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    .admin-subtitle {
+      color: var(--text-light);
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .btn-create {
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-create::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .btn-create:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-create:hover::before {
+      left: 100%;
+    }
+
+    .pulse-on-hover:hover {
+      animation: pulse 1s infinite;
+    }
+
+    /* Filtres */
+    .filter-card {
+      margin-bottom: 2rem;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .glass-effect {
+      backdrop-filter: blur(10px);
+      background: rgba(var(--bg-card-rgb), 0.8);
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-text {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-text:hover {
+      color: var(--primary-dark);
+      background: var(--primary-light);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .filter-group {
+      position: relative;
+    }
+
+    .input-container {
+      position: relative;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: 1rem 1.25rem 1rem 3rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .floating-label {
+      position: absolute;
+      top: 1rem;
+      left: 3rem;
+      color: var(--text-light);
+      pointer-events: none;
+      transition: var(--transition);
+      background: var(--bg);
+      padding: 0 0.25rem;
+    }
+
+    .filter-input:focus + .floating-label,
+    .filter-input:not(:placeholder-shown) + .floating-label {
+      transform: translateY(-1.75rem) scale(0.85);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--text-light);
+      transition: var(--transition);
+      z-index: 1;
+    }
+
+    .filter-input:focus ~ .input-icon {
+      color: var(--primary);
+    }
+
+    .filter-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .counter {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Tableau */
+    .table-container {
+      margin-bottom: 2rem;
+      overflow: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      animation: fadeIn 1s ease-out;
+    }
+
+    .circuit-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--bg-card);
+    }
+
+    .circuit-table thead th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+      padding: 1.25rem 1rem;
+      font-weight: 600;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-light);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .circuit-table tbody td {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      transition: var(--transition);
+    }
+
+    .circuit-row {
+      transition: var(--transition);
+    }
+
+    .circuit-row:hover {
+      background: rgba(67, 97, 238, 0.03);
+      transform: translateX(4px);
+    }
+
+    .animate-in {
+      animation: slideInRight 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .circuit-row:nth-child(1) { animation-delay: 0.1s; }
+    .circuit-row:nth-child(2) { animation-delay: 0.2s; }
+    .circuit-row:nth-child(3) { animation-delay: 0.3s; }
+
+    .cell-name {
+      font-weight: 500;
+      min-width: 200px;
+    }
+
+    .circuit-link {
+      color: var(--text);
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .circuit-link:hover {
+      color: var(--primary);
+    }
+
+    .circuit-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .circuit-desc {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+
+    .code-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+
+    .cell-dates {
+      min-width: 180px;
+    }
+
+    .date-range {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .date-start,
+    .date-end {
+      font-weight: 500;
+    }
+
+    .capacity-progress {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-width: 150px;
+    }
+
+    .progress-container {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: width 1s ease-in-out;
+    }
+
+    .progress-wave {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: wave 2s linear infinite;
+    }
+
+    .capacity-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .currency-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9rem;
+      background: var(--secondary);
+      color: white;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+
+    .registrations-count {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-publie {
+      background: rgba(16, 185, 129, 0.15);
+      color: #065f46;
+    }
+
+    .status-brouillon {
+      background: rgba(245, 158, 11, 0.15);
+      color: #78350f;
+    }
+
+    .status-archive {
+      background: rgba(107, 114, 128, 0.15);
+      color: var(--text);
+    }
+
+    .cell-actions {
+      min-width: 100px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-action::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .btn-action:hover::before {
+      left: 100%;
+    }
+
+    .btn-edit {
+      color: var(--primary);
+      background: rgba(67, 97, 238, 0.1);
+      border: 1px solid rgba(67, 97, 238, 0.2);
+    }
+
+    .btn-edit:hover {
+      background: rgba(67, 97, 238, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-view {
+      color: var(--secondary);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .btn-view:hover {
+      background: rgba(139, 92, 246, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .empty-row td {
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .empty-icon {
+      margin-bottom: 1.5rem;
+      color: var(--text-light);
+      opacity: 0.7;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      color: var(--text-light);
+      margin: 0 0 2rem;
+      font-size: 1.1rem;
+    }
+
+    /* Vue mobile */
+    .mobile-grid {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .mobile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .mobile-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+
+    .card-title-section {
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      color: var(--text);
+    }
+
+    .card-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+
+    .card-content {
+      margin-bottom: 1.5rem;
+    }
+
+    .card-description {
+      color: var(--text-light);
+      margin: 0 0 1.5rem;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .btn-sm {
+      padding: 0.625rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .mobile-empty {
+      grid-column: 1 / -1;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .filter-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+      }
+      
+      .filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .table-container {
+        display: none;
+      }
+      
+      .mobile-grid {
+        display: grid;
+      }
+      
+      .circuit-admin-container {
+        padding: 1.5rem;
+      }
+      
+      .admin-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .card-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .circuit-admin-container {
+        padding: 1rem;
+      }
+      
+      .admin-title {
+        font-size: 1.75rem;
+      }
+    }
+
+
+    /* Pagination moderne */
+    .pagination-bar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:1rem; padding:1rem 1.25rem; margin:1rem 0 2rem;
+      border:1px solid var(--border); border-radius:var(--radius-lg);
+      background:var(--bg-card); box-shadow:var(--shadow-sm);
+    }
+    .pagi{display:flex; align-items:center; gap:.25rem; list-style:none; margin:0; padding:0;}
+    .pagi-btn, .pagi-num{
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:36px; height:36px; padding:0 .5rem; border-radius:10px;
+      text-decoration:none; font-weight:600; border:1px solid var(--border);
+      background:var(--bg); color:var(--text); transition:var(--transition);
+    }
+    .pagi-num:hover, .pagi-btn:hover{border-color:var(--primary); color:var(--primary); background:var(--primary-light);}
+    .pagi .active .pagi-num, .pagi li.active .pagi-num{
+      background:linear-gradient(90deg, var(--primary), var(--secondary));
+      color:#fff; border-color:transparent;
+    }
+    .pagi .disabled .pagi-btn{opacity:.4; pointer-events:none;}
+    .pagi-info{color:var(--text-light); font-weight:600;}
+    .ellipsis{padding:0 .5rem; color:var(--text-light);}
+
+    /* Mini select inline */
+    /* .pagination-controls-inline{display:flex; align-items:center; gap:.5rem; margin-left:auto;} */
+    /* .filter-input.mini{width:auto; min-width:140px; padding:.5rem 2rem .5rem .75rem; font-size:.9rem;} */
+
+    /* Barre de scroll horizontale en haut */
+    .table-scroll-top{
+      position:sticky; top:0; z-index:3; height:12px; border:1px solid var(--border);
+      border-radius:10px; overflow:auto; background:var(--bg-card); margin-bottom:.5rem;
+    }
+    .table-scroll-top::-webkit-scrollbar{height:10px}
+    .table-scroll-top::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px}
+    .table-scroll-top .scroll-inner{height:1px} /* sél. largeur via JS */
+
+    /* Amélioration du conteneur table (pour drag-scroll doux) */
+    .table-container{
+      cursor:grab;
+    }
+    .table-container.dragging{
+      cursor:grabbing; user-select:none;
+    }
+
+    /* Accessibilité */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+    .table-container { scrollbar-gutter: stable both-edges; }
+
+    /* ----- Footer responsive (compteur + contrôles) ----- */
+    .filter-footer{
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      background: transparent;
+    }
+
+    .footer-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem 1rem;
+      flex-wrap: wrap; /* permet le retour à la ligne sur mobile */
+    }
+
+    .footer-left{
+      flex: 1 1 auto;
+      min-width: 180px;
+    }
+
+    .counter{
+      font-size: 0.95rem;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    /* Conteneur des 2 selects (per + sort) */
+    .pagination-controls-inline{
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
+
+    .pagination-controls-inline .control{
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .control-label{
+      font-size: .85rem;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    /* Mini select */
+    .filter-input.mini{
+      width: auto;
+      min-width: 140px;
+      padding: .5rem 2rem .5rem .75rem;
+      font-size: .9rem;
+    }
+
+    /* ====== Breakpoints ====== */
+    @media (max-width: 768px){
+      .footer-row{
+        gap: .5rem .75rem;
+      }
+
+      /* le groupe de selects passe en grille 2 colonnes */
+      .pagination-controls-inline{
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 2 colonnes égales */
+        gap: .5rem;
+        margin-left: 0;
+      }
+
+      .pagination-controls-inline .control{
+        align-items: stretch;
+        flex-direction: column; /* label au-dessus du select */
+        gap: .25rem;
+      }
+
+      .pagination-controls-inline .control .control-label{
+        display: block;            /* label visible en mobile */
+      }
+
+      /* les selects prennent toute la largeur */
+      #per, #sortLocal, .filter-input.mini{
+        width: 100%;
+        min-width: 0;              /* autorise la réduction sur petits écrans */
+        padding: .75rem 2.25rem .75rem .75rem;
+        font-size: .95rem;
+      }
+
+      /* compteur sur toute la ligne, lisible */
+      .footer-left, .counter{
+        width: 100%;
+      }
+      .counter{
+        margin-bottom: .25rem;
+      }
+    }
+
+    @media (max-width: 420px){
+      /* en très petit écran, 1 colonne: les 2 selects l’un sous l’autre */
+      .pagination-controls-inline{
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 360px){
+      #per, #sortLocal{ padding:.6rem 2rem .6rem .6rem; font-size:.9rem; }
+    }
+
+
+  </style>
+
+  <script>
+    // Helpers globaux
+    window.$  ??= (s, r=document) => r.querySelector(s);
+    window.$$ ??= (s, r=document) => Array.from(r.querySelectorAll(s));
+
+    // Navigation querystring (global)
+    window.updateQuery = (patch = {}) => {
+      const url = new URL(window.location.href);
+      Object.entries(patch).forEach(([k,v]) => {
+        if (v === null || v === undefined || v === '') url.searchParams.delete(k);
+        else url.searchParams.set(k, v);
+      });
+      // si on change per/sort/q → on reset la page
+      if (patch.hasOwnProperty('per') || patch.hasOwnProperty('sort') || patch.hasOwnProperty('q')) {
+        url.searchParams.delete('page');
+      }
+      window.location.assign(url.toString());
+    };
+  </script>
+
+  <script>
+  // Helpers globaux, dispo pour tous les scripts de la page
+  window.$  ??= (s, r=document) => r.querySelector(s);
+  window.$$ ??= (s, r=document) => Array.from(r.querySelectorAll(s));
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const $ = (s, r=document)=>r.querySelector(s);
+      const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+
+      const q = $('#q'), fromDate = $('#fromDate'), toDate = $('#toDate');
+      const statut = $('#statut'), devise = $('#devise'), sortLocal = $('#sortLocal');
+      const resetBtn = $('.filter-reset'), counter = $('#counter');
+
+      const rows = $$('.circuit-row');
+      const cards = $$('.mobile-card');
+
+      const isTableActive   = () => { const tc = $('#tableContainer'); return tc && getComputedStyle(tc).display !== 'none'; };
+      const activeItems     = () => isTableActive() ? rows : cards;
+      const activeContainer = () => isTableActive() ? $('#circuit-rows') : $('.mobile-grid');
+
+      const normalize = v => (v||'').toString().toLowerCase().trim();
+
+      function filterItems(){
+        const searchTerm = normalize(q?.value);
+        const fromValue = fromDate?.value || '';
+        const toValue   = toDate?.value   || '';
+        const statutVal = statut?.value   || '';
+        const deviseVal = devise?.value   || '';
+
+        const apply = (item) => {
+          const name = normalize(item.dataset.name);
+          const date = item.dataset.date || '';
+          const dateFin = item.dataset.datefin || '';
+          const st = item.dataset.statut || '';
+          const dv = item.dataset.devise || '';
+
+          const ok = (!searchTerm || name.includes(searchTerm))
+            && (!fromValue || date >= fromValue)
+            && (!toValue || (dateFin ? dateFin <= toValue : date <= toValue))
+            && (!statutVal || st === statutVal)
+            && (!deviseVal || dv === deviseVal);
+
+          item.style.display = ok ? '' : 'none';
+          return ok;
+        };
+
+        const visibleRows  = rows.map(apply).filter(Boolean).length;
+        const visibleCards = cards.map(apply).filter(Boolean).length;
+        const visibleCount = isTableActive() ? visibleRows : visibleCards;
+
+        if (counter) counter.textContent = visibleCount;
+        $$('.empty-row, .mobile-empty').forEach(el => { el.style.display = visibleCount === 0 ? '' : 'none'; });
+
+        // 🔎 Saut "intelligent" vers la recherche serveur si rien sur la page
+        const term = searchTerm;
+        const KEY  = 'circuits_server_q';
+        const urlQ = new URLSearchParams(location.search).get('q') || '';
+
+        // évite les boucles : on ne relance pas si on est déjà sur ?q=term
+        if (visibleCount === 0 && term && term.length >= 2 && term !== urlQ) {
+          const last = sessionStorage.getItem(KEY);
+          if (last !== term) {
+            sessionStorage.setItem(KEY, term);
+            // conserve la taille de page actuelle si nécessaire
+            const perSel = $('#per');
+            window.updateQuery({ q: term, per: perSel ? perSel.value : undefined });
+            return; // navigation
+          }
+        } else {
+          // on a des résultats → on nettoie le flag
+          sessionStorage.removeItem(KEY);
+        }
+      }
+
+
+      function sortItems(){
+        const sortValue = (sortLocal?.value || '-date').trim();
+        const desc = sortValue.startsWith('-');
+        const key  = sortValue.replace('-', '');
+        const mapKey = { nom:'name', date:'date', cap:'cap' };
+        const dsKey = mapKey[key] || key;
+
+        const cont = activeContainer();
+        const items = activeItems().filter(el => el.style.display !== 'none');
+        if (!cont || items.length === 0) return;
+
+        const isNumeric = dsKey === 'cap';
+        const cmp = (a,b) => {
+          let av = a.dataset[dsKey] || '', bv = b.dataset[dsKey] || '';
+          if (isNumeric){ av = Number(av)||0; bv = Number(bv)||0; return desc ? (bv-av) : (av-bv); }
+          return desc ? String(bv).localeCompare(String(av)) : String(av).localeCompare(String(bv));
+        };
+        items.sort(cmp).forEach(el => cont.appendChild(el));
+      }
+
+      // Debounce générique
+      const debounce = (fn, ms=100) => { let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); }; };
+      const run = debounce(() => { filterItems(); sortItems(); }, 80);
+
+      [q, fromDate, toDate, statut, devise].forEach(el => el && el.addEventListener('input', run));
+      sortLocal && sortLocal.addEventListener('change', sortItems);
+      resetBtn && resetBtn.addEventListener('click', () => {
+        if (q) q.value=''; if (fromDate) fromDate.value=''; if (toDate) toDate.value='';
+        if (statut) statut.value=''; if (devise) devise.value=''; if (sortLocal) sortLocal.value='-date';
+        filterItems(); sortItems();
+      });
+
+      // Init
+      filterItems(); sortItems();
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // ========= Helpers URL =========
+      const updateQuery = (patch = {}) => {
+        const url = new URL(window.location.href);
+        Object.entries(patch).forEach(([k,v]) => {
+          if (v === null || v === undefined || v === '') url.searchParams.delete(k);
+          else url.searchParams.set(k, v);
+        });
+        // Reset page si on change per/sort/q
+        if (patch.hasOwnProperty('per') || patch.hasOwnProperty('sort') || patch.hasOwnProperty('q')) {
+          url.searchParams.delete('page');
+        }
+        window.location.assign(url.toString());
+      };
+
+      // ========= Auto-submit per/sort =========
+      document.querySelectorAll('[data-autosubmit]').forEach(el => {
+        el.addEventListener('change', () => {
+          if (el.id === 'per') updateQuery({ per: el.value });
+          if (el.id === 'sort') updateQuery({ sort: el.value });
+        });
+      });
+
+      // Entrée dans la recherche (serveur) — optionnel : Ctrl+Enter pour forcer serveur
+      const qInput = document.getElementById('q');
+      if (qInput) {
+        qInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            window.updateQuery({ q: qInput.value });
+          }
+        });
+      }
+
+      // ========= Scroll horizontal "intelligent" =========
+      const topBar = document.getElementById('tableScrollTop');
+      const topInner = document.getElementById('tableScrollTopInner');
+      const container = document.getElementById('tableContainer');
+
+      const syncSizes = () => {
+        if (!container) return;
+        // Ajuste la largeur de l'inner pour faire apparaître un scrollbar proportionnel
+        topInner.style.width = container.scrollWidth + 'px';
+        // Sync positions
+        topBar.scrollLeft = container.scrollLeft;
+      };
+
+      const syncFromTop = () => { container.scrollLeft = topBar.scrollLeft; };
+      const syncFromContainer = () => { topBar.scrollLeft = container.scrollLeft; };
+
+      if (topBar && topInner && container) {
+        // 1) Sync tailles & positions au chargement et au resize
+        syncSizes();
+        window.addEventListener('resize', syncSizes);
+        new MutationObserver(syncSizes).observe(container, {childList:true, subtree:true});
+        // 2) Synchronisation des scrolls
+        topBar.addEventListener('scroll', syncFromTop, {passive:true});
+        container.addEventListener('scroll', syncFromContainer, {passive:true});
+
+        // 3) Molette => scroll horizontal quand pertinent
+        const wheelToHorizontal = (e) => {
+          const rect = container.getBoundingClientRect();
+          const isNearTop = (rect.top >= 0 && rect.top <= (window.innerHeight * 0.5));
+          const hasOverflowX = container.scrollWidth > container.clientWidth + 4;
+          if (!hasOverflowX) return;
+          // Si la table est visible et qu'on scrolle verticalement, pousse en X
+          if (isNearTop && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            container.scrollLeft += e.deltaY;
+            topBar.scrollLeft = container.scrollLeft;
+            e.preventDefault();
+          }
+        };
+        // Attache au body pour capter la molette tôt
+        document.addEventListener('wheel', wheelToHorizontal, { passive:false });
+
+        // 4) Drag-to-scroll (cliquer/glisser pour défiler en X)
+        let isDown = false, startX = 0, scrollStart = 0;
+        const startDrag = (e) => {
+          isDown = true;
+          container.classList.add('dragging');
+          startX = (e.pageX || e.touches?.[0]?.pageX || 0);
+          scrollStart = container.scrollLeft;
+        };
+        const moveDrag = (e) => {
+          if (!isDown) return;
+          const x = (e.pageX || e.touches?.[0]?.pageX || 0);
+          const dx = x - startX;
+          container.scrollLeft = scrollStart - dx;
+          topBar.scrollLeft = container.scrollLeft;
+        };
+        const endDrag = () => {
+          isDown = false;
+          container.classList.remove('dragging');
+        };
+        container.addEventListener('mousedown', startDrag);
+        container.addEventListener('mousemove', moveDrag);
+        container.addEventListener('mouseleave', endDrag);
+        container.addEventListener('mouseup', endDrag);
+        container.addEventListener('touchstart', startDrag, {passive:true});
+        container.addEventListener('touchmove', moveDrag, {passive:true});
+        container.addEventListener('touchend', endDrag);
+      }
+
+      $$('.progress-bar').forEach(bar => {
+        const pct = bar.dataset.pct || '0';
+        bar.style.width = '0%';
+        requestAnimationFrame(() => {
+          // force reflow
+          // eslint-disable-next-line no-unused-expressions
+          bar.offsetHeight;
+          bar.style.width = pct + '%';
+        });
+      });
+
+    });
+  </script>
+
+{% endblock %}

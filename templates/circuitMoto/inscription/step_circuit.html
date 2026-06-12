@@ -1,0 +1,66 @@
+{# templates/circuitMoto/inscription/step_circuit.html #}
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+  
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Choix du circuit" %}</h2>
+    <p class="step-subtitle">{% trans "Sélectionnez le circuit auquel vous souhaitez participer." %}</p>
+  </div>
+
+  
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+    
+    <div class="form-group">
+      <label for="{{ form.circuit.id_for_label }}" class="required">{{ form.circuit.label }}</label>
+      <div class="select-wrapper">
+        {{ form.circuit }}
+      </div>
+      {% if form.circuit.help_text %}
+        <div class="helptext">{{ form.circuit.help_text }}</div>
+      {% endif %}
+      {{ form.circuit.errors }}
+    </div>
+    
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

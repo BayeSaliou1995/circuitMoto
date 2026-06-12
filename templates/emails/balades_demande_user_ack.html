@@ -1,0 +1,55 @@
+{# templates/emails/balades_demande_user_ack.html #}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Votre sélection a bien été reçue</title>
+</head>
+<body style="margin:0;padding:0;background:#eef4ff;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#eef4ff;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 12px 35px rgba(16,24,40,.08);">
+          <tr>
+            <td style="padding:30px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;">
+              <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Pulsion Horizon</div>
+              <h1 style="margin:8px 0 0;font-size:28px;line-height:1.2;">Votre sélection a bien été reçue</h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:28px;">
+              <p style="margin:0 0 16px;font-size:16px;line-height:1.7;">
+                Bonjour <strong>{{ demande.prenom }}</strong>,
+              </p>
+
+              <p style="margin:0 0 20px;font-size:16px;line-height:1.7;color:#334155;">
+                Merci pour votre intérêt. Nous avons bien enregistré votre sélection de balades
+                et nous vous enverrons les programmes correspondants dans les meilleurs délais.
+              </p>
+
+              <div style="margin:22px 0 10px;font-size:18px;font-weight:700;color:#0f172a;">
+                Votre sélection
+              </div>
+
+              {% for b in selected_balades %}
+                <div style="margin:0 0 12px;padding:16px 18px;border:1px solid #dbeafe;border-radius:14px;background:#f8fbff;">
+                  <div style="font-size:13px;font-weight:700;color:#2563eb;margin-bottom:6px;">{{ b.date_humaine }}</div>
+                  <div style="font-size:16px;font-weight:700;color:#0f172a;">{{ b.titre }}</div>
+                  <div style="font-size:13px;color:#64748b;margin-top:6px;">Guide : {{ b.guide|default:"libre" }}</div>
+                </div>
+              {% endfor %}
+
+              <p style="margin:24px 0 0;font-size:15px;line-height:1.7;color:#475569;">
+                À très bientôt,<br>
+                <strong>Pulsion Horizon</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

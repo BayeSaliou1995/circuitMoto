@@ -1,0 +1,178 @@
+{# templates/circuitMoto/admin/newsletter_broadcast.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Newsletter — Pulsion Horizon{% endblock %}
+{% block body_class %}bo-newsletter-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/newsletter_broadcast.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="emailing-container">
+
+  {# =================  EN-TÊTE DE LA PAGE  ================= #}
+  <div class="emailing-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">Newsletter</h1>
+        <p class="subtitle">
+          Envoi libre par collage d’adresses e-mail, sans filtre circuit.
+        </p>
+      </div>
+
+      <div class="header-badges">
+        <span class="stat-badge">Max : {{ config.max_recipients }} emails</span>
+        <span class="stat-badge">Lot : {{ config.batch_size }}</span>
+      </div>
+    </div>
+  </div>
+
+  {# =================   MESSAGES DJANGO   ================= #}
+  {% if messages %}
+    <div class="alerts-stack">
+      {% for message in messages %}
+        <div class="alert-box alert-{{ message.tags|default:'info' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# ================= FORMULAIRE D'ENVOI ================= #}
+  <form method="post" enctype="multipart/form-data" class="emailing-form">
+    {% csrf_token %}
+
+    {# =================   SECTION : DESTINATAIRES ================= #}
+    <div class="form-section">
+      <h3 class="section-title">Destinataires</h3>
+
+      <div class="form-group">
+        <label class="form-label required">{{ form.emails_blob.label }}</label>
+        {{ form.emails_blob }}
+
+        {% if form.emails_blob.help_text %}
+          <small class="help-text">{{ form.emails_blob.help_text }}</small>
+        {% endif %}
+
+        {{ form.emails_blob.errors }}
+      </div>
+
+      <div class="newsletter-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="validCount">
+            {{ preview_stats.valid_count|default:0 }}
+          </div>
+          <div class="stat-label">Emails valides détectés</div>
+        </div>
+
+        <div class="stat-card stat-card--danger">
+          <div class="stat-value" id="invalidCount">
+            {{ preview_stats.invalid_count|default:0 }}
+          </div>
+          <div class="stat-label">Emails invalides</div>
+        </div>
+      </div>
+
+      {% if preview_stats.sample_invalids %}
+        <div class="invalid-box">
+          <strong>Exemples d’adresses invalides :</strong>
+          <ul>
+            {% for item in preview_stats.sample_invalids %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+
+    {# ================================  SECTION : CONTENU  ================================ #}
+    <div class="form-section">
+      <h3 class="section-title">Contenu</h3>
+
+      <div class="form-group">
+        <label class="form-label required">{{ form.sujet.label }}</label>
+        {{ form.sujet }}
+        {{ form.sujet.errors }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required">{{ form.message.label }}</label>
+        {{ form.message }}
+
+        {% if form.message.help_text %}
+          <small class="help-text">{{ form.message.help_text }}</small>
+        {% endif %}
+
+        {{ form.message.errors }}
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          {{ form.test_only }}
+          <span class="checkbox-text">{{ form.test_only.label }}</span>
+        </label>
+        {{ form.test_only.errors }}
+      </div>
+    </div>
+
+    {# ==========================   SECTION : PIÈCES JOINTES   ========================== #}
+    <div class="form-section">
+      <h3 class="section-title">Pièces jointes</h3>
+
+      <div class="form-group">
+        <label class="form-label">{{ form.pieces_jointes.label }}</label>
+        {{ form.pieces_jointes }}
+
+        {% if form.pieces_jointes.help_text %}
+          <small class="help-text">{{ form.pieces_jointes.help_text }}</small>
+        {% endif %}
+
+        {{ form.pieces_jointes.errors }}
+      </div>
+
+      <ul id="filesPreview" class="file-list"></ul>
+    </div>
+
+    {# ==========================     SECTION : CONFIGURATION / CONTRÔLE D’ENVOI     ========================== #}
+    <div class="form-section config-box">
+      <h3 class="section-title">Contrôle d’envoi</h3>
+
+      <div class="config-grid">
+        <div class="config-item">
+          <span class="config-label">Nombre maximum autorisé</span>
+          <strong>{{ config.max_recipients }}</strong>
+        </div>
+
+        <div class="config-item">
+          <span class="config-label">Taille d’un lot</span>
+          <strong>{{ config.batch_size }}</strong>
+        </div>
+      </div>
+
+      <p class="config-note">
+        Le système déduplique automatiquement les adresses et envoie par paquets
+        pour plus de stabilité.
+      </p>
+    </div>
+
+    {# ==========================     ACTIONS     ========================== #}
+    <div class="form-actions">
+      <a class="btn btn-secondary" href="{% url 'bo_dashboard' %}">
+        Retour
+      </a>
+      <button class="btn btn-primary" type="submit">
+        Envoyer la newsletter
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/newsletter_broadcast.js' %}"></script>
+{% endblock %}

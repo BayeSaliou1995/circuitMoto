@@ -1,0 +1,199 @@
+{# templates/circuitMoto/programme_2027.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Pré Programme 2027 | Pulsion Horizon{% endblock %}
+{% block meta_description %}Pré Programme 2027 Pulsion Horizon : sélectionnez les circuits qui vous intéressent et indiquez votre niveau d'intérêt.{% endblock %}
+{% block body_class %}page-programme-2027{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/programme_2027.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="p27-page">
+  <div class="p27-shell">
+    <section class="p27-hero" aria-label="Pré Programme 2027">
+      <div class="p27-hero__media">
+        <img src="{% static 'circuitMoto/images/pulsion_horizon.jpg' %}" alt="Voyage moto Pulsion Horizon" loading="eager">
+      </div>
+
+      <div class="p27-hero__content">
+        <span class="p27-kicker">Pré Programme 2027</span>
+        <h1>Choisissez les circuits qui vous intéressent en 2027</h1>
+        <p>
+          Sélectionnez simplement les circuits qui vous attirent, laissez vos coordonnées,
+          et nous vous recontacterons dès que les réservations seront prêtes.
+        </p>
+
+        <div class="p27-hero__actions">
+          <a href="#programme2027Form" class="p27-btn">Remplir le formulaire</a>
+          <a href="#programme2027Circuits" class="p27-btn p27-btn--secondary">Voir les circuits</a>
+        </div>
+
+        <div class="p27-stats" aria-label="Résumé du programme">
+          <div>
+            <strong>{{ total_circuits }}</strong>
+            <span>circuits proposés</span>
+          </div>
+          <div>
+            <strong>2027</strong>
+            <span>saison en préparation</span>
+          </div>
+          <div>
+            <strong>Simple</strong>
+            <span>formulaire allégé</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <form method="post" class="p27-form" id="programme2027Form" novalidate>
+      {% csrf_token %}
+      {{ form.website }}
+      {{ form.company }}
+      {{ form.ts }}
+      <input type="hidden" name="form_token" value="{{ programme_2027_form_token }}">
+
+      {% if form.non_field_errors %}
+        <div class="p27-errors">
+          {% for err in form.non_field_errors %}
+            <div class="p27-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <section class="p27-layout p27-layout--simple">
+        <div class="p27-main">
+          <section class="p27-panel">
+            <div class="p27-section-head">
+              <div>
+                <span class="p27-section-kicker">Coordonnées</span>
+                <h2>Vos informations</h2>
+              </div>
+              <span class="p27-live-pill">Réponse sans engagement</span>
+            </div>
+
+            <div class="p27-formgrid">
+              <div class="p27-field">
+                <label for="{{ form.prenom.id_for_label }}">Prénom</label>
+                {{ form.prenom }}
+                {% for err in form.prenom.errors %}<div class="p27-field-error">{{ err }}</div>{% endfor %}
+              </div>
+
+              <div class="p27-field">
+                <label for="{{ form.nom.id_for_label }}">Nom</label>
+                {{ form.nom }}
+                {% for err in form.nom.errors %}<div class="p27-field-error">{{ err }}</div>{% endfor %}
+              </div>
+
+              <div class="p27-field">
+                <label for="{{ form.email.id_for_label }}">E-mail</label>
+                {{ form.email }}
+                {% for err in form.email.errors %}<div class="p27-field-error">{{ err }}</div>{% endfor %}
+              </div>
+
+              <div class="p27-field">
+                <label for="{{ form.telephone.id_for_label }}">Téléphone</label>
+                {{ form.telephone }}
+                {% for err in form.telephone.errors %}<div class="p27-field-error">{{ err }}</div>{% endfor %}
+              </div>
+            </div>
+          </section>
+
+          <section class="p27-panel" id="programme2027Circuits">
+            <div class="p27-section-head">
+              <div>
+                <span class="p27-section-kicker">Programme</span>
+                <h2>Circuits proposés</h2>
+              </div>
+              <span class="p27-live-pill" id="p27LiveCounter">0 sélectionné</span>
+            </div>
+
+            {% if form.circuits.errors %}
+              <div class="p27-field-error p27-field-error--block">
+                {% for err in form.circuits.errors %}{{ err }}{% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="p27-selection-bar">
+              <div>
+                <span>Sélection actuelle</span>
+                <strong><span id="p27SelectionCount">0</span> circuit<span id="p27SelectionPlural">s</span></strong>
+              </div>
+              <p id="p27SelectionHint">Cochez les voyages qui vous attirent.</p>
+            </div>
+
+            <div class="p27-cards">
+              {% for c in circuits %}
+                <article class="p27-card {% if c.is_selected %}is-selected{% endif %}" data-programme-card>
+                  <label class="p27-card__check">
+                    <input
+                      type="checkbox"
+                      name="circuits"
+                      value="{{ c.id }}"
+                      {% if c.is_selected %}checked{% endif %}
+                    >
+                    <span aria-hidden="true"></span>
+                    <strong>Sélectionner</strong>
+                  </label>
+
+                  <div class="p27-card__body">
+                    <div class="p27-card__top">
+                      <span class="p27-month">{{ c.mois }}</span>
+                      <span class="p27-duration">{{ c.duree }}</span>
+                    </div>
+
+                    <h3>{{ c.titre }}</h3>
+                    <p>{{ c.formule }}</p>
+
+                    {% if c.lien_reference %}
+                      <a href="{{ c.lien_reference }}" target="_blank" rel="noopener" class="p27-ref-link">
+                        Voir la page de référence
+                      </a>
+                    {% endif %}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          </section>
+
+          <section class="p27-panel">
+            <div class="p27-field">
+              <label for="{{ form.commentaire.id_for_label }}">Message complémentaire</label>
+              {{ form.commentaire }}
+              {% for err in form.commentaire.errors %}<div class="p27-field-error">{{ err }}</div>{% endfor %}
+            </div>
+
+            <div class="p27-consents">
+              <label class="p27-consent">
+                {{ form.consent }}
+                <span>{{ form.consent.label }}</span>
+              </label>
+              {% for err in form.consent.errors %}<div class="p27-field-error">{{ err }}</div>{% endfor %}
+
+              <label class="p27-consent">
+                {{ form.newsletter_optin }}
+                <span>{{ form.newsletter_optin.label }}</span>
+              </label>
+            </div>
+
+            <div class="p27-submit">
+              <button type="submit" class="p27-btn" id="p27SubmitBtn">
+                <span id="p27SubmitText">Envoyer ma sélection</span>
+              </button>
+              <p>Vos informations sont utilisées uniquement pour vous recontacter au sujet des circuits sélectionnés.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/programme_2027.js' %}"></script>
+{% endblock %}

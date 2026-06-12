@@ -1,0 +1,14 @@
+{# templates/emails/inscription_recue_admin.txt #}
+
+Nouvelle inscription reçue
+
+Circuit : {{ ins.circuit.nom }} ({{ ins.circuit.code }})
+Pilote  : {{ ins.pilote.prenom }} {{ ins.pilote.nom }} — {{ ins.pilote.email }}
+Passager: {% if ins.passager %}{{ ins.passager.prenom }} {{ ins.passager.nom }}{% else %}—{% endif %}
+Réf.    : {{ ins.id_public }}
+
+Ouvrir le dossier : {{ edit_url }}
+
+Détail (Back-office) : {{ ins_detail_admin_url }}
+Fiche pilote (BO)    : {{ personne_admin_url }}
+{% if ins.passager %}Fiche passager (BO)  : {{ passager_admin_url }}{% endif %}

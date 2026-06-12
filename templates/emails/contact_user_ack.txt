@@ -1,0 +1,14 @@
+Bonjour {{ cm.prenom }},
+
+Nous avons bien reçu votre message — merci de votre intérêt pour Pulsion Horizon.
+Notre équipe vous répondra dans les meilleurs délais.
+
+Résumé de votre demande :
+- Type : {{ cm.get_type_demande_display }}
+- Circuit : {% if cm.circuit %}{{ cm.circuit.code }} — {{ cm.circuit.nom }}{% else %}—{% endif %}
+
+Votre message :
+{{ cm.message }}
+
+Cordialement,
+Pulsion Horizon

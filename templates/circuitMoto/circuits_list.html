@@ -1,0 +1,841 @@
+{# templates/circuitMoto/circuits_list.html #}
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Nos circuits à venir — Pulsion Horizon" %}{% endblock %}
+{% block meta_description %}{% trans "Découvrez tous les circuits moto Pulsion Horizon à venir et réservez votre place." %}{% endblock %}
+{% block og_title %}{% trans "Nos circuits à venir" %}{% endblock %}
+{% block og_desc %}{% trans "Parcourez les circuits moto ouverts aux inscriptions et trouvez votre prochaine aventure." %}{% endblock %}
+
+{% block content %}
+<section class="hero-circuits">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h1 class="hero-title">{% trans "Nos circuits à venir" %}</h1>
+      <p class="hero-sub">{% trans "Dates, pays, niveaux — trouvez votre prochaine virée." %}</p>
+    </div>
+    
+    <div class="hero-search-container">
+      <form method="get" class="hero-search" role="search">
+        <div class="search-input-wrapper">
+          <input type="search" name="q" value="{{ q }}" placeholder="{% trans "Chercher un lieu, un code, un mot-clé…" %}" aria-label="Rechercher">
+          {% if q %}
+          <button type="button" class="btn-clear" onclick="clearSearch()" aria-label="Effacer la recherche">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          {% endif %}
+          <button class="btn-search" type="submit" aria-label="Rechercher">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="hero-decoration">
+      <div class="decoration-element"></div>
+      <div class="decoration-element"></div>
+      <div class="decoration-element"></div>
+    </div>
+  </div>
+</section>
+
+<section class="circuits-wrap container">
+  {% if circuits %}
+    <div class="circuits-header">
+      <h2 class="circuits-count">{{ paginator.count }} {% trans "circuit" %}{{ paginator.count|pluralize }} {% trans "disponible" %}{{ paginator.count|pluralize:"s" }}</h2>
+      {% if q %}
+      <p class="search-results">{% trans "Résultats pour" %} "<strong>{{ q }}</strong>"</p>
+      {% endif %}
+    </div>
+    
+    <div class="grid-circuits">
+      {% for c in circuits %}
+      <article class="card-circuit" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|add:0 }}00">
+        <a class="card-media" href="{{ c.get_absolute_url }}" aria-label="{{ c.nom }}">
+          <div class="media-fallback" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span class="badge-date">
+            {{ c.date_debut|date:"d M" }} → {{ c.date_fin|date:"d M" }}
+          </span>
+          <div class="card-overlay"></div>
+        </a>
+
+        <div class="card-body">
+          <h3 class="card-title">{{ c.nom }}</h3>
+          <div class="card-meta">
+            {% if c.code %}<span class="chip">#{{ c.code }}</span>{% endif %}
+            <span class="chip price-chip">{% trans "Dès" %} {{ c.prix_pilote_unitaire }} {{ c.devise }}</span>
+            <span class="chip">{{ c.date_debut|date:"M Y" }}</span>
+          </div>
+          {% if c.description %}<p class="card-desc">{{ c.description|truncatechars:140 }}</p>{% endif %}
+          
+          <div class="card-stats">
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+              <span>{% trans "Capacité limitée" %}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a href="{{ c.get_absolute_url }}" class="btn btn-primary btn-animate">
+            <span>{% trans "Explorer et s'inscrire" %}</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </a>
+        </div>
+
+        
+        <div class="card-hover-effect"></div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {# Pagination moderne #}
+    {% if is_paginated %}
+      <nav class="pagination-modern" role="navigation" aria-label="Pagination">
+        {% if page_obj.has_previous %}
+          <a class="pagi-btn pagi-prev" href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Page précédente">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </a>
+        {% else %}
+          <span class="pagi-btn pagi-prev disabled" aria-disabled="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </span>
+        {% endif %}
+
+        <div class="pagi-numbers">
+          {% for num in paginator.page_range %}
+            {% if num == page_obj.number %}
+              <span class="pagi-btn current" aria-current="page">{{ num }}</span>
+            {% elif num <= 2 or num > paginator.num_pages|add:"-2" or num|add:"-1" == page_obj.number or num|add:"1" == page_obj.number %}
+              <a class="pagi-btn" href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ num }}">{{ num }}</a>
+            {% elif forloop.first or forloop.last %}
+              <span class="pagi-ellipsis">…</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if page_obj.has_next %}
+          <a class="pagi-btn pagi-next" href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Page suivante">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </a>
+        {% else %}
+          <span class="pagi-btn pagi-next disabled" aria-disabled="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="empty-circuits" data-aos="fade-up">
+      <div class="empty-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+        </svg>
+      </div>
+      <h3>{% trans "Aucun circuit trouvé" %}</h3>
+      <p>{% if q %}{% trans "Aucun résultat pour" %} "<strong>{{ q }}</strong>".{% else %}{% trans "Aucun circuit ouvert aux inscriptions pour le moment." %}{% endif %}</p>
+      {% if q %}
+      <a href="{% url 'circuits_public' %}" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        {% trans "Voir tous les circuits" %}
+      </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+
+<style>
+:root {
+  --primary: #4361ee;
+  --primary-light: rgba(67, 97, 238, 0.1);
+  --primary-dark: #3a56d4;
+  --secondary: #8b5cf6;
+  --accent: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --text-lighter: #b2bec3;
+  --bg: #ffffff;
+  --bg-card: #ffffff;
+  --border: #dfe6e9;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-slow: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+[data-theme="dark"] {
+  --primary: #5e72e4;
+  --primary-light: rgba(94, 114, 228, 0.15);
+  --primary-dark: #4d5fd0;
+  --secondary: #a78bfa;
+  --text: #edf2f7;
+  --text-light: #a0aec0;
+  --text-lighter: #718096;
+  --bg: #1a202c;
+  --bg-card: #2d3748;
+  --border: #4a5563;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* ====== Hero ====== */
+.hero-circuits {
+  background: linear-gradient(135deg, var(--primary-light) 0%, transparent 100%);
+  padding: 3rem 1.5rem;
+  margin: 0 auto 2rem;
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-content {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  margin: 0 0 1rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.hero-sub {
+  font-size: 1.25rem;
+  color: var(--text-light);
+  margin: 0;
+  font-weight: 400;
+}
+
+.hero-search-container {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hero-search input {
+  width: 100%;
+  padding: 1rem 3.5rem 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-search input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.btn-search {
+  position: absolute;
+  right: 0.5rem;
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: white;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-search:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.btn-clear {
+  position: absolute;
+  right: 3.2rem;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--secondary);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-clear:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.hero-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.decoration-element {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  animation: float 6s ease-in-out infinite;
+}
+
+.decoration-element:nth-child(1) {
+  width: 200px;
+  height: 200px;
+  top: -50px;
+  right: -50px;
+  animation-delay: 0s;
+}
+
+.decoration-element:nth-child(2) {
+  width: 150px;
+  height: 150px;
+  bottom: -30px;
+  left: -30px;
+  animation-delay: -2s;
+}
+
+.decoration-element:nth-child(3) {
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 20%;
+  animation-delay: -4s;
+}
+
+/* ====== Circuits Container ====== */
+.circuits-wrap {
+  padding: 1rem 0 3rem;
+}
+
+.circuits-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.circuits-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.5rem;
+}
+
+.search-results {
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* ====== Grid & cards ====== */
+.grid-circuits {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.card-circuit {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: var(--transition);
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.card-circuit:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary);
+}
+
+.card-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+  overflow: hidden;
+}
+
+.media-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent 60%);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.card-circuit:hover .card-overlay {
+  opacity: 1;
+}
+
+.badge-date {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  background: rgba(17, 24, 39, 0.9);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.card-body {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 1rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--secondary);
+  color: var(--text);
+  font-weight: 500;
+}
+
+.price-chip {
+  background: linear-gradient(135deg, var(--primary-light), transparent);
+  color: var(--primary);
+  border-color: var(--primary-light);
+}
+
+.card-desc {
+  color: var(--text-light);
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.card-stats {
+  margin-top: auto;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  flex: 1;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.btn-ghost:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.btn-animate svg {
+  transition: var(--transition);
+}
+
+.btn-animate:hover svg {
+  transform: translateX(3px);
+}
+
+.card-hover-effect {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.card-circuit:hover .card-hover-effect {
+  transform: translateX(100%);
+}
+
+/* ====== Pagination ====== */
+.pagination-modern {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 3rem 0 1rem;
+}
+
+.pagi-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.pagi-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.pagi-btn.current {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}
+
+.pagi-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagi-numbers {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pagi-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  color: var(--text-light);
+}
+
+/* ====== Empty State ====== */
+.empty-circuits {
+  text-align: center;
+  padding: 4rem 2rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--primary-light);
+  transition: var(--transition);
+}
+
+.empty-circuits:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.empty-icon {
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+}
+
+.empty-circuits h3 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.empty-circuits p {
+  margin: 0 0 2rem;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ====== Animations ====== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply animations to cards */
+.card-circuit {
+  animation: slideIn 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.card-circuit:nth-child(1) { animation-delay: 0.1s; }
+.card-circuit:nth-child(2) { animation-delay: 0.2s; }
+.card-circuit:nth-child(3) { animation-delay: 0.3s; }
+.card-circuit:nth-child(4) { animation-delay: 0.4s; }
+.card-circuit:nth-child(5) { animation-delay: 0.5s; }
+
+/* ====== Responsive ====== */
+@media (max-width: 1024px) {
+  .grid-circuits {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-circuits {
+    padding: 2rem 1rem;
+    margin: 0 0 1.5rem;
+    border-radius: var(--radius-lg);
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-sub {
+    font-size: 1.1rem;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+  }
+  
+  .pagination-modern {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-circuits {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-circuit {
+    margin-bottom: 1rem;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .circuits-count {
+    font-size: 1.25rem;
+  }
+  
+  .empty-circuits {
+    padding: 3rem 1.5rem;
+  }
+  
+  .empty-circuits h3 {
+    font-size: 1.25rem;
+  }
+  
+  .empty-circuits p {
+    font-size: 1rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card-circuit,
+  .decoration-element,
+  .card-hover-effect,
+  .btn,
+  .pagi-btn {
+    animation: none;
+    transition: none;
+  }
+  
+  .card-circuit:hover {
+    transform: none;
+  }
+}
+</style>
+
+<script>
+function clearSearch() {
+  window.location.href = "{% url 'circuits_public' %}";
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced hover effects for cards
+  const cards = document.querySelectorAll('.card-circuit');
+  
+  cards.forEach(card => {
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateY = (x - centerX) / 20;
+      const rotateX = (centerY - y) / 20;
+      
+      this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(-8px) scale(1.02)';
+      
+      // Smooth reset
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 500);
+    });
+  });
+
+  // Lazy loading for cards
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  cards.forEach(card => {
+    observer.observe(card);
+  });
+});
+</script>
+
+{% endblock %}

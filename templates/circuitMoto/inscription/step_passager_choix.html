@@ -1,0 +1,78 @@
+{# templates/circuitMoto/inscription/step_passager_choix.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Voyage avec passager ?" %}</h2>
+    <p class="step-subtitle">{% trans "Indiquez si vous serez accompagné d'un passager pendant le circuit." %}</p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Passager" %}</h3>
+        <p class="section-subtitle">
+          {% trans "Vous pourrez renseigner les informations du passager à l’étape suivante." %}
+        </p>
+      </header>
+
+      <div class="toggle-card">
+        <label class="toggle-label">
+          {{ form.avec_passager }}
+          <span class="toggle-switch-custom" aria-hidden="true"></span>
+          <span class="toggle-text">{{ form.avec_passager.label }}</span>
+        </label>
+
+        {% if form.avec_passager.help_text %}
+          <p class="toggle-help">{{ form.avec_passager.help_text }}</p>
+        {% endif %}
+
+        {{ form.avec_passager.errors }}
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

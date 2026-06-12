@@ -1,0 +1,337 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+<div class="wrap">
+  <div class="head">
+    <h2>Ajouter une personne</h2>
+    <p class="muted">Créez un dossier complet (identité, médical, motos, contacts). Vous pourrez l’inscrire à un circuit ensuite — ou dès maintenant.</p>
+  </div>
+
+  {% if form.non_field_errors or med_form.non_field_errors %}
+    <div class="alert error">
+      <strong>Veuillez corriger les erreurs ci-dessous.</strong>
+      {{ form.non_field_errors }} {{ med_form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <form method="post" class="card big" id="personForm" novalidate>
+    {% csrf_token %}
+
+    <!-- Identité & contact -->
+    <section class="section">
+      <div class="section-head">
+        <h3>Identité & contact</h3>
+      </div>
+      <div class="grid g2">
+        <div class="fg">
+          <label class="req" for="{{ form.prenom.id_for_label }}">{{ form.prenom.label }}</label>
+          {{ form.prenom }} <div class="err">{{ form.prenom.errors }}</div>
+        </div>
+        <div class="fg">
+          <label class="req" for="{{ form.nom.id_for_label }}">{{ form.nom.label }}</label>
+          {{ form.nom }} <div class="err">{{ form.nom.errors }}</div>
+        </div>
+
+        <div class="fg">
+          <label class="req" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+          {{ form.email }} <div class="err">{{ form.email.errors }}</div>
+        </div>
+        <div class="fg">
+          <label class="req" for="{{ form.telephone.id_for_label }}">{{ form.telephone.label }}</label>
+          {{ form.telephone }} <div class="err">{{ form.telephone.errors }}</div>
+        </div>
+
+        <div class="fg">
+          <label for="{{ form.date_naissance.id_for_label }}">{{ form.date_naissance.label }}</label>
+          {{ form.date_naissance }} <div class="err">{{ form.date_naissance.errors }}</div>
+        </div>
+        <div class="fg">
+          <label for="{{ form.numero_carte_identite.id_for_label }}">{{ form.numero_carte_identite.label }}</label>
+          {{ form.numero_carte_identite }} <div class="err">{{ form.numero_carte_identite.errors }}</div>
+        </div>
+
+        <div class="fg span2">
+          <label for="{{ form.adresse.id_for_label }}">{{ form.adresse.label }}</label>
+          {{ form.adresse }} <div class="err">{{ form.adresse.errors }}</div>
+        </div>
+
+        <div class="fg">
+          <label for="{{ form.code_postal.id_for_label }}">{{ form.code_postal.label }}</label>
+          {{ form.code_postal }} <div class="err">{{ form.code_postal.errors }}</div>
+        </div>
+        <div class="fg">
+          <label for="{{ form.localite.id_for_label }}">{{ form.localite.label }}</label>
+          {{ form.localite }} <div class="err">{{ form.localite.errors }}</div>
+        </div>
+
+        <div class="fg span2">
+          <label for="{{ form.pays.id_for_label }}">{{ form.pays.label }}</label>
+          {{ form.pays }} <div class="err">{{ form.pays.errors }}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Infos médicales -->
+    <section class="section">
+      <div class="section-head">
+        <h3>Infos médicales</h3>
+        <p class="muted small">Optionnel mais utile en cas d’urgence.</p>
+      </div>
+      <div class="grid g4">
+        <div class="fg">
+          <label for="{{ med_form.groupe_sanguin.id_for_label }}">{{ med_form.groupe_sanguin.label }}</label>
+          {{ med_form.groupe_sanguin }} <div class="err">{{ med_form.groupe_sanguin.errors }}</div>
+        </div>
+
+        <div class="fg chk">
+          <label>{{ med_form.hta }} Hypertension</label> <div class="err">{{ med_form.hta.errors }}</div>
+        </div>
+        <div class="fg chk">
+          <label>{{ med_form.asthme }} Asthme</label> <div class="err">{{ med_form.asthme.errors }}</div>
+        </div>
+        <div class="fg chk">
+          <label>{{ med_form.epilepsie }} Épilepsie</label> <div class="err">{{ med_form.epilepsie.errors }}</div>
+        </div>
+
+        <div class="fg chk">
+          <label>{{ med_form.problemes_peau }} Eczéma/irritations</label> <div class="err">{{ med_form.problemes_peau.errors }}</div>
+        </div>
+        <div class="fg chk">
+          <label>{{ med_form.vertiges }} Vertiges</label> <div class="err">{{ med_form.vertiges.errors }}</div>
+        </div>
+
+        <div class="fg span4">
+          <label for="{{ med_form.notes.id_for_label }}">{{ med_form.notes.label }}</label>
+          {{ med_form.notes }} <div class="err">{{ med_form.notes.errors }}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Motos -->
+    <section class="section">
+      <div class="section-head with-btn">
+        <div>
+          <h3>Motos</h3>
+          <p class="muted small">Ajoutez une ou plusieurs motos.</p>
+        </div>
+        <button type="button" class="btn btn-secondary" id="addMoto">+ Ajouter une moto</button>
+      </div>
+
+      {{ motos.management_form }}
+      <div id="motosContainer" class="repeat">
+        {% for f in motos.forms %}
+          <div class="repeat-row card lite" data-index="{{ forloop.counter0 }}">
+            <div class="grid g3">
+              <div class="fg">
+                <label>{{ f.marque.label }}</label>
+                {{ f.marque }}
+              </div>
+              <div class="fg">
+                <label>{{ f.modele.label }}</label>
+                {{ f.modele }}
+              </div>
+              <div class="fg">
+                <label>{{ f.immatriculation.label }}</label>
+                {{ f.immatriculation }}
+              </div>
+            </div>
+            {% if motos.can_delete %}
+              <div class="row-actions">
+                <label class="del">
+                  {{ f.DELETE }} Supprimer cette ligne
+                </label>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Contacts d’urgence -->
+    <section class="section">
+      <div class="section-head with-btn">
+        <div>
+          <h3>Contacts d’urgence</h3>
+          <p class="muted small">Au moins un contact conseillé.</p>
+        </div>
+        <button type="button" class="btn btn-secondary" id="addUrg">+ Ajouter un contact</button>
+      </div>
+
+      {{ urg.management_form }}
+      <div id="urgContainer" class="repeat">
+        {% for f in urg.forms %}
+          <div class="repeat-row card lite" data-index="{{ forloop.counter0 }}">
+            <div class="grid g3">
+              <div class="fg">
+                <label>{{ f.nom.label }}</label>
+                {{ f.nom }}
+              </div>
+              <div class="fg">
+                <label>{{ f.lien_parente.label }}</label>
+                {{ f.lien_parente }}
+              </div>
+              <div class="fg">
+                <label>{{ f.telephone.label }}</label>
+                {{ f.telephone }}
+              </div>
+            </div>
+            {% if urg.can_delete %}
+              <div class="row-actions">
+                <label class="del">
+                  {{ f.DELETE }} Supprimer cette ligne
+                </label>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Association à un circuit -->
+    <section class="section">
+      <div class="section-head">
+        <h3>Associer à un circuit (optionnel)</h3>
+        <p class="muted small">Si vous choisissez un circuit, une inscription pilote sera créée immédiatement.</p>
+      </div>
+      <select name="circuit_id" class="wide">
+        <option value="">— Ne pas associer —</option>
+        {% for c in circuits %}
+          <option value="{{ c.id }}">{{ c.nom }} — {{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}</option>
+        {% endfor %}
+      </select>
+    </section>
+
+    <div class="actions">
+      <a href="{% url 'bo_personne_list' %}" class="btn btn-secondary">Annuler</a>
+      <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<style>
+  .wrap{max-width:1100px;margin:0 auto;padding:8px}
+  .head{margin:0 0 12px}
+  .muted{color:var(--text-light)}
+  .small{font-size:.9rem}
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:14px}
+  .card.big{padding:16px}
+  .card.lite{background:rgba(0,0,0,.02)}
+  .section{margin:14px 0}
+  .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .section-head.with-btn{gap:10px}
+  .grid{display:grid;gap:10px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .span2{grid-column:span 2}
+  .span4{grid-column:span 4}
+  .fg{display:flex;flex-direction:column;gap:6px}
+  .fg.chk{flex-direction:row;align-items:center;gap:8px}
+  .req::after{content:" *"; color:#ef4444; font-weight:700}
+  input, select, textarea{padding:.65rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text)}
+  .wide{width:100%}
+  .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+  .btn{padding:.6rem 1rem;border:none;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;gap:.45rem}
+  .btn-primary{background:linear-gradient(90deg,#3b82f6,#6366f1);color:#fff}
+  .btn-primary:hover{background:linear-gradient(90deg,#2563eb,#4f46e5)}
+  .btn-secondary{background:var(--secondary);color:var(--text)}
+  .btn-secondary:hover{filter:brightness(0.98)}
+  .alert.error{border:1px solid #fecaca;background:#fff1f2;color:#7f1d1d;border-radius:12px;padding:.8rem;margin:.6rem 0}
+  .err{color:#b91c1c;font-size:.9rem}
+  .repeat{display:flex;flex-direction:column;gap:10px}
+  .row-actions{margin-top:6px}
+  .row-actions .del{display:inline-flex;align-items:center;gap:6px;user-select:none}
+  @media (max-width: 900px){
+    .g4{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width: 640px){
+    .g2,.g3,.g4{grid-template-columns:1fr}
+    .span2,.span4{grid-column:auto}
+  }
+</style>
+
+<script>
+(function(){
+  // Helpers
+  const $ = (s, r=document)=>r.querySelector(s);
+  const addBtnMoto = $("#addMoto");
+  const addBtnUrg = $("#addUrg");
+
+  function addRow(containerId, prefix, fields){
+    const container = document.getElementById(containerId);
+    const totalInput = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
+    const idx = parseInt(totalInput.value, 10);
+    totalInput.value = idx + 1;
+
+    // Crée un bloc « ligne »
+    const row = document.createElement("div");
+    row.className = "repeat-row card lite";
+    row.dataset.index = idx;
+
+    // grille simple
+    const grid = document.createElement("div");
+    grid.className = "grid " + (prefix === "motos" ? "g3" : "g3");
+    row.appendChild(grid);
+
+    fields.forEach(f=>{
+      const wrap = document.createElement("div");
+      wrap.className = "fg";
+      const lab = document.createElement("label");
+      lab.textContent = f.label;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = `${prefix}-${idx}-${f.name}`;
+      input.id = `id_${prefix}-${idx}-${f.name}`;
+      input.placeholder = f.placeholder || "";
+      wrap.appendChild(lab);
+      wrap.appendChild(input);
+      grid.appendChild(wrap);
+    });
+
+    // checkbox DELETE
+    const delWrap = document.createElement("div");
+    delWrap.className = "row-actions";
+    const lbl = document.createElement("label");
+    lbl.className = "del";
+    const del = document.createElement("input");
+    del.type = "checkbox";
+    del.name = `${prefix}-${idx}-DELETE`;
+    del.id = `id_${prefix}-${idx}-DELETE`;
+    lbl.appendChild(del);
+    lbl.appendChild(document.createTextNode(" Supprimer cette ligne"));
+    delWrap.appendChild(lbl);
+    row.appendChild(delWrap);
+
+    container.appendChild(row);
+  }
+
+  if(addBtnMoto){
+    addBtnMoto.addEventListener("click", ()=>{
+      addRow("motosContainer", "motos", [
+        {name:"marque", label:"Marque", placeholder:"Yamaha"},
+        {name:"modele", label:"Modèle", placeholder:"MT-07"},
+        {name:"immatriculation", label:"Immatriculation", placeholder:"AA-123-BB"}
+      ]);
+    });
+  }
+
+  if(addBtnUrg){
+    addBtnUrg.addEventListener("click", ()=>{
+      addRow("urgContainer", "urg", [
+        {name:"nom", label:"Nom", placeholder:"Nom & prénom"},
+        {name:"lien_parente", label:"Lien de parenté", placeholder:"Conjoint, ami…"},
+        {name:"telephone", label:"Téléphone", placeholder:"+221 77 ..."}
+      ]);
+    });
+  }
+
+  // Accent: petite validation native
+  document.getElementById("personForm").addEventListener("submit", function(e){
+    // rien d'invasif : laisse Django valider, on peut juste scroller en haut si besoin.
+    const firstErr = document.querySelector(".err:empty ~ .err, .err:not(:empty)");
+    if(firstErr){
+      // Optionnel: focus
+    }
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,328 @@
+{# templates/circuitMoto/balades_1_jour.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Balades 1 jour — Pulsion Horizon{% endblock %}
+{% block meta_description %}Sélectionnez les balades d’un jour qui vous intéressent et recevez les programmes détaillés par e-mail.{% endblock %}
+{% block body_class %}page-balades-1j{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/balades_1_jour.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="b1j-page">
+  <div class="b1j-shell">
+
+
+    {% if is_partner_landing and landing_meta %}
+      <section class="b1j-partner-hero" aria-label="Partenaire de la balade">
+        <div class="b1j-partner-hero__inner">
+          <div class="b1j-partner-hero__brand">
+            <div class="b1j-partner-hero__logo-wrap">
+              <img
+                src="{% static landing_meta.logo %}"
+                alt="{{ landing_meta.logo_alt }}"
+                class="b1j-partner-hero__logo"
+                loading="lazy"
+              >
+            </div>
+
+            <div class="b1j-partner-hero__content">
+              <span class="b1j-partner-hero__eyebrow">Balade partenaire</span>
+              <h2 class="b1j-partner-hero__title">{{ landing_meta.title }}</h2>
+              <p class="b1j-partner-hero__desc">{{ landing_meta.subtitle }}</p>
+
+              <div class="b1j-partner-hero__chips">
+                <span class="b1j-chip">Partenaire : {{ landing_meta.partner_name }}</span>
+                <span class="b1j-chip">Inscription par sélection</span>
+                <span class="b1j-chip">Programme envoyé par e-mail</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="b1j-partner-hero__actions">
+            <a href="#b1jFormSection" class="b1j-btn">
+              Accéder au formulaire
+            </a>
+          </div>
+        </div>
+      </section>
+    {% endif %}
+
+    <section class="b1j-entry-callout" aria-label="Accès rapide au formulaire">
+      <div class="b1j-entry-callout__inner">
+        <div class="b1j-entry-callout__text">
+          <span class="b1j-entry-callout__eyebrow">Balades 1 jour</span>
+          <h1 class="b1j-entry-callout__title">
+            Découvrez les balades et descendez pour remplir le formulaire
+          </h1>
+          <p class="b1j-entry-callout__desc">
+            Consultez d’abord la présentation, puis rendez-vous plus bas pour
+            sélectionner vos balades et recevoir les programmes détaillés.
+          </p>
+        </div>
+
+        <div class="b1j-entry-callout__actions">
+          <a href="#b1jFormSection" class="b1j-btn b1j-entry-callout__btn">
+            Accéder au formulaire
+          </a>
+
+          <a href="#b1jFormSection" class="b1j-entry-callout__hint" aria-label="Descendre vers le formulaire">
+            <span class="b1j-entry-callout__hint-text">Le formulaire est plus bas</span>
+            <span class="b1j-entry-callout__arrow" aria-hidden="true">↓</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="b1j-intro-showcase">
+      <div class="b1j-intro-showcase__grid">
+
+        <div class="b1j-intro-showcase__media">
+          <div class="b1j-intro-showcase__image-wrap">
+            <img
+              src="{% static detail_image|default:'circuitMoto/images/presentation_balade_1_jour.jpg' %}"
+              alt="{% if landing_meta %}{{ landing_meta.title }}{% else %}Présentation des balades d’un jour Pulsion Horizon{% endif %}"
+              width="1024"
+              height="683"
+              loading="lazy"
+            >
+          </div>
+        </div>
+
+        <div class="b1j-intro-showcase__content">
+          <span class="b1j-eyebrow">Avant de vous inscrire</span>
+          <h2 class="b1j-intro-showcase__title">
+            Une expérience conviviale, guidée et pensée pour donner envie de rouler
+          </h2>
+
+          <p class="b1j-intro-showcase__lead">
+            {% comment %} {% if is_partner_landing and landing_meta %} {% endcomment %}
+              Sauf le week-end en Eiffel, proposé à <strong>119 €</strong>,
+            {% comment %} {% endif %} {% endcomment %}
+            les balades d’une journée sont <strong>gratuites</strong>. Même si elles sont organisées en collaboration avec des concessionnaires, elles sont ouvertes à tous. Le roadbook GPS (<strong>+- 150 km</strong>) est envoyé avant le départ, chaque sortie est encadrée par un guide, et nous vous offrons également un <strong>café de bienvenue</strong>.
+          </p>
+
+          <p class="b1j-intro-showcase__text">
+            Le rendez-vous est fixé à <strong>9 h</strong> pour un <strong>départ guidé à 10 h</strong>. Cette organisation permet à chaque participant de profiter d’une sortie bien préparée, rassurante et agréable, dans un esprit de partage et de passion pour la moto.
+          </p>
+
+          <div class="b1j-intro-showcase__badges">
+            <span class="b1j-chip">Balades gratuites</span>
+            <span class="b1j-chip">Road book GPS envoyé avant départ</span>
+            <span class="b1j-chip">Guide accompagnateur</span>
+            <span class="b1j-chip">Café de bienvenue offert</span>
+            <span class="b1j-chip">Rendez-vous à 9h</span>
+            <span class="b1j-chip">Départ à 10h</span>
+          </div>
+
+          <div class="b1j-intro-showcase__cta">
+            <a href="#b1jFormSection" class="b1j-btn">
+              Je sélectionne mes balades
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="b1j-practical-strip" aria-label="Informations pratiques">
+      <div class="b1j-practical-strip__item">
+        <span class="b1j-practical-strip__icon">🏍️</span>
+        <div>
+          <strong>Balades encadrées</strong>
+          <p>Des sorties guidées pour rouler sereinement et profiter pleinement du parcours.</p>
+        </div>
+      </div>
+
+      <div class="b1j-practical-strip__item">
+        <span class="b1j-practical-strip__icon">🧭</span>
+        <div>
+          <strong>Road book GPS inclus</strong>
+          <p>Les informations de navigation sont envoyées avant le départ.</p>
+        </div>
+      </div>
+
+      <div class="b1j-practical-strip__item">
+        <span class="b1j-practical-strip__icon">☕</span>
+        <div>
+          <strong>Accueil chaleureux</strong>
+          <p>Café de bienvenue offert chez Pulsion Horizon avant le départ.</p>
+        </div>
+      </div>
+
+      <div class="b1j-practical-strip__item">
+        <span class="b1j-practical-strip__icon">🕘</span>
+        <div>
+          <strong>Horaires clairs</strong>
+          <p>Rendez-vous à 9h et départ guidé à 10h.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="b1j-layout">
+      
+      <aside class="b1j-sidecard">
+        <div class="b1j-sidecard__inner">
+          <h2>Comment ça marche ?</h2>
+          <ol class="b1j-steps">
+            <li>Vous consultez les informations pratiques</li>
+            <li>Vous sélectionnez vos balades préférées</li>
+            <li>Vous remplissez le formulaire</li>
+            <li>Nous vous envoyons les programmes par e-mail</li>
+          </ol>
+
+          <div class="b1j-sidecard__note">
+            <strong>Conseil :</strong> vous pouvez cocher plusieurs balades en une seule fois pour recevoir plusieurs programmes.
+          </div>
+
+          <div class="b1j-sidecard__tracker">
+            <div class="b1j-sidecard__tracker-label">Balades sélectionnées</div>
+            <div class="b1j-sidecard__tracker-value" id="b1jAsideCount">0</div>
+            <div class="b1j-sidecard__tracker-text" id="b1jAsideText">
+              Aucune balade sélectionnée pour le moment.
+            </div>
+          </div>
+
+          <div class="b1j-sidecard__actions">
+            <a href="{% url 'balades_email_landing' %}" class="b1j-btn b1j-sidecard__btn">
+              Voir la page sélection
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="b1j-maincard" id="b1jFormSection">
+        <form method="post" class="b1j-form" novalidate>
+          {% csrf_token %}
+          {{ form.website }}
+          {{ form.company }}
+          {{ form.ts }}
+          <input type="hidden" name="form_token" value="{{ balades_form_token }}">
+
+          {% if form.non_field_errors %}
+            <div class="form-errors">
+              {% for err in form.non_field_errors %}
+                <div class="form-error">{{ err }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="b1j-section-head">
+            <div class="b1j-section-head__text">
+              <span class="b1j-section-kicker">Vos coordonnées</span>
+              <h2>Remplissez le formulaire</h2>
+              <p>
+                Indiquez vos informations pour recevoir les programmes correspondant
+                aux balades sélectionnées.
+              </p>
+            </div>
+
+            <div class="b1j-section-head__stats">
+              <span class="b1j-live-pill">Réponse simple</span>
+            </div>
+          </div>
+
+          <div class="b1j-formgrid">
+            <div class="field">
+              <label for="{{ form.prenom.id_for_label }}">Prénom</label>
+              {{ form.prenom }}
+              {% for err in form.prenom.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label for="{{ form.nom.id_for_label }}">Nom</label>
+              {{ form.nom }}
+              {% for err in form.nom.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label for="{{ form.email.id_for_label }}">E-mail</label>
+              {{ form.email }}
+              {% for err in form.email.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label for="{{ form.telephone.id_for_label }}">Téléphone</label>
+              {{ form.telephone }}
+              {% for err in form.telephone.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+            </div>
+          </div>
+
+          <div class="field field--full">
+            <label for="{{ form.commentaire.id_for_label }}">Message complémentaire</label>
+            {{ form.commentaire }}
+            {% for err in form.commentaire.errors %}<div class="field-error">{{ err }}</div>{% endfor %}
+          </div>
+
+          <div class="b1j-section-head">
+            <div class="b1j-section-head__text">
+              <span class="b1j-section-kicker">Sélection</span>
+              <h2>Liste des balades disponibles</h2>
+              <p>Cochez celles qui vous intéressent.</p>
+            </div>
+
+            <div class="b1j-section-head__stats">
+              <span class="b1j-counter">{{ balades|length }} balade{{ balades|length|pluralize }}</span>
+              <span class="b1j-live-pill" id="b1jLiveCounter">0 sélectionnée</span>
+            </div>
+          </div>
+
+          {% if form.balades.errors %}
+            <div class="field-error field-error--mb">
+              {% for err in form.balades.errors %}{{ err }}{% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="b1j-selection-bar" id="b1jSelectionBar">
+            <div class="b1j-selection-bar__left">
+              <span class="b1j-selection-bar__label">Votre sélection</span>
+              <strong class="b1j-selection-bar__count">
+                <span id="b1jSelectionCount">0</span> balade<span id="b1jSelectionPlural">s</span>
+              </strong>
+            </div>
+            <div class="b1j-selection-bar__right" id="b1jSelectionHint">
+              Cochez une ou plusieurs balades
+            </div>
+          </div>
+
+          <div class="b1j-cards" id="b1jCards">
+            {% for checkbox in form.balades %}
+              <label class="b1j-card" data-card-index="{{ forloop.counter }}">
+                {{ checkbox.tag }}
+                <span class="b1j-card__ui">
+                  <span class="b1j-card__number">{{ forloop.counter|stringformat:"02d" }}</span>
+
+                  <span class="b1j-card__top">
+                    <span class="b1j-date">{{ checkbox.choice_label.date_humaine|default:checkbox.choice_label }}</span>
+                    <span class="b1j-check" aria-hidden="true"></span>
+                  </span>
+
+                  <span class="b1j-card__title">{{ checkbox.choice_label.titre|default:checkbox.choice_label }}</span>
+                </span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <div class="b1j-submit">
+            <button type="submit" class="b1j-btn" id="b1jSubmitBtn" autocomplete="off">
+              <span id="b1jSubmitText">Recevoir les programmes sélectionnés</span>
+            </button>
+            <p class="b1j-legal">
+              En envoyant ce formulaire, vous acceptez d’être contacté au sujet des balades choisies.
+            </p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/balades_1_jour.js' %}"></script>
+{% endblock %}

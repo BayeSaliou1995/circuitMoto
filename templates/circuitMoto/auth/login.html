@@ -1,0 +1,470 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load i18n static %}
+{% block content %}
+
+  <div class="login-container">
+    <div class="login-card glass-effect animate__animated animate__fadeIn">
+      <div class="login-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" class="moto-icon">
+            <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            <path d="M19 13h-2V7h2v6zm0 4h-2v-2h2v2zM5 13H3V7h2v6zm0 4H3v-2h2v2z"/>
+            <path d="M7 4h10v2H7zM7 18h10v2H7z"/>
+          </svg>
+          <h2 class="gradient-title">{% trans "Connexion Circuit Moto" %}</h2>
+        </div>
+        <p class="subtitle">{% trans "Accédez à votre espace participant" %}</p>
+      </div>
+
+      <form method="post" class="login-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group floating">
+          <div class="input-container">
+            {{ form.username }}
+            <label for="{{ form.username.id_for_label }}" class="floating-label">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              {% trans "Nom d'utilisateur" %}
+            </label>
+          </div>
+          {{ form.username.errors }}
+        </div>
+
+        <div class="form-group floating">
+          <div class="input-container">
+            {{ form.password }}
+            <label for="{{ form.password.id_for_label }}" class="floating-label">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+              </svg>
+              {% trans "Mot de passe" %}
+            </label>
+            <button type="button" class="toggle-password" aria-label="{% trans "Afficher le mot de passe" %}">
+              <svg viewBox="0 0 24 24" class="eye-icon">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+            </button>
+          </div>
+          {{ form.password.errors }}
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" name="remember">
+            <span class="checkmark"></span>
+            {% trans "Se souvenir de moi" %}
+          </label>
+          <a href="{% url 'password_reset' %}" class="forgot-password">{% trans "Mot de passe oublié ?" %}</a>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary btn-login" type="submit">
+            <span>{% trans "Connexion" %}</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24">
+              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <div class="login-footer">
+        {% comment %} <p>Pas encore de compte ? <a href="" class="register-link">S'inscrire</a></p> {% endcomment %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Styles spécifiques à la page de connexion */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 120px);
+      padding: 2rem;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="none" stroke="%233b82f6" stroke-width="0.5" stroke-opacity="0.2" d="M0,0 L100,100 M100,0 L0,100"/></svg>');
+      background-size: 40px 40px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 480px;
+      padding: 2.5rem;
+      border-radius: 20px;
+      background: var(--bg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .login-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .moto-icon {
+      width: 48px;
+      height: 48px;
+      fill: url(#gradient);
+      margin-bottom: 1rem;
+    }
+
+    .gradient-title {
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .login-form {
+      margin-top: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-container {
+      position: relative;
+    }
+
+    .floating label {
+      position: absolute;
+      top: 0.75rem;
+      left: 3rem;
+      color: var(--text-light);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .floating input {
+      padding: 1rem 3rem 1rem 3rem;
+      height: 3.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .floating input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .floating input:focus + label,
+    .floating input:not(:placeholder-shown) + label {
+      transform: translateY(-1.75rem) translateX(-1rem) scale(0.85);
+      background-color: var(--bg);
+      padding: 0 0.5rem;
+      color: var(--primary);
+    }
+
+    .input-icon {
+      width: 20px;
+      height: 20px;
+      fill: var(--text-light);
+      transition: all 0.3s ease;
+    }
+
+    .floating input:focus ~ label .input-icon {
+      fill: var(--primary);
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+
+    .eye-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .toggle-password:hover {
+      color: var(--primary);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-light);
+    }
+
+    .remember-me input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      display: inline-block;
+      width: 1.125rem;
+      height: 1.125rem;
+      margin-right: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .remember-me:hover .checkmark {
+      border-color: var(--primary);
+    }
+
+    .remember-me input:checked ~ .checkmark {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    .remember-me input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    .remember-me .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .forgot-password {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .forgot-password:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .actions {
+      margin-top: 2rem;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .arrow-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-login:hover .arrow-icon {
+      transform: translateX(5px);
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    .register-link {
+      color: var(--primary);
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .register-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Dark mode adjustments */
+    [data-theme="dark"] .login-card {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .login-card:hover {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 1rem;
+      }
+      
+      .login-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .gradient-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .forgot-password {
+        margin-left: 1.625rem;
+      }
+    }
+
+    /* SVG gradient for logo */
+    svg defs {
+      position: absolute;
+    }
+  </style>
+
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3b82f6" />
+        <stop offset="100%" stop-color="#8b5cf6" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle password visibility
+      const togglePassword = document.querySelector('.toggle-password');
+      if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+          const passwordInput = document.querySelector('#{{ form.password.id_for_label }}');
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          
+          // Change icon
+          const icon = this.querySelector('svg');
+          if (type === 'password') {
+            icon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+          } else {
+            icon.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
+          }
+        });
+      }
+      
+      // Initialize floating labels
+      const inputs = document.querySelectorAll('.floating input');
+      inputs.forEach(input => {
+        // Initialize labels if input has value
+        if (input.value) {
+          const label = input.nextElementSibling;
+          label.style.transform = 'translateY(-1.75rem) translateX(-1rem) scale(0.85)';
+          label.style.backgroundColor = 'var(--bg)';
+          label.style.padding = '0 0.5rem';
+          label.style.color = 'var(--primary)';
+          label.querySelector('.input-icon').style.fill = 'var(--primary)';
+        }
+        
+        // Add focus/blur events
+        input.addEventListener('focus', function() {
+          const label = this.nextElementSibling;
+          label.style.color = 'var(--primary)';
+          label.querySelector('.input-icon').style.fill = 'var(--primary)';
+        });
+        
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            const label = this.nextElementSibling;
+            label.style.color = 'var(--text-light)';
+            label.querySelector('.input-icon').style.fill = 'var(--text-light)';
+          }
+        });
+      });
+    });
+  </script>
+
+{% endblock %}

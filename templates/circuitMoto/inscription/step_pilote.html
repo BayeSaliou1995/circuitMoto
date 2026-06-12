@@ -1,0 +1,147 @@
+{# templates/circuitMoto/inscription/step_pilote.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Informations du pilote" %}</h2>
+    <p class="step-subtitle">{% trans "Veuillez renseigner vos informations personnelles." %}</p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {# ===== Identité & contact ===== #}
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Identité & contact" %}</h3>
+      </header>
+
+      {# ✅ 3 champs sur la même ligne : prénom / nom / adresse #}
+      <div class="grid-3 grid-tight grid-3-basic">
+        <div class="form-group">
+          <label for="{{ form.prenom.id_for_label }}" class="required">{{ form.prenom.label }}</label>
+          {{ form.prenom }}
+          {{ form.prenom.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.nom.id_for_label }}" class="required">{{ form.nom.label }}</label>
+          {{ form.nom }}
+          {{ form.nom.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.adresse.id_for_label }}">{{ form.adresse.label }}</label>
+          {{ form.adresse }}
+          {{ form.adresse.errors }}
+        </div>
+      </div>
+
+      {# ✅ 3 champs sur la même ligne : date_naissance / nationalité / pays #}
+      <div class="grid-3 grid-tight grid-3-basic">
+        <div class="form-group">
+          <label for="{{ form.date_naissance.id_for_label }}">{{ form.date_naissance.label }}</label>
+          {{ form.date_naissance }}
+          {{ form.date_naissance.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.nationalite.id_for_label }}">{{ form.nationalite.label }}</label>
+          {{ form.nationalite }}
+          {{ form.nationalite.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.pays.id_for_label }}">{{ form.pays.label }}</label>
+          {{ form.pays }}
+          {{ form.pays.errors }}
+        </div>
+      </div>
+
+      {# ✅ 3 champs sur la même ligne (déjà OK) : identité / email / téléphone #}
+      <div class="grid-3 grid-tight grid-3-id">
+        <div class="form-group">
+          <label for="{{ form.numero_carte_identite.id_for_label }}">{{ form.numero_carte_identite.label }}</label>
+          {{ form.numero_carte_identite }}
+          {{ form.numero_carte_identite.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}" class="required">{{ form.email.label }}</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.telephone.id_for_label }}" class="required">{{ form.telephone.label }}</label>
+          {{ form.telephone }}
+          {{ form.telephone.errors }}
+        </div>
+      </div>
+    </section>
+
+    {# ===== Adresse (reste : code_postal / localite en 2 colonnes) ===== #}
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Adresse" %}</h3>
+      </header>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="{{ form.code_postal.id_for_label }}">{{ form.code_postal.label }}</label>
+          {{ form.code_postal }}
+          {{ form.code_postal.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.localite.id_for_label }}">{{ form.localite.label }}</label>
+          {{ form.localite }}
+          {{ form.localite.errors }}
+        </div>
+      </div>
+    </section>
+
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

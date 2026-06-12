@@ -1,0 +1,24 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+  {% include "circuitMoto/partials/_error_style.html" %}
+
+  <div class="err-wrap">
+    <div class="err-card">
+      <div class="err-hero">
+        <span class="err-code"><span class="err-chip">404</span> Page introuvable</span>
+        <div class="err-halo"></div>
+      </div>
+      <div class="err-body">
+        <p class="err-msg">La page demandée est introuvable ou a été déplacée.</p>
+        {% if request_path %}<div class="err-path">{{ request_path }}</div>{% endif %}
+        <div class="err-actions">
+          <a class="btn btn-primary" href="/">Aller à l’accueil</a>
+          <a class="btn btn-secondary" href="javascript:history.back()">Revenir en arrière</a>
+        </div>
+
+        {% include "circuitMoto/partials/_error_support.html" %}
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

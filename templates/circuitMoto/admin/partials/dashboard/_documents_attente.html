@@ -1,0 +1,31 @@
+{% if documents_attente_page %}
+  <div class="table-lite">
+    {% for doc in documents_attente_page %}
+      <div class="table-lite__row">
+        <div class="table-lite__main">
+          <div class="table-lite__title">
+            {{ doc.inscription.pilote.prenom }} {{ doc.inscription.pilote.nom }}
+          </div>
+          <div class="table-lite__meta">
+            {{ doc.get_type_document_display }} · {{ doc.inscription.circuit.nom }}
+          </div>
+        </div>
+        <div class="table-lite__end">
+          <a href="{% url 'bo_personne_detail' doc.inscription.pilote.id %}" class="mini-link">Ouvrir</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="ajax-pagination">
+    {% if documents_attente_page.has_previous %}
+      <button class="ajax-page-btn" data-section="documents" data-page="{{ documents_attente_page.previous_page_number }}">Précédent</button>
+    {% endif %}
+    <span>Page {{ documents_attente_page.number }} / {{ documents_attente_page.paginator.num_pages }}</span>
+    {% if documents_attente_page.has_next %}
+      <button class="ajax-page-btn" data-section="documents" data-page="{{ documents_attente_page.next_page_number }}">Suivant</button>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="empty-state"><p>Aucun document en attente.</p></div>
+{% endif %}

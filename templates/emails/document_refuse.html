@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Document refusé</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{margin:0;padding:0;background:#f5f7fb;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#111827}
+    .wrapper{width:100%;background:#f5f7fb;padding:24px 12px}
+    .container{max-width:600px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(17,24,39,.06)}
+    .header{background:linear-gradient(135deg,#f97316,#ef4444);padding:24px 24px 18px;color:#fff}
+    .brand{font-weight:700;font-size:18px}
+    .content{padding:24px}
+    .alert{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:12px 14px;border-radius:12px;font-weight:600}
+    .card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:16px 0}
+    .row{display:flex;justify-content:space-between;gap:12px;margin:8px 0}
+    .label{color:#6b7280}
+    .value{font-weight:600}
+    .btn{display:inline-block;background:#ef4444;color:#fff;padding:12px 18px;border-radius:12px;font-weight:700}
+    .btn:hover{opacity:.9}
+    .foot{padding:18px 24px;font-size:12px;color:#6b7280;background:#fff}
+    .preheader{display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden;mso-hide:all}
+    @media (prefers-color-scheme: dark){
+      body{background:#0b1220;color:#e5e7eb}
+      .wrapper{background:#0b1220}
+      .container{background:#0d1426;border-color:#1f2937}
+      .card{background:#0f172a;border-color:#1f2937}
+      .foot{background:#0d1426;color:#9ca3af}
+      .label{color:#94a3b8}
+    }
+  </style>
+</head>
+<body>
+  <div class="preheader">Votre document « {{ doc.get_type_document_display }} » a été refusé.</div>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="brand">Pulsion Horizon</div>
+        <div style="opacity:.95;margin-top:6px">Action requise sur votre dossier</div>
+      </div>
+      <div class="content">
+        <p class="alert">Document refusé – {{ doc.get_type_document_display }}</p>
+        <p>Bonjour {{ ins.pilote.prenom }},</p>
+        <p>Votre document <strong>{{ doc.get_type_document_display }}</strong> a été refusé.</p>
+        {% if raison %}<p style="background:#fff7ed;border:1px dashed #fed7aa;padding:10px 12px;border-radius:10px"><strong>Raison :</strong> {{ raison }}</p>{% endif %}
+
+        <div class="card">
+          <div class="row"><span class="label">Référence dossier</span><span class="value">{{ ins.id_public }}</span></div>
+          <div class="row"><span class="label">Circuit</span><span class="value">{{ ins.circuit.nom }}</span></div>
+        </div>
+
+        <p>Merci de transmettre un nouveau fichier en cliquant ci-dessous :</p>
+        <p><a class="btn" href="{{ upload_url }}">Envoyer un nouveau document</a></p>
+
+        <p style="font-size:13px;color:#6b7280">Si besoin d’aide, répondez simplement à cet e-mail.</p>
+      </div>
+      <div class="foot">© {{ now|date:"Y" }} Pulsion Horizon</div>
+    </div>
+  </div>
+</body>
+</html>

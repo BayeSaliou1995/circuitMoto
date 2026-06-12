@@ -1,0 +1,801 @@
+{# templates/circuitMoto/circuit_detail.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+
+{% load static i18n version_static %}
+
+
+{% block title %}{{ circuit.nom }} — Pulsion Inscription{% endblock %}
+
+{# Extrait "pro" pour meta/OG : description si dispo, sinon fallback court #}
+{% block meta_description %}
+  {% if circuit.description %}
+    {{ circuit.description|striptags|cut:"\n"|cut:"\r"|truncatechars:200 }}
+  {% else %}
+    Circuit moto du {{ circuit.date_debut|date:"d/m/Y" }} au {{ circuit.date_fin|date:"d/m/Y" }} — Pulsion Inscription.
+  {% endif %}
+{% endblock %}
+
+{# Canonical propre (sans paramètres ?fbclid etc.) #}
+{% block canonical %}{{ SITE_URL }}{{ circuit.get_absolute_url }}{% endblock %}
+
+{# OG/Twitter titres + descriptions #}
+{% block og_title %}{{ circuit.nom }}{% endblock %}
+{% block og_desc %}
+  {% if circuit.description %}
+    {{ circuit.description|striptags|cut:"\n"|cut:"\r"|truncatechars:600 }}
+  {% else %}
+    Circuit moto du {{ circuit.date_debut|date:"d/m/Y" }} au {{ circuit.date_fin|date:"d/m/Y" }} — Réservez votre place.
+  {% endif %}
+{% endblock %}
+{% block tw_title %}{{ circuit.nom }}{% endblock %}
+{% block tw_desc %}{{ block.super }}{% endblock %}
+
+{# OG url alignée au canonical #}
+{% block og_url %}{{ SITE_URL }}{{ circuit.get_absolute_url }}{% endblock %}
+
+{# Image de partage : priorité circuit.image, sinon 1ère slide, sinon fallback base #}
+{% block og_image %}
+  {% if circuit.image %}
+    {{ request.build_absolute_uri|cut:request.get_full_path }}{{ circuit.image.url }}
+  {% elif hero_slides and hero_slides.0.url %}
+    {% if hero_slides.0.url|slice:":4" == "http" %}
+      {{ hero_slides.0.url }}
+    {% else %}
+      {{ request.build_absolute_uri|cut:request.get_full_path }}{{ hero_slides.0.url }}
+    {% endif %}
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+{% block tw_image %}{{ block.super }}{% endblock %}
+
+{% block og_image_alt %}{{ circuit.nom }} — Pulsion Inscription{% endblock %}
+
+
+{% block body_class %}page-circuit-detail{% endblock %}
+
+
+
+
+{% block extra_head %}
+  {{ block.super }}
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/circuit_detail.css' %}">
+{% endblock %}
+
+{% block structured_data %}
+  {# URL image absolue (même logique que OG) #}
+  {% if circuit.image and circuit.image.url %}
+    {% with img_abs=SITE_URL|add:circuit.image.url %}
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "{{ SITE_URL }}/" },
+              { "@type": "ListItem", "position": 2, "name": "{{ circuit.nom|escapejs }}", "item": "{{ request.build_absolute_uri|escapejs }}" }
+            ]
+          },
+          {
+            "@type": "Product",
+            "name": "{{ circuit.nom|escapejs }}",
+            "description": "{{ circuit.description|default:''|striptags|truncatechars:280|escapejs }}",
+            "image": ["{{ img_abs|escapejs }}"],
+            "url": "{{ request.build_absolute_uri|escapejs }}",
+            "brand": { "@type": "Brand", "name": "Pulsion Horizon" },
+            "offers": [
+              {
+                "@type": "Offer",
+                "url": "{{ request.build_absolute_uri|escapejs }}",
+                "price": "{{ circuit.prix_pilote_unitaire }}",
+                "priceCurrency": "{{ circuit.devise|default:'EUR' }}",
+                "availability": "https://schema.org/InStock"
+              }
+              {% if circuit.prix_passager_unitaire %},
+              {
+                "@type": "Offer",
+                "url": "{{ request.build_absolute_uri|escapejs }}",
+                "price": "{{ circuit.prix_passager_unitaire }}",
+                "priceCurrency": "{{ circuit.devise|default:'EUR' }}",
+                "availability": "https://schema.org/InStock"
+              }
+              {% endif %}
+            ]
+          }
+        ]
+      }
+      </script>
+    {% endwith %}
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="circuit-detail" id="circuitDetail">
+
+    <!-- HERO PREMIUM -->
+    <header class="circuit-hero" id="heroSection">
+      <div class="hero-overlay"></div>
+      <div class="hero-particles" id="heroParticles"></div>
+      <div class="hero-shapes">
+        <div class="shape shape-1" data-speed="0.2"></div>
+        <div class="shape shape-2" data-speed="0.1"></div>
+        <div class="shape shape-3" data-speed="0.3"></div>
+      </div>
+
+      <div class="hero-container">
+        <div class="hero-content">
+
+          <div class="hero-header">
+            <div class="circuit-badges">
+              <span class="badge-code pulse-animation">{{ circuit.code }}</span>
+              <div class="availability-indicator">
+                <span class="availability-dot {% if pct >= 80 %}high-demand{% elif pct >= 50 %}medium-demand{% else %}low-demand{% endif %}"></span>
+                <span>
+                  {% if pct >= 90 %}
+                    {% trans "Presque complet" %}
+                  {% elif pct >= 70 %}
+                    {% trans "Peu de places" %}
+                  {% else %}
+                    {% trans "Disponible" %}
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <h1 class="circuit-title" id="circuitTitle"
+              data-typewriter
+              data-tw-speed="32"
+              data-tw-start="180"
+              data-tw-jitter="18">
+            {{ circuit.nom }}
+          </h1>
+
+
+          <div class="circuit-meta-grid">
+
+            <div class="meta-item" data-aos="fade-up" data-aos-delay="100">
+              <div class="meta-content">
+                <div class="meta-label">{% trans "Dates du circuit" %}</div>
+                <div class="meta-value">{{ circuit.date_debut|date:"d/m/Y" }} – {{ circuit.date_fin|date:"d/m/Y" }}</div>
+                  <div class="meta-desc meta-collapsible"
+                      id="heroDesc"
+                      data-collapsible
+                      data-collapsed-height="96"
+                      data-closed-label="{% trans 'Voir tout' %}"
+                      data-open-label="{% trans 'Afficher moins' %}">
+                    {{ circuit.description|default:"Description à venir…"|linebreaks }}
+                  </div>
+
+                  <button type="button"
+                          class="meta-toggle"
+                          data-collapsible-toggle
+                          aria-controls="heroDesc"
+                          aria-expanded="false"
+                          hidden>
+                    <span class="label">{% trans "Voir tout" %}</span>
+                    <i class="fas fa-chevron-down chev" aria-hidden="true"></i>
+                  </button>
+
+
+              </div>
+            </div>
+
+            {% if echeancier_texte %}
+              <div class="meta-item" data-aos="fade-up" data-aos-delay="250">
+                <div class="meta-content">
+
+                  <div class="meta-inline-prices">
+                    {% if circuit.prix_pilote_unitaire %}
+                      <div class="mini-price">
+                        <div class="mini-label">{% trans "Prix Pilote" %}</div>
+                        <div class="mini-amount">
+                          {{ circuit.prix_pilote_unitaire }} <span>{{ circuit.devise }}</span>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if circuit.prix_passager_unitaire %}
+                      <div class="mini-price">
+                        <div class="mini-label">{% trans "Prix Passager" %}</div>
+                        <div class="mini-amount">
+                          {{ circuit.prix_passager_unitaire }} <span>{{ circuit.devise }}</span>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  <div class="meta-label">{% trans "Modalités de paiement" %}</div>
+
+                  <div class="meta-collapsible"
+                      id="heroPay"
+                      data-collapsible
+                      data-collapsed-height="170"
+                      data-closed-label="{% trans 'Voir tout' %}"
+                      data-open-label="{% trans 'Afficher moins' %}">
+                    <div class="meta-desc">
+                      {{ echeancier_texte|linebreaksbr }}
+                    </div>
+
+                    {% if comprend_items %}
+                      <h5 class="subhead">{% trans "Le prix comprend" %}</h5>
+                      <ul class="inclusion-list">
+                        {% for li in comprend_items %}
+                          <li>{{ li }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+
+                    {% if ne_comprend_pas_items %}
+                      <h5 class="subhead">{% trans "Le prix ne comprend pas" %}</h5>
+                      <ul class="exclusion-list">
+                        {% for li in ne_comprend_pas_items %}
+                          <li>{{ li }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </div>
+
+                  <button type="button"
+                          class="meta-toggle"
+                          data-collapsible-toggle
+                          aria-controls="heroPay"
+                          aria-expanded="false"
+                          hidden>
+                    <span class="label">{% trans "Voir tout" %}</span>
+                    <i class="fas fa-chevron-down chev" aria-hidden="true"></i>
+                  </button>
+
+
+                </div>
+              </div>
+            {% endif %}
+
+          </div>
+
+          <div class="hero-pricing" aria-labelledby="hp-title" data-aos="fade-up" data-aos-delay="320">
+            <div class="hp-head">
+              <h3 id="hp-title">{% trans "Tarifs & Options" %}</h3>
+              <a href="#tarifs" class="hp-link">{% trans "Voir le détail" %}</a>
+            </div>
+
+            {% if options_grouped and options_grouped.0.items %}
+              <div class="hp-options">
+                <div class="hp-options-title">{% trans "Options" %}&nbsp;:</div>
+                {% for block in options_grouped %}
+                  {% for o in block.items|slice:":4" %}
+                    <span class="hp-chip">{{ o.intitule }}</span>
+                  {% endfor %}
+                {% endfor %}
+                <a href="#tarifs" class="btn btn-secondary magnetic" data-strength="0.2" style="margin-left:auto">
+                  {% trans "Tout voir" %}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="performance-grid">
+            <div class="performance-item" data-aos="zoom-in" data-aos-delay="400">
+              <div class="performance-value">{{ circuit.prix_pilote_unitaire }} {{ circuit.devise }}</div>
+              <div class="performance-label">{% trans "Tarif pilote" %}</div>
+            </div>
+            {% if circuit.prix_passager_unitaire %}
+            <div class="performance-item" data-aos="zoom-in" data-aos-delay="500">
+              <div class="performance-value">{{ circuit.prix_passager_unitaire }} {{ circuit.devise }}</div>
+              <div class="performance-label">{% trans "Tarif passager" %}</div>
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="hero-actions">
+            <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}" class="btn btn-primary magnetic" data-strength="0.5">
+              <i class="fas fa-check-circle"></i>
+              {% trans "Réserver ma place" %}
+            </a>
+
+            <button class="btn btn-secondary magnetic" data-strength="0.3" onclick="scrollToSection('programme')">
+              <i class="fas fa-calendar-alt"></i>
+              {% trans "Voir le programme" %}
+            </button>
+
+            {% if itineraire.enabled %}
+            <button class="btn btn-secondary magnetic" data-strength="0.3" onclick="scrollToSection('itineraire')">
+              <i class="fas fa-map-location-dot"></i>
+              {% trans "Voir la carte" %}
+            </button>
+            {% endif %}
+
+            <button class="btn btn-secondary magnetic" data-strength="0.3" onclick="shareCircuit()">
+              <i class="fas fa-share-alt"></i>
+              {% trans "Partager" %}
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="hero-seam" aria-hidden="true"></div>
+    </header>
+
+    <!-- NB — Avertissement tarifs -->
+    <div class="nb-banner" id="nbBanner" role="note" aria-label="{% trans 'Information tarifaire' %}">
+      <div class="nb-inner">
+        <span class="nb-icon" aria-hidden="true">ℹ️</span>
+        <p class="nb-text"
+          data-nb-typewriter
+          data-tw-speed="24"
+          data-tw-start="250"
+          data-tw-jitter="14">
+          {% blocktrans %}
+          Tous nos prix sont communiqués sous réserve de modifications : ils tiennent compte des informations et tarifs en notre possession à ce jour (vols et taxes d'aéroport, prestations des fournisseurs, taux de change, …). Ils peuvent donc être sujets à modification lors de la commande.
+          {% endblocktrans %}
+        </p>
+
+        <button class="nb-close" type="button" aria-label="{% trans 'Masquer ce message' %}">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- NAV STICKY -->
+    <nav class="detail-nav" id="detailNav">
+      <div class="nav-container">
+        <div class="nav-scroll">
+          <div class="nav-links">
+            <a href="#presentation" class="nav-link active magnetic" data-strength="0.2">
+              <i class="fas fa-info-circle"></i> {% trans "Présentation" %}
+            </a>
+            {% if itineraire.enabled %}
+              <a href="#itineraire" class="nav-link magnetic" data-strength="0.2">
+                <i class="fas fa-map-location-dot"></i> {% trans "Carte" %}
+              </a>
+            {% endif %}
+            <a href="#programme" class="nav-link magnetic" data-strength="0.2">
+              <i class="fas fa-road"></i> {% trans "Programme" %}
+            </a>
+            <a href="#tarifs" class="nav-link magnetic" data-strength="0.2">
+              <i class="fas fa-tags"></i> {% trans "Tarifs & Options" %}
+            </a>
+            <a href="#infos" class="nav-link magnetic" data-strength="0.2">
+              <i class="fas fa-clipboard-list"></i> {% trans "Infos pratiques" %}
+            </a>
+            {% if kms_struct or circuit.kilometrages %}
+              <a href="#kilometrages" class="nav-link magnetic" data-strength="0.2">
+                <i class="fas fa-map-marked-alt"></i> {% trans "Kilométrages" %}
+              </a>
+            {% endif %}
+            <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}" class="btn btn-primary pulse-animation magnetic" class="nav-link magnetic" data-strength="0.2">
+              <i class="fas fa-motorcycle"></i> {% trans "S'inscrire maintenant" %}
+            </a>
+          </div>
+        </div>
+        <div class="scroll-progress"></div>
+      </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="detail-content">
+      {% if itineraire.enabled %}
+        {{ itineraire|json_script:"circuitRouteData" }}
+        <section id="itineraire" class="content-section route-explorer-section">
+          <div class="section-header">
+            <h2 data-aos="fade-up">{% trans "Carte interactive du circuit" %}</h2>
+            <div class="section-decoration" data-aos="fade-up" data-aos-delay="160"></div>
+          </div>
+
+          <article class="route-explorer" data-route-explorer data-google-key="{{ google_maps_api_key|default:'' }}">
+            <div class="route-topbar">
+              <h3>{{ circuit.nom }}</h3>
+              <div class="route-topbar-actions">
+                <div class="route-segment" role="group" aria-label="{% trans 'Type de carte' %}">
+                  <button type="button" class="route-segment-btn is-active" data-route-map-type="roadmap">{% trans "Plan" %}</button>
+                  <button type="button" class="route-segment-btn" data-route-map-type="satellite">{% trans "Satellite" %}</button>
+                </div>
+
+                <div class="route-segment" role="group" aria-label="{% trans 'Vue' %}">
+                  <button type="button" class="route-segment-btn is-active" data-route-view="map">
+                    <i class="fas fa-map" aria-hidden="true"></i>
+                    <span>{% trans "Carte" %}</span>
+                  </button>
+                  <button type="button" class="route-segment-btn" data-route-view="street">
+                    <i class="fas fa-street-view" aria-hidden="true"></i>
+                    <span>{% trans "Street View" %}</span>
+                  </button>
+                </div>
+
+                <button type="button" class="route-icon-btn" data-route-fullscreen aria-label="{% trans 'Plein écran' %}">
+                  <i class="fas fa-expand" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="route-viewport">
+              <div id="circuitRouteMap" class="route-layer route-layer-map" data-route-map></div>
+              <div id="circuitStreetView" class="route-layer route-layer-street" data-route-street hidden></div>
+              <div class="route-fallback" data-route-fallback hidden></div>
+
+              <button type="button" class="route-reset" data-route-reset>
+                {% trans "Retour à la vue générale" %}
+              </button>
+
+              {% if itineraire.mapsUrl %}
+                <a class="route-open-link" href="{{ itineraire.mapsUrl }}" target="_blank" rel="noopener">
+                  <i class="fas fa-up-right-from-square" aria-hidden="true"></i>
+                  {% trans "Ouvrir dans Google Maps" %}
+                </a>
+              {% endif %}
+
+              <div class="route-day-panel" data-route-panel>
+                <button type="button" class="route-arrow" data-route-prev aria-label="{% trans 'Jour précédent' %}">
+                  <i class="fas fa-caret-left" aria-hidden="true"></i>
+                </button>
+                <div class="route-current">
+                  <span class="route-current-kicker" data-route-day>{% trans "Jour par jour" %}</span>
+                  <strong data-route-title>{{ circuit.nom }}</strong>
+                  <span data-route-meta></span>
+                </div>
+                <button type="button" class="route-arrow" data-route-next aria-label="{% trans 'Jour suivant' %}">
+                  <i class="fas fa-caret-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="route-days" data-route-days role="tablist" aria-label="{% trans 'Etapes du circuit' %}"></div>
+          </article>
+        </section>
+      {% endif %}
+
+      <div class="content-grid">
+        <div class="main-content">
+          <!-- Présentation -->
+          <section id="presentation" class="content-section">
+            <div class="section-header">
+              <h2 data-aos="fade-up">{% trans "Découvrez ce circuit exceptionnel" %}</h2>
+              <div class="section-decoration" data-aos="fade-up" data-aos-delay="200"></div>
+            </div>
+          </section>
+
+          <!-- Programme (timeline) -->
+          <section id="programme" class="content-section">
+            <div class="section-header">
+              <h2 data-aos="fade-up">{% trans "Road-book détaillé" %}</h2>
+              <div class="section-subtitle" data-aos="fade-up" data-aos-delay="120">
+                <span class="badge-info">{% trans "Road-book & fichiers GPS fournis avant le départ" %}</span>
+              </div>
+            </div>
+
+            {% if programme_items %}
+              {% if programme_intro %}
+                <div class="interactive-card" data-aos="fade-up" data-aos-delay="80">
+                  <div class="day-header">
+                    <h3>{% trans "Programme" %}</h3>
+                  </div>
+                  <div class="day-description">{{ programme_intro|linebreaks }}</div>
+                </div>
+              {% endif %}
+
+              <div class="timeline-modern">
+                {% for it in programme_items %}
+                  <div class="timeline-day" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                    <div class="timeline-marker">
+                      <div class="day-number">J{{ forloop.counter }}</div>
+                    </div>
+                    <div class="timeline-content interactive-card">
+                      <div class="day-header">
+                        <h3>{{ it.title }}</h3>
+                        <div class="day-badge">{% trans "Jour" %} {{ forloop.counter }}</div>
+                      </div>
+                      {% if it.body %}<div class="day-description">{{ it.body|linebreaks }}</div>{% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="interactive-card" style="padding:1.5rem;text-align:center;color:var(--text-secondary)">
+                <i class="fas fa-calendar-plus fa-2x" style="margin-bottom:1rem"></i>
+                <p>{% trans "Programme en cours de finalisation — contactez-nous pour plus d'infos." %}</p>
+              </div>
+            {% endif %}
+          </section>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <div class="action-card interactive-card" data-aos="fade-left">
+            <a href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}" class="btn btn-primary btn-full magnetic" data-strength="0.3" style="width:100%;justify-content:center">
+              <i class="fas fa-bolt"></i> {% trans "Réserver maintenant" %}
+            </a>
+            <div class="action-footer">
+              <div>
+                <span class="badge-code badge-compact">
+                  {{ circuit.code }}
+                </span>
+              </div>
+              <div class="availability-info">
+                <span class="availability-dot {% if pct >= 80 %}high-demand{% elif pct >= 50 %}medium-demand{% else %}low-demand{% endif %}"></span>
+                <span>
+                  {% if pct >= 90 %}
+                    {% trans "Presque complet" %}
+                  {% elif pct >= 70 %}
+                    {% trans "Peu de places" %}
+                  {% else %}
+                    {% trans "Disponible" %}
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div id="tarifs" class="pricing-sidebar content-section interactive-card" data-aos="fade-left" data-aos-delay="120">
+            <h4><i class="fas fa-tags"></i> {% trans "Tarifs & Options" %}</h4>
+            <div class="pricing-cards">
+              <div class="pricing-card featured">
+                <div class="pricing-header">
+                  <h4>{% trans "Forfait Pilote" %}</h4>
+                  <div><span class="price-amount">{{ circuit.prix_pilote_unitaire }}</span> <span class="price-currency">{{ circuit.devise }}</span></div>
+                </div>
+              </div>
+
+              {% if circuit.prix_passager_unitaire %}
+              <div class="pricing-card">
+                <div class="pricing-header">
+                  <h4>{% trans "Forfait Passager" %}</h4>
+                  <div><span class="price-amount">{{ circuit.prix_passager_unitaire }}</span> <span class="price-currency">{{ circuit.devise }}</span></div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+
+            {% if options_grouped and options_grouped.0.items %}
+            <div class="options-compact">
+              <h5>{% trans "Options additionnelles" %}</h5>
+              {% for block in options_grouped %}
+              <div class="option-category">
+                <h6>{{ block.categorie }}</h6>
+                <div class="option-list">
+                  {% for o in block.items %}
+                  <div class="option-item">
+                    <div class="option-main">
+                      <div class="option-name">{{ o.intitule }}</div>
+                      {% if o.description %}<div class="option-description">{{ o.description }}</div>{% endif %}
+                    </div>
+                    <div class="option-side">
+                      <div class="option-badges">
+                        {% if o.facture_par_personne %}<span class="option-badge">{% trans "par personne" %}</span>{% endif %}
+                        {% if o.quantite_variable %}<span class="option-badge">{% trans "quantité variable" %}</span>{% endif %}
+                      </div>
+                      <div class="option-price">{{ o.prix_unitaire }} {{ circuit.devise }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <section id="infos" class="info-card interactive-card content-section" data-aos="fade-left" data-aos-delay="180">
+            <h4><i class="fas fa-clipboard-list"></i> {% trans "Infos pratiques & Rendez-vous" %}</h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">{% trans "Devise" %}</span>
+                <span class="info-value">{{ circuit.devise }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{% trans "Dates" %}</span>
+                <span class="info-value">{{ circuit.date_debut|date:"d/m/Y" }} → {{ circuit.date_fin|date:"d/m/Y" }}</span>
+              </div>
+              {% if duree_jours %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Durée" %}</span>
+                  <span class="info-value">{{ duree_jours }} {% trans "jours" %}</span>
+                </div>
+              {% endif %}
+              <div class="info-item">
+                <span class="info-label">{% trans "Capacité" %}</span>
+                <span class="info-value">{{ circuit.capacite }} {% trans "places" %}</span>
+              </div>
+              {% if circuit.infos_rdv %}
+                <div class="info-item" style="flex-direction:column;align-items:flex-start;gap:.5rem">
+                  <span class="info-label">{% trans "Rendez-vous" %}</span>
+                  <span class="info-value rich-text">{{ circuit.infos_rdv|linebreaks }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </section>
+
+          {% if kms_struct or circuit.kilometrages %}
+            <section id="kilometrages" class="info-card interactive-card content-section" data-aos="fade-left" data-aos-delay="240">
+              <h4><i class="fas fa-map-marked-alt"></i> {% trans "Kilométrages indicatifs" %}</h4>
+              
+              {% if kms_struct %}
+                <div class="performance-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                  {% for it in kms_struct %}
+                    <div class="interactive-card" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                      <div style="font-size:1.6rem;font-weight:800;color:var(--primary)" data-counter="{{ it.km|default:0 }}">0</div>
+                      <div style="color:var(--text-secondary);font-size:.9rem">
+                        {{ it.label }}
+                        {% if it.is_option %}<span class="option-badge">{% trans "Option" %}</span>{% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+                
+                {% if kms_totals %}
+                  <div class="info-grid" style="margin-top:1rem">
+                    <div class="info-item">
+                      <span class="info-label">{% trans "Total (base)" %}</span>
+                      <span class="info-value">{{ kms_totals.base }} {% trans "km" %}</span>
+                    </div>
+                  </div>
+                {% endif %}
+              {% else %}
+                <div class="rich-text">{{ circuit.kilometrages|linebreaks }}</div>
+              {% endif %}
+            </section>
+          {% endif %}
+
+        </aside>
+      </div>
+    </main>
+
+    <!-- AUTRES CIRCUITS -->
+    <section class="other-circuits-section">
+      <div class="detail-content">
+        <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+          <h2>{% trans "Découvrez nos autres circuits" %}</h2>
+          <div class="section-decoration" style="margin: 0.5rem auto;"></div>
+          <p style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 1rem;">
+            {% trans "Des aventures tout aussi exceptionnelles vous attendent" %}
+          </p>
+        </div>
+
+        <div class="circuits-carousel-container">
+          <div class="circuits-carousel-track" id="circuitsCarouselTrack">
+            {% for other_circuit in autres_circuits %}
+            <div class="circuit-card">
+              <div class="circuit-image">
+                {% if other_circuit.image %}
+                  <img src="{{ other_circuit.image.url }}" alt="{{ other_circuit.nom }}">
+                {% else %}
+                  <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">
+                    {{ other_circuit.code }}
+                  </div>
+                {% endif %}
+                
+                <div style="position: absolute; top: 1rem; left: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  {% if other_circuit.est_nouveau %}
+                  <span class="badge-new">
+                    {% trans "Nouveau" %}
+                  </span>
+                  {% endif %}
+                  <span class="badge-code badge-compact">
+                    {{ other_circuit.code }}
+                  </span>
+                </div>
+                
+                {% if other_circuit.pct_remplissage >= 70 %}
+                  <div style="position: absolute; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.9); padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700;">
+                    <span class="availability-dot {% if other_circuit.pct_remplissage >= 90 %}high-demand{% else %}medium-demand{% endif %}" style="width: 8px; height: 8px;"></span>
+                    <span>
+                      {% if other_circuit.pct_remplissage >= 90 %}
+                        {% trans "Presque complet" %}
+                      {% else %}
+                        {% trans "Peu de places" %}
+                      {% endif %}
+                    </span>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="circuit-content">
+                <h3>{{ other_circuit.nom }}</h3>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                  <span><i class="fas fa-calendar"></i> {{ other_circuit.date_debut|date:"d/m/Y" }}</span>
+                  {% if other_circuit.duree_jours %}
+                  <span style="color: var(--border);">•</span>
+                  <span>{{ other_circuit.duree_jours }} {% trans "jours" %}</span>
+                  {% endif %}
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">
+                      {{ other_circuit.prix_pilote_unitaire }} {{ other_circuit.devise }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                      {% trans "Pilote" %}
+                    </div>
+                  </div>
+                  {% if other_circuit.prix_passager_unitaire %}
+                  <div style="text-align: right;">
+                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--secondary);">
+                      {{ other_circuit.prix_passager_unitaire }} {{ other_circuit.devise }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                      {% trans "Passager" %}
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                
+                <a href="{{ other_circuit.get_absolute_url }}" class="btn btn-primary" style="display: block; text-align: center; padding: 0.75rem 1rem;">
+                  <i class="fas fa-eye"></i> {% trans "Découvrir" %}
+                </a>
+              </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 2rem; color: var(--text-secondary); grid-column: 1 / -1;">
+              <i class="fas fa-map-signs fa-2x" style="margin-bottom: 1rem;"></i>
+              <p>{% trans "Aucun autre circuit disponible pour le moment." %}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL PARTAGE -->
+    <div class="modal" id="shareModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-share-alt"></i> {% trans "Partager ce circuit" %}</h3>
+          <button class="modal-close" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="share-options">
+          <button class="share-option" onclick="shareSocial('facebook')">
+            <i class="fab fa-facebook fa-2x"></i>
+            <span>{% trans "Facebook" %}</span>
+          </button>
+          <button class="share-option" onclick="shareSocial('twitter')">
+            <i class="fab fa-twitter fa-2x"></i>
+            <span>{% trans "Twitter" %}</span>
+          </button>
+          <button class="share-option" onclick="shareSocial('linkedin')">
+            <i class="fab fa-linkedin fa-2x"></i>
+            <span>{% trans "LinkedIn" %}</span>
+          </button>
+          <button class="share-option" onclick="copyShareLink()">
+            <i class="fas fa-link fa-2x"></i>
+            <span>{% trans "Copier le lien" %}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA MOBILE FIXE (conversion) -->
+    <div class="mobile-cta" id="mobileCta" role="region" aria-label="{% trans 'Inscription' %}">
+      <div class="mobile-cta__inner">
+        <a
+          href="{% url 'inscription_create_step' 'circuit' %}?circuit={{ circuit.id }}"
+          class="btn btn-primary mobile-cta__btn glow-animation"
+        >
+          <i class="fas fa-motorcycle" aria-hidden="true"></i>
+          <span>{% trans "S'inscrire maintenant" %}</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/circuit_detail.js' %}"></script>
+{% endblock %}

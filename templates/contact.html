@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Contact" %} — Pulsion Horizon{% endblock %}
+
+{% block content %}
+<section class="contact-hero">
+  <div class="wrap">
+    <h1>{% trans "Contactez-nous" %}</h1>
+    <p>{% trans "Une question sur un circuit, un devis, une réclamation ? Dites-nous tout." %}</p>
+  </div>
+</section>
+
+<section class="contact-form-section">
+  <div class="wrap">
+    {% if messages %}
+      <div class="flash">
+        {% for m in messages %}
+          <div class="flash-item {{ m.tags }}">{{ m }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate id="contact-form" class="card">
+      {% csrf_token %}
+      {{ form.honeypot }}
+
+      <div class="grid">
+        <div class="field">
+          <label for="{{ form.prenom.id_for_label }}">{% trans "Prénom" %}</label>
+          {{ form.prenom }}
+          {{ form.prenom.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.nom.id_for_label }}">{% trans "Nom" %}</label>
+          {{ form.nom }}
+          {{ form.nom.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.telephone.id_for_label }}">{% trans "Téléphone" %}</label>
+          {{ form.telephone }}
+          {{ form.telephone.errors }}
+        </div>
+        <div class="field field--full">
+          <label for="{{ form.adresse.id_for_label }}">{% trans "Adresse" %}</label>
+          {{ form.adresse }}
+          {{ form.adresse.errors }}
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="field checkbox">
+        <label>
+          {{ form.interesse_circuit }} <span>{% trans "Je suis intéressé par un circuit" %}</span>
+        </label>
+        {{ form.interesse_circuit.errors }}
+      </div>
+
+      <div id="bloc-circuit" class="grid" hidden>
+        <div class="field">
+          <label for="{{ form.statut_circuit.id_for_label }}">{% trans "Statut" %}</label>
+          {{ form.statut_circuit }}
+          {{ form.statut_circuit.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.circuit.id_for_label }}">{% trans "Circuit" %}</label>
+          {{ form.circuit }}
+          {{ form.circuit.errors }}
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="{{ form.type_demande.id_for_label }}">{% trans "Type de demande" %}</label>
+          {{ form.type_demande }}
+          {{ form.type_demande.errors }}
+        </div>
+      </div>
+
+      <div class="field field--full">
+        <label for="{{ form.message.id_for_label }}">{% trans "Message" %}</label>
+        {{ form.message }}
+        {{ form.message.errors }}
+      </div>
+
+      <div class="field checkbox">
+        <label>
+          {{ form.consent }} <span>{% trans "J’accepte d’être contacté par Pulsion Horizon." %}</span>
+        </label>
+        {{ form.consent.errors }}
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit">{% trans "Envoyer" %}</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+/* ——— styles scoped minimal ——— */
+.contact-hero{padding:3rem 0;background:linear-gradient(135deg,#0ea5e9, #6366f1);color:#fff}
+.contact-hero .wrap{max-width:960px;margin:0 auto;padding:0 1rem}
+.contact-form-section .wrap{max-width:960px;margin:2rem auto;padding:0 1rem}
+.card{background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:1.25rem}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.field--full{grid-column:1/-1}
+.field label{display:block;font-weight:600;margin-bottom:.35rem}
+.field input, .field textarea, .field select{
+  width:100%;border:1px solid #e5e7eb;border-radius:.75rem;padding:.65rem .85rem;font-size:1rem
+}
+.checkbox label{display:flex;gap:.5rem;align-items:center}
+.actions{margin-top:1rem}
+.btn{display:inline-flex;align-items:center;gap:.5rem;background:#2563eb;color:#fff;border:none;border-radius:.75rem;padding:.7rem 1rem;font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.05)}
+.flash-item{padding:.75rem 1rem;border-radius:.75rem;margin-bottom:.5rem}
+.flash-item.success{background:#ecfdf5;color:#065f46}
+.flash-item.error{background:#fef2f2;color:#991b1b}
+@media (max-width:720px){ .grid{grid-template-columns:1fr} }
+</style>
+
+<script>
+(function(){
+  const interesse = document.getElementById("id_interesse_circuit");
+  const bloc = document.getElementById("bloc-circuit");
+  const selectStatut = document.getElementById("id_statut_circuit");
+  const selectCircuit = document.getElementById("id_circuit");
+
+  function toggleBloc(){
+    const show = interesse.checked;
+    bloc.hidden = !show;
+    if(!show){
+      selectStatut.value = "";
+      selectCircuit.innerHTML = "";
+    }
+  }
+
+  async function loadCircuitsForStatut(){
+    const statut = selectStatut.value;
+    selectCircuit.innerHTML = "";
+    if(!statut) return;
+    try{
+      const resp = await fetch("{% url 'api_circuits_by_statut' %}?statut=" + encodeURIComponent(statut));
+      const data = await resp.json();
+      const results = data.results || [];
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "— {{ _('Choisir') }} —";
+      selectCircuit.appendChild(placeholder);
+      results.forEach(c => {
+        const opt = document.createElement("option");
+        const dates = (c.date_debut && c.date_fin) ? ` (${new Date(c.date_debut).toLocaleDateString()} → ${new Date(c.date_fin).toLocaleDateString()})` : "";
+        opt.value = c.id;
+        opt.textContent = `${c.code} — ${c.nom}${dates}`;
+        selectCircuit.appendChild(opt);
+      });
+    }catch(e){
+      // silencieux
+    }
+  }
+
+  if(interesse){ 
+    toggleBloc();
+    interesse.addEventListener("change", toggleBloc);
+  }
+  if(selectStatut){
+    selectStatut.addEventListener("change", loadCircuitsForStatut);
+  }
+})();
+</script>
+{% endblock %}

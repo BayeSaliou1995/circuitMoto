@@ -1,0 +1,746 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block content %}
+
+<div class="emailing-container">
+  <!-- En-tête avec design amélioré -->
+  <div class="emailing-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Envoi d'email groupé
+      </h1>
+      <p class="subtitle">Envoyez des communications ciblées à vos participants</p>
+    </div>
+  </div>
+
+  <!-- Formulaire avec design moderne -->
+  <form method="post" enctype="multipart/form-data" class="emailing-form">
+    {% csrf_token %}
+
+    <!-- Section de filtrage -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Filtres de destinataires
+      </h3>
+      
+      <div class="filter-grid">
+        <div class="form-group">
+          <label class="form-label">{{ form.circuit.label }}</label>
+          <div class="select-wrapper">
+            {{ form.circuit }}
+            <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          {{ form.circuit.errors }}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">{{ form.statut.label }}</label>
+          <div class="select-wrapper">
+            {{ form.statut }}
+            <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          {{ form.statut.errors }}
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.inclure_passagers }}
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">{{ form.inclure_passagers.label }}</span>
+          </label>
+          {{ form.inclure_passagers.errors }}
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.test_only }}
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">{{ form.test_only.label }}</span>
+          </label>
+          {{ form.test_only.errors }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Section du message -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        Contenu de l'email
+      </h3>
+
+      <div class="form-group">
+        <label class="form-label required">{{ form.sujet.label }}</label>
+        {{ form.sujet }}
+        {{ form.sujet.errors }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required">{{ form.message.label }}</label>
+        <div class="editor-container">
+          {{ form.message }}
+          <div class="editor-toolbar">
+            <small class="editor-tip">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              HTML accepté - Conversion automatique en texte brut
+            </small>
+          </div>
+        </div>
+        {{ form.message.errors }}
+      </div>
+    </div>
+
+    <!-- Section des pièces jointes -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+        </svg>
+        Pièces jointes
+      </h3>
+
+      <div class="form-group">
+        <label class="form-label">{{ form.pieces_jointes.label }}</label>
+        
+        <div class="file-upload-area" id="fileUploadArea">
+          <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p class="upload-text">Glissez-déposez vos fichiers ici ou</p>
+          <label class="upload-button">
+            {{ form.pieces_jointes }}
+            <span>Parcourir les fichiers</span>
+          </label>
+          {% if form.pieces_jointes.help_text %}
+            <small class="upload-help">{{ form.pieces_jointes.help_text }}</small>
+          {% endif %}
+        </div>
+        
+        <ul id="filesPreview" class="file-list"></ul>
+        {{ form.pieces_jointes.errors }}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <a class="btn btn-secondary" href="{% url 'bo_dashboard' %}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Annuler
+      </a>
+      <button class="btn btn-primary" type="submit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+        Envoyer l'email
+      </button>
+    </div>
+  </form>
+</div>
+
+<style>
+  :root {
+    --primary: #4361ee;
+    --primary-light: rgba(67, 97, 238, 0.1);
+    --primary-dark: #3a56d4;
+    --secondary: #8b5cf6;
+    --accent: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --text-lighter: #b2bec3;
+    --bg: #ffffff;
+    --bg-card: #ffffff;
+    --border: #dfe6e9;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  [data-theme="dark"] {
+    --primary: #5e72e4;
+    --primary-light: rgba(94, 114, 228, 0.15);
+    --primary-dark: #4d5fd0;
+    --secondary: #a78bfa;
+    --text: #edf2f7;
+    --text-light: #a0aec0;
+    --text-lighter: #718096;
+    --bg: #1a202c;
+    --bg-card: #2d3748;
+    --border: #4a5563;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Layout */
+  .emailing-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .emailing-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    color: var(--text-light);
+    margin: 0.5rem 0 0;
+    font-size: 1.1rem;
+  }
+
+  /* Formulaire */
+  .emailing-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .form-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+  }
+
+  .form-section:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* Grille de filtres */
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* Groupes de formulaire */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .form-label.required::after {
+    content: " *";
+    color: var(--danger);
+  }
+
+  /* Champs de formulaire */
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="time"],
+  input[type="week"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+    font-family: inherit;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  }
+
+  /* Select personnalisé */
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-light);
+  }
+
+  select {
+    appearance: none;
+    background-image: none;
+  }
+
+  /* Checkboxes personnalisées */
+  .checkbox-group {
+    margin-top: 1rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+
+  .checkbox-label:hover {
+    color: var(--primary);
+  }
+
+  .checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    position: relative;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  input[type="checkbox"]:checked + .checkbox-custom {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+
+  input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 2px;
+  }
+
+  .checkbox-text {
+    flex: 1;
+  }
+
+  /* Éditeur de message */
+  .editor-container {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: var(--transition);
+  }
+
+  .editor-container:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  }
+
+  textarea {
+    border: none;
+    resize: vertical;
+    min-height: 200px;
+    padding: 1rem;
+  }
+
+  .editor-toolbar {
+    padding: 0.75rem 1rem;
+    background: var(--secondary);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .editor-tip {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Upload de fichiers */
+  .file-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .file-upload-area:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .file-upload-area.dragover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    transform: scale(1.02);
+  }
+
+  .upload-icon {
+    margin: 0 auto 1rem;
+    color: var(--text-light);
+  }
+
+  .upload-text {
+    margin: 0 0 1rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .upload-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .upload-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  .upload-button input[type="file"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .upload-help {
+    display: block;
+    margin-top: 1rem;
+    color: var(--text-light);
+    font-size: 0.85rem;
+  }
+
+  /* Liste des fichiers */
+  .file-list {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .file-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .file-list li::before {
+    content: "📎";
+    font-size: 1.1rem;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Actions */
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  /* Erreurs */
+  .errorlist {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--danger);
+    font-size: 0.9rem;
+  }
+
+  .errorlist li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .errorlist li::before {
+    content: "⚠️";
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .emailing-container {
+      padding: 1.5rem;
+    }
+    
+    .header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+    }
+    
+    .filter-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-section {
+      padding: 1.5rem;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .emailing-container {
+      padding: 1rem;
+    }
+    
+    .page-title {
+      font-size: 1.5rem;
+    }
+    
+    .form-section {
+      padding: 1rem;
+    }
+    
+    .file-upload-area {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Drag and drop pour les fichiers
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = fileUploadArea.querySelector('input[type="file"]');
+    
+    if (fileUploadArea && fileInput) {
+      // Prévention du comportement par défaut
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileUploadArea.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      // Highlight drop area
+      ['dragenter', 'dragover'].forEach(eventName => {
+        fileUploadArea.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        fileUploadArea.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        fileUploadArea.classList.add('dragover');
+      }
+      
+      function unhighlight() {
+        fileUploadArea.classList.remove('dragover');
+      }
+      
+      // Handle drop
+      fileUploadArea.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        
+        // Déclencher l'événement change manuellement
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+      }
+    }
+    
+    // Prévisualisation des fichiers
+    const fileList = document.getElementById('filesPreview');
+    
+    if (fileInput && fileList) {
+      fileInput.addEventListener('change', function() {
+        fileList.innerHTML = '';
+        
+        const formatFileSize = (bytes) => {
+          if (bytes === 0) return '0 octets';
+          const k = 1024;
+          const sizes = ['octets', 'Ko', 'Mo', 'Go'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        };
+        
+        Array.from(this.files).forEach(file => {
+          const li = document.createElement('li');
+          li.textContent = `${file.name} (${formatFileSize(file.size)})`;
+          fileList.appendChild(li);
+        });
+      });
+    }
+    
+    // Animation pour les sections
+    const formSections = document.querySelectorAll('.form-section');
+    
+    formSections.forEach((section, index) => {
+      section.style.animationDelay = `${index * 100}ms`;
+      section.style.animation = 'slideIn 0.6s ease-out forwards';
+      section.style.opacity = '0';
+    });
+  });
+</script>
+
+{% endblock %}

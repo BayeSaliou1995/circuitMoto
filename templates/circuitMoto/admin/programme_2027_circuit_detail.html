@@ -1,0 +1,212 @@
+{# templates/circuitMoto/admin/programme_2027_circuit_detail.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static version_static %}
+
+{% block title %}Intéressés {{ circuit.titre }} | Back-office{% endblock %}
+{% block body_class %}bo-dashboard-page{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/balades_bo.css' %}">
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/admin/css/programme_2027_bo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bo-dashboard">
+  <section class="bo-hero reveal">
+    <div class="bo-hero__content">
+      <div class="bo-kicker">Pré Programme 2027</div>
+      <h1 class="bo-hero__title">{{ circuit.titre }}</h1>
+      <p class="bo-hero__text">
+        {{ circuit.mois }} · {{ circuit.duree }} · {{ circuit.formule }}
+      </p>
+
+      <div class="bo-hero__chips">
+        <span class="hero-chip">{{ stats.total }} intéressé{{ stats.total|pluralize }}</span>
+        <span class="hero-chip">{{ stats.emails_uniques }} email{{ stats.emails_uniques|pluralize }} unique{{ stats.emails_uniques|pluralize }}</span>
+        <span class="hero-chip">{{ stats.non_traites }} à traiter</span>
+        <span class="hero-chip">{{ stats.prets }} prêts à réserver</span>
+      </div>
+    </div>
+
+    <div class="bo-hero__side">
+      <div class="hero-panel">
+        <div class="hero-panel__label">Très intéressés</div>
+        <div class="hero-panel__value">{{ stats.tres_interesses }}</div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel__label">Traités</div>
+        <div class="hero-panel__value">{{ stats.traites }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel reveal">
+    <div class="section-head section-head--space">
+      <div>
+        <h2>Clients intéressés par ce circuit</h2>
+        <p>Coordonnées complètes, préférences, niveau d'intérêt et message du client.</p>
+      </div>
+      <a href="{% url 'bo_programme_2027_by_circuit' %}" class="btn btn-outline-secondary">
+        ← Retour aux circuits
+      </a>
+    </div>
+
+    <div class="p27bo-summary-strip">
+      <div><span>Curieux</span><strong>{{ stats.curieux }}</strong></div>
+      <div><span>Intéressés</span><strong>{{ stats.interesses }}</strong></div>
+      <div><span>Très intéressés</span><strong>{{ stats.tres_interesses }}</strong></div>
+      <div><span>Prêts à réserver</span><strong>{{ stats.prets }}</strong></div>
+    </div>
+
+    <form method="get" class="bo-filters">
+      <div class="bo-filters__grid">
+        <div class="field">
+          <label>Recherche</label>
+          <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Nom, email, téléphone, ville, commentaire...">
+        </div>
+
+        <div class="field">
+          <label>Statut</label>
+          <select name="traite" class="form-control">
+            <option value="" {% if not traite %}selected{% endif %}>Tous</option>
+            <option value="0" {% if traite == "0" %}selected{% endif %}>À traiter</option>
+            <option value="1" {% if traite == "1" %}selected{% endif %}>Traités</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Niveau</label>
+          <select name="niveau" class="form-control">
+            <option value="">Tous</option>
+            {% for value,label in niveau_choices %}
+              <option value="{{ value }}" {% if niveau == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Trier par</label>
+          <select name="sort" class="form-control">
+            <option value="-date" {% if sort == "-date" %}selected{% endif %}>Plus récents</option>
+            <option value="date" {% if sort == "date" %}selected{% endif %}>Plus anciens</option>
+            <option value="nom" {% if sort == "nom" %}selected{% endif %}>Nom A à Z</option>
+            <option value="-nom" {% if sort == "-nom" %}selected{% endif %}>Nom Z à A</option>
+            <option value="email" {% if sort == "email" %}selected{% endif %}>Email A à Z</option>
+            <option value="-email" {% if sort == "-email" %}selected{% endif %}>Email Z à A</option>
+            <option value="niveau" {% if sort == "niveau" %}selected{% endif %}>Niveau A à Z</option>
+            <option value="-niveau" {% if sort == "-niveau" %}selected{% endif %}>Niveau Z à A</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bo-filters__actions">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="{% url 'bo_programme_2027_circuit_detail' circuit.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      </div>
+    </form>
+
+    {% if page_obj.object_list %}
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="bulk-actions">
+          <select name="action" class="form-control bulk-actions__select">
+            <option value="">Action groupée</option>
+            <option value="mark_done">Marquer comme traités</option>
+            <option value="mark_undone">Remettre en non traités</option>
+          </select>
+          <button type="submit" class="btn btn-primary">Appliquer</button>
+        </div>
+
+        <div class="p27bo-list">
+          {% for s in page_obj.object_list %}
+            {% with d=s.demande %}
+              <article class="p27bo-card p27bo-card--detail">
+                <div class="p27bo-card__head">
+                  <label class="check-row">
+                    <input type="checkbox" name="ids" value="{{ s.id }}">
+                    <span>Sélectionner</span>
+                  </label>
+                  <div class="p27bo-card__badges">
+                    <span class="status-pill p27bo-level">{{ s.get_niveau_interet_display }}</span>
+                    <span class="status-pill {% if d.traite %}is-success{% else %}is-warning{% endif %}">
+                      {% if d.traite %}Traité{% else %}À traiter{% endif %}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="p27bo-detail-grid">
+                  <div class="p27bo-profile">
+                    <h3>{{ d.prenom }} {{ d.nom }}</h3>
+                    <p class="muted">{{ d.cree_le|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Email :</strong> {{ d.email }}</p>
+                    {% if d.telephone %}<p><strong>Téléphone :</strong> {{ d.telephone }}</p>{% endif %}
+                    {% if d.adresse or d.code_postal or d.localite or d.pays %}
+                      <p>
+                        <strong>Adresse :</strong>
+                        {{ d.adresse }}
+                        {% if d.code_postal %} {{ d.code_postal }}{% endif %}
+                        {% if d.localite %} {{ d.localite }}{% endif %}
+                        {% if d.pays %} {{ d.pays }}{% endif %}
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <div class="p27bo-profile">
+                    <h4>Préférences</h4>
+                    <p><strong>Participants prévus :</strong> {{ d.participants_previsionnels }}</p>
+                    <p><strong>Participants pour ce circuit :</strong> {{ s.participants }}</p>
+                    <p><strong>Décision :</strong> {{ d.get_delai_decision_display }}</p>
+                    <p><strong>Véhicule :</strong> {{ d.vehicule|default:"Non renseigné" }}</p>
+                    <p><strong>Profil :</strong> {{ d.profil|default:"Non renseigné" }}</p>
+                    {% if s.mode_prefere %}<p><strong>Mode préféré :</strong> {{ s.mode_prefere }}</p>{% endif %}
+                  </div>
+                </div>
+
+                {% if s.commentaire %}
+                  <div class="p27bo-section">
+                    <div class="demande-card__label">Précision sur ce circuit</div>
+                    <div class="demande-card__comment">{{ s.commentaire|linebreaksbr }}</div>
+                  </div>
+                {% endif %}
+
+                {% if d.commentaire %}
+                  <div class="p27bo-section">
+                    <div class="demande-card__label">Message général</div>
+                    <div class="demande-card__comment">{{ d.commentaire|linebreaksbr }}</div>
+                  </div>
+                {% endif %}
+              </article>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      </form>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination-wrap" aria-label="Pagination">
+          <div class="pagination">
+            {% if page_obj.has_previous %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.previous_page_number }}" class="page-link">←</a>
+            {% endif %}
+            <span class="page-current">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+              <a href="?{% if qs_no_page %}{{ qs_no_page }}&{% endif %}page={{ page_obj.next_page_number }}" class="page-link">→</a>
+            {% endif %}
+          </div>
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <p>Aucun intéressé trouvé pour ce circuit.</p>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/admin/js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% block title %}Utilisateur créé — Pulsion{% endblock %}
+{% block content %}
+<header class="wizard-head">
+  <h1 class="page-title">Utilisateur créé</h1>
+</header>
+
+<div class="container">
+  <div class="form-step">
+    <p>Remets ce mot de passe provisoire à <b>{{ user_obj.get_full_name|default:user_obj.username }}</b>.
+      À sa première connexion, il devra le changer.</p>
+
+    <div class="card" style="display:flex; gap:.75rem; align-items:center; justify-content:space-between;">
+      <code id="tmpPwd" style="font-weight:800; font-size:1.15rem">{{ tmp_pwd }}</code>
+      <button class="btn btn-secondary btn-sm" type="button" id="copyBtn">Copier</button>
+    </div>
+
+    <div class="actions" style="justify-content:flex-end">
+      <a class="btn btn-primary" href="{% url 'bo_dashboard' %}">Terminer</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('copyBtn')?.addEventListener('click', async () => {
+  const t = document.getElementById('tmpPwd')?.innerText || '';
+  try { await navigator.clipboard.writeText(t); } catch(e){}
+});
+</script>
+{% endblock %}

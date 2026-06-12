@@ -1,0 +1,178 @@
+/* static/circuitMoto/admin/css/backup-modal.css */
+
+.backup-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+.backup-modal.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.backup-modal__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, .68);
+  backdrop-filter: blur(8px);
+}
+
+.backup-modal__dialog{
+  position: relative;
+  width: min(100%, 560px);
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.98));
+  color: #0f172a;
+  border: 1px solid rgba(148,163,184,.22);
+  border-radius: 24px;
+  box-shadow: 0 30px 80px rgba(15,23,42,.28);
+  padding: 1.4rem 1.4rem 1.2rem;
+  transform: translateY(16px) scale(.98);
+  transition: transform .25s ease, opacity .25s ease;
+  opacity: 0;
+}
+
+.backup-modal.is-open .backup-modal__dialog{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.backup-modal__close{
+  position: absolute;
+  top: .8rem;
+  right: .8rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15,23,42,.06);
+  color: #0f172a;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.backup-modal__close:hover{
+  background: rgba(15,23,42,.10);
+  transform: scale(1.04);
+}
+
+.backup-modal__icon{
+  width: 3.4rem;
+  height: 3.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff;
+  box-shadow: 0 16px 34px rgba(37,99,235,.24);
+  margin-bottom: 1rem;
+}
+
+.backup-modal__title{
+  margin: 0 0 .65rem;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -.02em;
+}
+
+.backup-modal__text{
+  margin: 0 0 1rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.backup-modal__list{
+  margin: 0 0 1rem 1rem;
+  padding: 0;
+  color: #0f172a;
+  display: grid;
+  gap: .45rem;
+}
+
+.backup-modal__warning{
+  border: 1px solid rgba(245,158,11,.24);
+  background: rgba(245,158,11,.08);
+  color: #92400e;
+  border-radius: 14px;
+  padding: .85rem 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.55;
+  font-size: .94rem;
+}
+
+.backup-modal__actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+.backup-btn{
+  appearance: none;
+  border: 0;
+  border-radius: 14px;
+  padding: .9rem 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.backup-btn:hover{
+  transform: translateY(-1px);
+}
+
+.backup-btn--ghost{
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.backup-btn--ghost:hover{
+  background: #cbd5e1;
+}
+
+.backup-btn--primary{
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff;
+  box-shadow: 0 14px 32px rgba(37,99,235,.24);
+}
+
+.backup-btn--primary:hover{
+  box-shadow: 0 18px 36px rgba(37,99,235,.30);
+}
+
+.dd-item-danger,
+.mobile-link-danger{
+  color: #b91c1c !important;
+  font-weight: 700;
+}
+
+.dd-item-danger:hover,
+.mobile-link-danger:hover{
+  background: rgba(239,68,68,.08);
+}
+
+@media (max-width: 520px){
+  .backup-modal__dialog{
+    border-radius: 20px;
+    padding: 1.1rem 1rem 1rem;
+  }
+
+  .backup-modal__title{
+    font-size: 1.15rem;
+  }
+
+  .backup-modal__actions{
+    flex-direction: column-reverse;
+  }
+
+  .backup-btn{
+    width: 100%;
+  }
+}

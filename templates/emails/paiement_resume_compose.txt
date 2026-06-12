@@ -1,0 +1,87 @@
+Bonjour {{ dest_name }},
+
+{% if intro_message %}
+{{ intro_message }}
+{% else %}
+{% if is_reminder %}
+Nous vous rappelons qu’un montant reste à régler pour votre inscription.
+{% else %}
+Nous vous confirmons la bonne réception de votre paiement.
+{% endif %}
+{% endif %}
+
+{% if is_reminder %}
+Type de message :
+- Rappel de paiement
+{% else %}
+Type de message :
+- Confirmation de paiement
+{% endif %}
+
+Circuit :
+- {{ circuit.nom }}
+- Code : {{ circuit.code }}
+- Dates : {{ circuit.date_debut|date:"d/m/Y" }} → {{ circuit.date_fin|date:"d/m/Y" }}
+
+{% if has_sent_acompte1 or has_sent_acompte2 or has_sent_solde or has_sent_options %}
+Paiement bien reçu :
+{% if has_sent_acompte1 %}
+- Acompte 1 reçu : {{ sent_acompte1_amount }} {{ ins.devise }}
+{% endif %}
+{% if has_sent_acompte2 %}
+- Acompte 2 reçu : {{ sent_acompte2_amount }} {{ ins.devise }}
+{% endif %}
+{% if has_sent_solde %}
+- Solde reçu : {{ sent_solde_amount }} {{ ins.devise }}
+{% endif %}
+{% if has_sent_options %}
+- Paiement reçu pour les nouvelles options : {{ sent_options_amount }} {{ ins.devise }}
+{% endif %}
+{% endif %}
+
+Situation actuelle :
+- Total initial : {{ total_attendu_initial|default:total_attendu }} {{ ins.devise }}
+
+{% if montant_options_ajoutees and montant_options_ajoutees > 0 %}
+- Options ajoutées : {{ montant_options_ajoutees }} {{ ins.devise }}
+- Nouveau total attendu : {{ nouveau_total_attendu }} {{ ins.devise }}
+{% else %}
+- Total attendu : {{ total_attendu|default:total_attendu_initial }} {{ ins.devise }}
+{% endif %}
+
+- Total déjà payé : {{ total_paye }} {{ ins.devise }}
+
+{% if reste_a_payer and reste_a_payer > 0 %}
+- Reste à payer : {{ reste_a_payer }} {{ ins.devise }}
+{% endif %}
+
+{% if trop_percu and trop_percu > 0 %}
+- Trop-perçu : {{ trop_percu }} {{ ins.devise }}
+{% endif %}
+
+{% if situation_label %}
+- Situation : {{ situation_label }}
+{% endif %}
+
+{% if payment_rows %}
+Détail des paiements enregistrés :
+{% for row in payment_rows %}
+- {{ row.libelle }} | attendu : {{ row.attendu }} {{ ins.devise }} | encaissé : {{ row.encaisse }} {{ ins.devise }} | date : {{ row.date|date:"d/m/Y"|default:"—" }} | statut : {{ row.statut }}
+{% endfor %}
+{% endif %}
+
+{% if note_client %}
+Note complémentaire :
+{{ note_client }}
+{% endif %}
+
+{% if has_infos_paiement %}
+Informations de paiement :
+{{ infos_paiement }}
+{% endif %}
+
+Lien utile :
+{{ edit_url }}
+
+Bien cordialement,
+L’équipe Pulsion Horizon

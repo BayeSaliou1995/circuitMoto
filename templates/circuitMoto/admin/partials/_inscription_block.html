@@ -1,0 +1,323 @@
+{# templates/circuitMoto/admin/partials/_inscription_block.html #}
+{# Reçoit: ins, role #}
+<article class="ins-card" data-ins-id="{{ ins.id }}">
+  <header class="section-title ins-head">
+    <h3 class="ins-title">
+      {{ ins.circuit.nom }} <span class="muted">({{ ins.circuit.code }})</span>
+      · {{ ins.circuit.date_debut|date:"d/m/Y" }} → {{ ins.circuit.date_fin|date:"d/m/Y" }}
+    </h3>
+
+    <div class="chips">
+      <span class="chip">{{ role }}</span>
+      <span class="chip" data-col="ins-statut">{{ ins.get_statut_display }}</span>
+      <span class="chip">Devise: {{ ins.devise }}</span>
+      <span class="chip">Total estimé: {{ ins.total_attendu }} {{ ins.devise }}</span>
+    </div>
+  </header>
+
+  <div class="kv">
+    <div><strong>Pilote</strong></div>
+    <div>{{ ins.pilote.nom|upper }} {{ ins.pilote.prenom }}</div>
+
+    <div><strong>Passager</strong></div>
+    <div>{% if ins.passager %}{{ ins.passager.nom|upper }} {{ ins.passager.prenom }}{% else %}—{% endif %}</div>
+
+    <div><strong>Tarifs figés</strong></div>
+    <div>
+      Pilote: {{ ins.prix_pilote_unitaire }} {{ ins.devise }}
+      {% if ins.passager_id %} · Passager: {{ ins.prix_passager_unitaire }} {{ ins.devise }}{% endif %}
+      · Base: {{ ins.total_base }} {{ ins.devise }}
+    </div>
+
+    <div><strong>Option posée</strong></div>
+    <div>{{ ins.date_option|date:"d/m/Y" }} (expire: {{ ins.option_expire_le|date:"d/m/Y"|default:"—" }})</div>
+
+    <div><strong>Notes</strong></div>
+    <div>{{ ins.notes|default:"—" }}</div>
+  </div>
+
+  <h4 class="ins-subtitle">Options sélectionnées</h4>
+  <div class="responsive-table">
+    <table class="table">
+      <thead>
+        <tr><th>Option</th><th>Pour</th><th>Qté</th><th>PU figé</th><th>Total</th></tr>
+      </thead>
+      <tbody>
+        {% for sel in ins.selections_options.all %}
+          <tr>
+            <td data-th="Option">{{ sel.option.intitule }}</td>
+            <td data-th="Pour">
+              {% if sel.option.facture_par_personne %}
+                {% if sel.pour_passager %}Passager{% else %}Pilote{% endif %}
+              {% else %}—{% endif %}
+            </td>
+            <td data-th="Qté">{{ sel.quantite }}</td>
+            <td data-th="PU figé">{{ sel.prix_unitaire_fige }} {{ ins.devise }}</td>
+            <td data-th="Total">{{ sel.prix_total }} {{ ins.devise }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="muted">— Aucune option —</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h4 class="ins-subtitle">Assurance</h4>
+  {% if ins.assurance %}
+    <dl class="def def-grid">
+      <div><dt>Type</dt><dd>{{ ins.assurance.get_type_display }}</dd></div>
+      <div><dt>Compagnie</dt><dd>{{ ins.assurance.compagnie|default:"—" }}</dd></div>
+      <div><dt>N° police</dt><dd>{{ ins.assurance.numero_police|default:"—" }}</dd></div>
+      <div><dt>Période</dt><dd>
+        {% if ins.assurance.valide_du %}{{ ins.assurance.valide_du|date:"d/m/Y" }}{% else %}—{% endif %}
+        → {% if ins.assurance.valide_au %}{{ ins.assurance.valide_au|date:"d/m/Y" }}{% else %}—{% endif %}
+      </dd></div>
+
+      <div>
+        <dt>Tél. d’urgence</dt>
+        <dd>
+          <span data-col="tel-urgence">
+            {% if ins.assurance.telephone_urgence %}{{ ins.assurance.telephone_urgence }}{% else %}—{% endif %}
+          </span>
+          <form class="js-ajax-form" method="post" action="{% url 'bo_personne_detail' personne.id %}" style="display:inline-flex; gap:.4rem; margin-left:.6rem;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="assurance_set_tel_urgence">
+            <input type="hidden" name="ins_id" value="{{ ins.id }}">
+            <input type="tel" name="telephone_urgence"
+                   value="{{ ins.assurance.telephone_urgence|default_if_none:'' }}"
+                   placeholder="+33 6 12 34 56 78"
+                   style="max-width:220px;">
+            <button type="submit" class="btn btn-secondary btn-xs">Enregistrer</button>
+          </form>
+        </dd>
+      </div>
+    </dl>
+  {% else %}
+    <p class="muted">— Non saisi —</p>
+  {% endif %}
+
+  <h4 class="ins-subtitle">Documents</h4>
+  <div class="responsive-table">
+    <table class="table" aria-label="Documents justificatifs">
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">Fichier</th>
+          <th scope="col">Statut</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in ins.documents.all %}
+          <tr data-doc-id="{{ d.id }}">
+            <td data-th="Type">{{ d.get_type_document_display }}</td>
+            <td data-th="Fichier">
+              {% if d.fichier %}
+                <a href="{{ d.fichier.url }}" target="_blank" class="badge">Ouvrir</a>
+              {% else %}—{% endif %}
+            </td>
+            <td data-th="Statut" data-col="statut">{{ d.get_statut_display }}</td>
+            <td data-th="Actions">
+              <form class="js-ajax-form stack-actions" method="post" action="{% url 'bo_personne_detail' personne.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="doc_id" value="{{ d.id }}">
+                <button type="submit" name="action" value="doc_validate" class="btn btn-primary btn-xs">Valider</button>
+                <button type="submit" name="action" value="doc_reset" class="btn btn-secondary btn-xs">Réinit.</button>
+                <button type="submit" name="action" value="doc_refuse" class="btn btn-danger btn-xs">Refuser</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="muted">— Aucun document —</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h4 class="ins-subtitle">Acceptation des conditions</h4>
+  {% if ins.decharge %}
+    <div class="accept-block">
+      <div class="accept-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M20 6L9 17l-5-5"></path>
+        </svg>
+        Acceptée le {{ ins.decharge.signee_le|date:"d/m/Y H:i" }}
+        — Version&nbsp;: {{ ins.decharge.version_texte }}
+      </div>
+
+      <dl class="def def-grid">
+        <div><dt>Signataire</dt><dd>{{ ins.decharge.nom_signataire }} — {{ ins.decharge.email_signataire }}</dd></div>
+        <div><dt>Preuve PDF</dt>
+          <dd>
+            {% if ins.decharge.preuve_pdf %}
+              <a class="badge" target="_blank" href="{{ ins.decharge.preuve_pdf.url }}">Télécharger</a>
+            {% else %}—{% endif %}
+          </dd>
+        </div>
+      </dl>
+
+      <div class="signature-wrap">
+        <div class="signature-title">Signature du signataire</div>
+        {% if ins.decharge.signature_image %}
+          <figure class="signature">
+            <img src="{{ ins.decharge.signature_image.url }}" alt="Signature de {{ ins.decharge.nom_signataire }}">
+            <figcaption>{{ ins.decharge.nom_signataire }}</figcaption>
+          </figure>
+        {% else %}
+          <p class="muted">— Signature non fournie —</p>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <p class="muted">— Non signée —</p>
+  {% endif %}
+
+  <h4 class="ins-subtitle">Échéancier & encaissements</h4>
+
+  <div class="payment-summary-card payment-summary-card--{{ ins.payment_state }}" data-payment-summary="{{ ins.id }}">
+    <div class="payment-summary-item">
+      <span class="label">Total attendu</span>
+      <strong data-col="total-attendu">{{ ins.total_attendu }} {{ ins.devise }}</strong>
+    </div>
+
+    <div class="payment-summary-item">
+      <span class="label">Déjà payé</span>
+      <strong data-col="total-paye">{{ ins.total_paye }} {{ ins.devise }}</strong>
+    </div>
+
+    {% if ins.options_added and ins.options_added > 0 %}
+      <div class="payment-summary-item warning" data-col="options-added-box">
+        <span class="label">Options ajoutées</span>
+        <strong data-col="options-added-value">{{ ins.options_added }} {{ ins.devise }}</strong>
+      </div>
+    {% else %}
+      <div class="payment-summary-item warning" data-col="options-added-box" hidden>
+        <span class="label">Options ajoutées</span>
+        <strong data-col="options-added-value">0 {{ ins.devise }}</strong>
+      </div>
+    {% endif %}
+
+    {% if ins.payment_state == "reste" %}
+      <div class="payment-summary-item highlight warning" data-col="payment-status-box">
+        <span class="label">Reste à payer</span>
+        <strong data-col="reste-a-payer">{{ ins.reste_a_payer }} {{ ins.devise }}</strong>
+      </div>
+    {% elif ins.payment_state == "trop_percu" %}
+      <div class="payment-summary-item highlight success" data-col="payment-status-box">
+        <span class="label">Trop-perçu</span>
+        <strong data-col="trop-percu">{{ ins.trop_percu }} {{ ins.devise }}</strong>
+      </div>
+    {% else %}
+      <div class="payment-summary-item highlight success" data-col="payment-status-box">
+        <span class="label">Situation</span>
+        <strong data-col="payment-state-label">Soldé</strong>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="responsive-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Libellé</th>
+          <th>Échéance</th>
+          <th>Attendu</th>
+          <th>Payé</th>
+          <th>Le</th>
+          <th>Méthode</th>
+          <th>Réf.</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody data-payment-table="{{ ins.id }}">
+        {% for pmt in ins.paiements_display %}
+          <tr data-payment-id="{{ pmt.id }}">
+            <td data-th="Libellé">{{ pmt.get_libelle_display }}</td>
+            <td data-th="Échéance">{{ pmt.echeance_le|date:"d/m/Y"|default:"—" }}</td>
+            <td data-th="Attendu">{{ pmt.montant_du }} {{ ins.devise }}</td>
+            <td data-th="Payé" data-col="montant-encaisse">{{ pmt.montant_encaisse }} {{ ins.devise }}</td>
+            <td data-th="Le" data-col="encaisse-le">{{ pmt.encaisse_le|date:"d/m/Y"|default:"—" }}</td>
+            <td data-th="Méthode">{{ pmt.get_methode_display|default:"—" }}</td>
+            <td data-th="Réf.">{{ pmt.reference|default:"—" }}</td>
+            <td data-th="Statut" data-col="statut">{{ pmt.get_statut_display }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="muted">— Aucun paiement enregistré —</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <details class="logs">
+    <summary class="badge">Journaux (rappels & audit)</summary>
+    <div class="logs-body">
+      <h5>Rappels</h5>
+      <ul class="list">
+        {% for jr in ins.journaux_rappel.all %}
+          <li>[{{ jr.envoye_le|date:"d/m/Y H:i" }}] {{ jr.get_type_rappel_display }} via {{ jr.get_canal_display }} → {{ jr.destinataire }} — {{ jr.extrait_message }}</li>
+        {% empty %}<li class="muted">—</li>{% endfor %}
+      </ul>
+
+      <h5>Audit</h5>
+      <ul class="list">
+        {% for ja in ins.journaux_audit.all %}
+          <li>[{{ ja.cree_le|date:"d/m/Y H:i" }}] {{ ja.action }} — {{ ja.acteur.get_full_name|default:ja.acteur.username|default:"(système)" }}</li>
+        {% empty %}<li class="muted">—</li>{% endfor %}
+      </ul>
+    </div>
+  </details>
+
+  <div class="ins-actions" data-col="ins-actions">
+
+    {% comment %} <a class="btn btn-secondary" href="{% url 'inscription_edit_start' ins.id_public %}">
+      Modifier cette inscription
+    </a> {% endcomment %}
+
+
+
+    {% if ins.statut == "OPTION" %}
+      <form class="js-ajax-form" method="post" action="{% url 'bo_personne_detail' personne.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="ins_id" value="{{ ins.id }}">
+        <button
+          class="btn btn-primary js-once"
+          name="action"
+          value="ins_validate"
+          type="submit"
+          data-loading-text="Validation..."
+          data-loading-min-ms="600">
+          Valider l'inscription
+        </button>
+      </form>
+    {% endif %}
+
+    <form class="js-payment-summary-open" method="post" action="{% url 'bo_personne_detail' personne.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="ins_payment_summary_preview">
+      <input type="hidden" name="ins_id" value="{{ ins.id }}">
+      <button
+        class="btn btn-outline-info js-once"
+        type="submit"
+        data-loading-text="Préparation..."
+        data-loading-min-ms="400">
+        Envoyer un récap paiement
+      </button>
+    </form>
+
+    {% if ins.reste_a_payer > 0 %}
+      <form class="js-payment-reminder-open" method="post" action="{% url 'bo_personne_detail' personne.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="ins_payment_reminder_preview">
+        <input type="hidden" name="ins_id" value="{{ ins.id }}">
+        <button
+          class="btn btn-outline-warning js-once"
+          type="submit"
+          data-loading-text="Préparation..."
+          data-loading-min-ms="400">
+          Envoyer un rappel de paiement
+        </button>
+      </form>
+    {% endif %}
+
+  </div>
+</article>

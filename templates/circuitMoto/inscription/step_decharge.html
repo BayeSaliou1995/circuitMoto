@@ -1,0 +1,134 @@
+{# templates/circuitMoto/inscription/step_decharge.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Décharge & conditions" %}</h2>
+    <p class="step-subtitle">
+      {% trans "Merci de lire la décharge, puis de cocher l’acceptation et de signer." %}
+    </p>
+  </div>
+
+  <form method="post" class="form-step js-decharge-form" data-sign-target="{{ form.signature_data.id_for_label }}">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    {# ===== Décharge + acceptation ===== #}
+    <section class="step-section">
+      <header class="section-head section-head-row">
+        <div>
+          <h3 class="section-title">{% trans "Veuillez lire la décharge et les CGV" %}</h3>
+          {% if circuit_selected %}
+            <p class="section-subtitle">{{ circuit_selected.nom }}</p>
+          {% endif %}
+        </div>
+      </header>
+
+      <div class="terms-scroll" aria-label="{% trans 'Texte de décharge' %}">
+        {% if decharge_html %}
+          {{ decharge_html|safe }}
+        {% else %}
+          <p class="muted">{% trans "Le contenu de la décharge n’a pas été généré. Merci de recharger la page ou de contacter le support." %}</p>
+        {% endif %}
+      </div>
+
+
+      <div class="ack-row">
+        <label class="toggle-check">
+          {{ form.accepter }}
+          <span class="toggle-ui" aria-hidden="true"></span>
+          <span class="toggle-text">{{ form.accepter.label }}</span>
+        </label>
+        {{ form.accepter.errors }}
+      </div>
+    </section>
+
+    {# ===== Signature ===== #}
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Signature électronique" %}</h3>
+        <p class="section-subtitle">
+          {% trans "Signez dans le cadre (doigt ou souris). Cliquez sur « Effacer » pour recommencer." %}
+        </p>
+      </header>
+
+      <div class="sig-card" data-signature>
+        <div class="sig-canvas-wrap">
+          <canvas id="sigPad" class="sig-canvas" aria-label="{% trans 'Zone de signature' %}"></canvas>
+        </div>
+
+        <div class="sig-actions">
+          <button type="button" class="btn btn-secondary btn-sm js-sig-clear">
+            {% trans "Effacer" %}
+          </button>
+
+          <div class="sig-hint">
+            {% trans "Astuce : tournez le téléphone en paysage pour signer plus facilement." %}
+          </div>
+        </div>
+
+        {% if existing_signature_url %}
+          <div class="sig-existing">
+            <div class="muted">{% trans "Signature enregistrée précédemment :" %}</div>
+            <img src="{{ existing_signature_url }}" alt="{% trans 'Signature enregistrée' %}" class="sig-existing-img">
+          </div>
+        {% endif %}
+      </div>
+
+      {{ form.signature_data }}
+      {{ form.signature_data.errors }}
+    </section>
+
+    {# ===== Signataire (2 champs sur une ligne) ===== #}
+    <section class="step-section">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Identité du signataire" %}</h3>
+      </header>
+
+      <div class="grid-2 grid-tight">
+        <div class="form-group">
+          <label for="{{ form.nom_signataire.id_for_label }}" class="required">{{ form.nom_signataire.label }}</label>
+          {{ form.nom_signataire }}
+          {{ form.nom_signataire.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.email_signataire.id_for_label }}" class="required">{{ form.email_signataire.label }}</label>
+          {{ form.email_signataire }}
+          {{ form.email_signataire.errors }}
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary js-submit-lock">
+        {% trans "Finaliser l'inscription" %}
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,1254 @@
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load i18n %}
+{% block content %}
+
+<main class="lookup-wrap">
+
+  <!-- Hero section améliorée -->
+  <header class="lookup-hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg-gradient"></div>
+      <div class="hero-bg-pattern"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {% trans "Accès rapide" %}
+        </div>
+        <h1 class="hero-title">
+          <span class="t1">{% trans "Déjà inscrit" %}&nbsp;?</span>
+          <span class="t2">{% trans "Retrouvez et modifiez votre inscription" %}</span>
+        </h1>
+        <p class="hero-sub">{% trans "Saisissez votre référence (UUID). Nous vous redirigeons directement vers votre dossier." %}</p>
+      </div>
+      <div class="hero-visual">
+        <div class="visual-card">
+          <div class="card-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3>Accès sécurisé</h3>
+            <p>Vos données sont protégées</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Carte principale avec design moderne -->
+  <section class="lookup-card">
+    <form id="lookup-form" class="lookup-form" autocomplete="off" novalidate>
+      <div class="form-header">
+        <h2>{% trans "Vérification d'inscription" %}</h2>
+        <p>Saisissez votre identifiant unique reçu par email</p>
+      </div>
+      
+      <div class="field-group">
+        <label class="field">
+          <span class="label">{% trans "Votre référence (UUID)" %}</span>
+          <div class="control with-icon">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none"/>
+              <path d="M7 8h10M7 12h6M7 16h8" stroke="currentColor" fill="none" stroke-linecap="round"/>
+            </svg>
+            <input id="ref" name="ref" inputmode="verbatim" autocapitalize="off" spellcheck="false"
+                   placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required>
+            <button type="button" class="paste-btn" title="Coller">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <span>{% trans "Coller" %}</span>
+            </button>
+          </div>
+          <small class="help">{% trans "Copiez/collez la référence reçue dans l'email de confirmation." %}</small>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" type="submit">
+          <span>{% trans "Ouvrir mon inscription" %}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" fill="none" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button id="scan-toggle" class="btn btn-secondary" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 7H5M21 7H19M7 3V5M17 3V5M7 21V19M17 21V19M6 10H8V14H6V10ZM6 16H8V18H6V16ZM10 10H12V12H10V10ZM10 14H12V18H10V14ZM14 10H16V14H14V10ZM14 16H16V18H14V16ZM18 10H20V14H18V10ZM18 16H20V18H18V16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>{% trans "Scanner un QR" %}</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Bloc tips amélioré -->
+    <aside class="lookup-aside">
+      <div class="aside-header">
+        <h3 class="aside-title">Où trouver ma référence&nbsp;?</h3>
+        <div class="aside-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <ul class="tips">
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Dans l'email de confirmation d'inscription.</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Sur le reçu PDF (bas de page).</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5C7 5 2.73 8.11 1 12.5C2.73 16.89 7 20 12 20C17 20 21.27 16.89 23 12.5C21.27 8.11 17 5 12 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Dans le QR code reçu (bouton <em>Scanner un QR</em>).</span>
+        </li>
+      </ul>
+
+      <details class="faq">
+        <summary>
+          <span>Je n'ai plus ma référence</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-content">
+          <p>Contactez-nous avec votre nom, prénom et la date du circuit. Nous vous renverrons votre lien d'édition.</p>
+          <div class="faq-actions">
+            <a href="{% url 'contact' %}" class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Nous contacter</span>
+            </a>
+          </div>
+        </div>
+      </details>
+    </aside>
+  </section>
+
+  <!-- Zone scanner améliorée -->
+  <section id="scan-area" class="scan-area" hidden>
+    <div class="scan-head">
+      <h3>{% trans "Scanner votre QR code" %}</h3>
+      <button id="scan-close" class="btn btn-secondary" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Fermer</span>
+      </button>
+    </div>
+    <div class="scan-video-wrap">
+      <div class="scan-frame">
+        <div class="scan-corners">
+          <div class="corner top-left"></div>
+          <div class="corner top-right"></div>
+          <div class="corner bottom-left"></div>
+          <div class="corner bottom-right"></div>
+        </div>
+        <video id="scan-video" playsinline></video>
+        <canvas id="scan-canvas" hidden></canvas>
+      </div>
+    </div>
+    <p class="scan-help">{% trans "Le QR doit contenir l'URL ou l'UUID. Lecture locale (aucune donnée envoyée)." %}</p>
+  </section>
+
+  <!-- Toast notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+</main>
+
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-light: #6366f1;
+    --primary-dark: #4338ca;
+    --secondary: #8b5cf6;
+    --secondary-light: #a78bfa;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --text: #1f2937;
+    --text-light: #6b7280;
+    --text-lighter: #9ca3af;
+    --bg: #ffffff;
+    --bg-light: #f9fafb;
+    --bg-lighter: #f3f4f6;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --radius: 12px;
+    --radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg-light);
+  }
+
+  .lookup-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hero section améliorée */
+  .lookup-hero {
+    position: relative;
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+  }
+
+  .lookup-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg-gradient {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(79, 70, 229, 0.2);
+  }
+
+  .hero-badge svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .hero-title .t1 {
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3rem);
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  .hero-title .t2 {
+    font-weight: 600;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    color: var(--text);
+    opacity: 0.9;
+    line-height: 1.3;
+  }
+
+  .hero-sub {
+    color: var(--text-light);
+    margin: 0;
+    max-width: 52ch;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .visual-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: var(--shadow-md);
+    max-width: 280px;
+    text-align: center;
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .card-content h3 {
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .card-content p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  /* Main card améliorée */
+  .lookup-card {
+    display: grid;
+    grid-template-columns: 1.3fr 0.9fr;
+    gap: 2.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lookup-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+  }
+
+  .lookup-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (max-width: 900px) {
+    .lookup-card {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .hero-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+  }
+
+  /* Form amélioré */
+  .lookup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-header h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .form-header p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 1rem;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .label {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 1.05rem;
+  }
+
+  .control.with-icon {
+    position: relative;
+  }
+
+  .control .ico {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: var(--text-light);
+    transition: color 0.2s ease;
+    z-index: 1;
+  }
+
+  .control input {
+    width: 100%;
+    padding: 1rem 5rem 1rem 2.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+  }
+
+  .control input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .control input::placeholder {
+    color: var(--text-lighter);
+  }
+
+  .paste-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    z-index: 1;
+  }
+
+  .paste-btn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  .help {
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  /* Buttons améliorés */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white;
+    border-color: transparent;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(90deg, var(--primary-dark), var(--secondary-light));
+  }
+
+  .btn-secondary {
+    background: white;
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-outline:hover {
+    background: var(--bg-light);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Aside amélioré */
+  .lookup-aside {
+    background: var(--bg-light);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    align-self: start;
+    position: relative;
+  }
+
+  .aside-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .aside-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .aside-icon {
+    color: var(--primary);
+  }
+
+  .tips {
+    margin: 0.5rem 0 1.5rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tips li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  .tips li svg {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    color: var(--primary);
+  }
+
+  .faq {
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--primary);
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary svg {
+    transition: transform 0.3s ease;
+  }
+
+  .faq[open] summary svg {
+    transform: rotate(180deg);
+  }
+
+  .faq summary:hover {
+    color: var(--secondary);
+  }
+
+  .faq-content {
+    margin-top: 0.75rem;
+  }
+
+  .faq p {
+    margin: 0 0 1rem;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  .faq-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  /* Scanner amélioré */
+  .scan-area {
+    margin: 2rem 0 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    background: var(--bg);
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .scan-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .scan-head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .scan-video-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: rgba(79, 70, 229, 0.05);
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scan-frame {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 280px;
+  }
+
+  .scan-corners {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-color: var(--primary);
+    border-style: solid;
+    border-width: 0;
+  }
+
+  .corner.top-left {
+    top: 0;
+    left: 0;
+    border-top-width: 3px;
+    border-left-width: 3px;
+    border-top-left-radius: 8px;
+  }
+
+  .corner.top-right {
+    top: 0;
+    right: 0;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-top-right-radius: 8px;
+  }
+
+  .corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-bottom-left-radius: 8px;
+  }
+
+  .corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-bottom-width: 3px;
+    border-right-width: 3px;
+    border-bottom-right-radius: 8px;
+  }
+
+  #scan-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+
+  .scan-help {
+    color: var(--text-light);
+    font-size: 0.92rem;
+    margin: 1.25rem 0 0;
+    text-align: center;
+  }
+
+  /* Toast notifications */
+  .toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 400px;
+  }
+
+  .toast {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    background: var(--bg);
+    box-shadow: var(--shadow-lg);
+    border-left: 4px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    animation: toastIn 0.3s ease-out;
+    max-width: 100%;
+  }
+
+  .toast.success {
+    border-left-color: var(--success);
+  }
+
+  .toast.error {
+    border-left-color: var(--error);
+  }
+
+  .toast.warning {
+    border-left-color: var(--warning);
+  }
+
+  .toast.info {
+    border-left-color: var(--primary);
+  }
+
+  .toast-icon {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .toast-content {
+    flex: 1;
+  }
+
+  .toast-title {
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    color: var(--text);
+  }
+
+  .toast-message {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  .toast-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .toast-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .lookup-wrap {
+      padding: 1rem 0.75rem 2rem;
+    }
+    
+    .lookup-hero {
+      padding: 2rem 1.25rem;
+    }
+    
+    .lookup-card {
+      padding: 1.75rem;
+    }
+    
+    .actions {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+    
+    .faq-actions {
+      flex-direction: column;
+    }
+    
+    .toast-container {
+      left: 0.75rem;
+      right: 0.75rem;
+      top: 0.75rem;
+    }
+  }
+
+  /* Animations supplémentaires */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Accessibilité */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Focus visible pour l'accessibilité */
+  button:focus-visible,
+  input:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  (function(){
+    // Système de notifications toast
+    function showToast(message, options = {}) {
+      const { type = 'info', title = '', duration = 5000 } = options;
+      
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        error: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 6.47715 2 12 2C16.5228 2 21 6.47715 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        warning: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 9V11M12 15H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0378 2.66667 10.268 4L3.33978 16C2.56998 17.3333 3.53223 19 5.07183 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        info: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      };
+      
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type] || icons.info}</div>
+        <div class="toast-content">
+          ${title ? `<div class="toast-title">${title}</div>` : ''}
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" aria-label="Fermer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      `;
+      
+      container.appendChild(toast);
+      
+      const closeToast = () => {
+        toast.style.animation = 'toastIn 0.3s ease-out reverse';
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+      };
+      
+      toast.querySelector('.toast-close').addEventListener('click', closeToast);
+      
+      if (duration > 0) {
+        setTimeout(closeToast, duration);
+      }
+      
+      return closeToast;
+    }
+    
+    window.showToast = showToast;
+
+    // Gestion du formulaire principal
+    const form  = document.getElementById('lookup-form');
+    const input = document.getElementById('ref');
+    const paste = document.querySelector('.paste-btn');
+
+    // UUID strict
+    const RE_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    function extractUuid(str){
+      if (!str) return "";
+      // accepte un URL contenant l'UUID
+      const m = String(str).match(/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i);
+      return m ? m[0] : "";
+    }
+
+    form?.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const raw = (input.value || "").trim();
+      const uuid = extractUuid(raw);
+      
+      if (!RE_UUID.test(uuid)){
+        // Animation d'erreur
+        input.style.animation = 'shake 0.4s ease-in-out';
+        setTimeout(() => {
+          input.style.animation = '';
+        }, 400);
+        
+        // Message d'erreur
+        showToast("Référence (UUID) invalide. Vérifiez le format.", {
+          type: "error",
+          title: "Erreur de saisie"
+        });
+        
+        input.focus();
+        return;
+      }
+      
+      // Mémorise pour confort
+      try{ localStorage.setItem("last_uuid", uuid); }catch{}
+      
+      // Animation de chargement
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalContent = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Redirection...</span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="spinner"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" stroke="currentColor" fill="none" stroke-linecap="round"/></svg>';
+      
+      // Redirection vers l'URL d'édition existante
+      setTimeout(() => {
+        window.location.href = `{% url 'inscription_edit_start' '00000000-0000-0000-0000-000000000000' %}`.replace("00000000-0000-0000-0000-000000000000", uuid);
+      }, 800);
+      
+      // En cas d'échec de redirection
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalContent;
+      }, 3000);
+    });
+
+    paste?.addEventListener('click', async ()=>{
+      if (!navigator.clipboard) {
+        showToast("Fonction de collage non supportée par votre navigateur", {
+          type: "warning",
+          title: "Action non disponible"
+        });
+        return;
+      }
+      
+      try{
+        const text = await navigator.clipboard.readText();
+        const uuid = extractUuid(text);
+        input.value = uuid || text;
+        input.focus();
+        if(uuid){ 
+          input.setSelectionRange(0, uuid.length); 
+          showToast("UUID détecté et collé", {
+            type: "success",
+            duration: 2000
+          });
+        } else {
+          showToast("Texte collé mais aucun UUID détecté", {
+            type: "info",
+            duration: 2000
+          });
+        }
+        
+        // Animation de confirmation
+        const originalContent = paste.innerHTML;
+        paste.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Collé</span>';
+        paste.style.background = 'var(--success)';
+        paste.style.color = 'white';
+        paste.style.borderColor = 'var(--success)';
+        
+        setTimeout(() => {
+          paste.innerHTML = originalContent;
+          paste.style.background = '';
+          paste.style.color = '';
+          paste.style.borderColor = '';
+        }, 1500);
+      } catch(err) {
+        showToast("Impossible de lire le presse-papier", {
+          type: "error",
+          title: "Erreur de collage"
+        });
+      }
+    });
+
+    // Pré-remplit avec le dernier UUID utilisé
+    try{
+      const last = localStorage.getItem("last_uuid");
+      if(last){ 
+        input.value = last; 
+        input.focus();
+      }
+    }catch{}
+
+    // === Scanner QR amélioré ===
+    const scanToggle = document.getElementById('scan-toggle');
+    const scanArea   = document.getElementById('scan-area');
+    const scanClose  = document.getElementById('scan-close');
+    const video      = document.getElementById('scan-video');
+    const canvas     = document.getElementById('scan-canvas');
+    let stream = null, loopId = null, detector = null;
+
+    // Vérification de la compatibilité
+    const supported = ('BarcodeDetector' in window);
+    if(!supported){ 
+      scanToggle?.setAttribute('disabled',''); 
+      scanToggle?.classList.add('disabled'); 
+      scanToggle.title = "Fonction non supportée par votre navigateur";
+      scanToggle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 6.47715 2 12 2C16.5228 2 21 6.47715 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Scanner (non supporté)</span>';
+    }
+
+    async function startScan(){
+      if(!supported) {
+        showToast("La fonction de scan QR n'est pas supportée par votre navigateur", {
+          type: "warning",
+          title: "Fonction non disponible"
+        });
+        return;
+      }
+      
+      try{
+        // Demande d'autorisation avec feedback
+        scanToggle.disabled = true;
+        scanToggle.innerHTML = '<span>Demande d\'accès...</span>';
+        
+        detector = new BarcodeDetector({ formats: ['qr_code'] });
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
+        
+        video.srcObject = stream; 
+        await video.play();
+        scanArea.hidden = false;
+        scanToggle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 6.47715 2 12 2C16.5228 2 21 6.47715 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Scanner en cours...</span>';
+
+        const ctx = canvas.getContext('2d');
+        let scanCount = 0;
+        
+        loopId = requestAnimationFrame(async function tick(){
+          if(video.readyState >= 2){
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            try{
+              const codes = await detector.detect(canvas);
+              if(codes && codes[0]?.rawValue){
+                scanCount++;
+                const uuid = extractUuid(codes[0].rawValue);
+                if(uuid){
+                  cancelAnimationFrame(loopId);
+                  stopScan();
+                  input.value = uuid;
+                  
+                  showToast("QR code détecté avec succès", {
+                    type: "success",
+                    title: "Scan réussi"
+                  });
+                  
+                  // Soumission automatique après 1s
+                  setTimeout(() => {
+                    form.dispatchEvent(new Event('submit', { cancelable: true }));
+                  }, 1000);
+                } else if (scanCount === 1) {
+                  // Premier scan mais pas d'UUID détecté
+                  showToast("QR code détecté mais aucun UUID trouvé", {
+                    type: "warning",
+                    duration: 3000
+                  });
+                }
+              }
+            }catch(err){
+              // Erreur silencieuse de détection
+            }
+          }
+          loopId = requestAnimationFrame(tick);
+        });
+      }catch(err){
+        showToast("Accès à la caméra refusé ou indisponible", {
+          type: "error",
+          title: "Erreur caméra"
+        });
+        stopScan();
+      } finally {
+        scanToggle.disabled = false;
+      }
+    }
+    
+    function stopScan(){
+      scanArea.hidden = true;
+      try{ 
+        if(stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+      }catch{}
+      if(loopId) cancelAnimationFrame(loopId);
+      scanToggle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7H5M21 7H19M7 3V5M17 3V5M7 21V19M17 21V19M6 10H8V14H6V10ZM6 16H8V18H6V16ZM10 10H12V12H10V10ZM10 14H12V18H10V14ZM14 10H16V14H14V10ZM14 16H16V18H14V16ZM18 10H20V14H18V10ZM18 16H20V18H18V16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Scanner un QR</span>';
+    }
+
+    scanToggle?.addEventListener('click', startScan);
+    scanClose?.addEventListener('click', stopScan);
+    window.addEventListener('pagehide', stopScan);
+    
+    // Animation d'entrée pour les éléments
+    document.addEventListener('DOMContentLoaded', () => {
+      const elements = document.querySelectorAll('.lookup-hero, .lookup-card, .lookup-aside');
+      elements.forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.1}s`;
+      });
+    });
+  })();
+</script>
+
+{% endblock %}

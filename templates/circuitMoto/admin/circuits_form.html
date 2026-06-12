@@ -1,0 +1,680 @@
+{# templates/circuitMoto/admin/circuits_form.html #}
+
+
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+
+{% block content %}
+
+  <div class="admin-wrap">
+    <div class="page-head">
+      <h2 class="title">{% if mode == 'edit' %}Modifier{% else %}Créer{% endif %} un circuit</h2>
+      <p class="subtitle">Renseignez les informations générales, tarifs et options associées.</p>
+    </div>
+
+    <form method="post" class="form-step" novalidate enctype="multipart/form-data">
+
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert error">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div class="card">
+        <h3 class="card-title">Informations générales</h3>
+        <div class="grid two">
+          <div class="fg">
+            <label for="{{ form.nom.id_for_label }}">Nom du circuit</label>
+            {{ form.nom }}
+            {{ form.nom.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.code.id_for_label }}">Code (slug)</label>
+            {{ form.code }}
+            <small class="help">Généré automatiquement à partir du nom si laissé vide.</small>
+            {{ form.code.errors }}
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.image.id_for_label }}">Image du circuit (optionnelle)</label>
+            {{ form.image }}
+            {{ form.image.errors }}
+
+            {% if form.instance.pk and form.instance.image %}
+              <small class="help">Image actuelle :</small>
+              <img src="{{ form.instance.image.url }}" alt=""
+                   style="max-width:260px;border-radius:14px;margin-top:10px;display:block;">
+            {% endif %}
+
+            <small class="help">JPG/PNG/WebP conseillé.</small>
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.date_debut.id_for_label }}">Date de début</label>
+            {{ form.date_debut }}
+            {{ form.date_debut.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.date_fin.id_for_label }}">Date de fin</label>
+            {{ form.date_fin }}
+            {{ form.date_fin.errors }}
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+            {{ form.description.errors }}
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.infos_rdv.id_for_label }}">Infos de rendez-vous</label>
+            {{ form.infos_rdv }}
+            {{ form.infos_rdv.errors }}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Capacité & tarifs</h3>
+        <div class="grid three">
+          <div class="fg">
+            <label for="{{ form.capacite.id_for_label }}">Capacité (participants)</label>
+            {{ form.capacite }}
+            {{ form.capacite.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.devise.id_for_label }}">Devise</label>
+            {{ form.devise }}
+            {{ form.devise.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.prix_pilote_unitaire.id_for_label }}">Prix pilote</label>
+            <div class="input-suffix">
+              {{ form.prix_pilote_unitaire }}
+              <span class="suffix" data-currency>—</span>
+            </div>
+            {{ form.prix_pilote_unitaire.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.prix_passager_unitaire.id_for_label }}">Prix passager</label>
+            <div class="input-suffix">
+              {{ form.prix_passager_unitaire }}
+              <span class="suffix" data-currency>—</span>
+            </div>
+            {{ form.prix_passager_unitaire.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.delai_option_jours.id_for_label }}">Durée validité d’option (jours)</label>
+            {{ form.delai_option_jours }}
+            {{ form.delai_option_jours.errors }}
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.statut.id_for_label }}">Statut</label>
+            {{ form.statut }}
+            {{ form.statut.errors }}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Contenus (page détail)</h3>
+        <div class="grid two">
+          <div class="fg col-2">
+            <label for="{{ form.programme.id_for_label }}">Programme (jour par jour)</label>
+            {{ form.programme }}
+            {{ form.programme.errors }}
+          </div>
+          <div class="fg col-2">
+            <label for="{{ form.kilometrages.id_for_label }}">Kilométrages indicatifs</label>
+            {{ form.kilometrages }}
+            {{ form.kilometrages.errors }}
+          </div>
+          <div class="fg">
+            <label for="{{ form.prix_comprend.id_for_label }}">Le prix comprend</label>
+            {{ form.prix_comprend }}
+            {{ form.prix_comprend.errors }}
+          </div>
+          <div class="fg">
+            <label for="{{ form.prix_ne_comprend_pas.id_for_label }}">Le prix ne comprend pas</label>
+            {{ form.prix_ne_comprend_pas }}
+            {{ form.prix_ne_comprend_pas.errors }}
+          </div>
+          <div class="fg col-2">
+            <label for="{{ form.echeancier_texte.id_for_label }}">Échéancier (texte libre)</label>
+            {{ form.echeancier_texte }}
+            {{ form.echeancier_texte.errors }}
+            <small class="help">S’affiche en plus des montants calculés.</small>
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.infos_paiement.id_for_label }}">Coordonnées de paiement (emails)</label>
+            {{ form.infos_paiement }}
+            {{ form.infos_paiement.errors }}
+            <small class="help">
+              Ces informations (IBAN, BIC, référence, rappel des délais…) sont insérées dans les emails envoyés au pilote et au passager.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      {# Carte interactive #}
+      <div class="card">
+        <h3 class="card-title">Carte interactive du circuit</h3>
+        <p class="subtitle" style="margin:0 0 10px;color:var(--text-light)">
+          Configure la vue carte, satellite, Street View et navigation jour par jour affichée sur la page détail.
+        </p>
+
+        <div class="grid two">
+          <div class="fg col-2">
+            <label>
+              {{ form.itineraire_active }}
+              Afficher la carte interactive sur la page détail
+            </label>
+            {{ form.itineraire_active.errors }}
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.itineraire_points.id_for_label }}">Itinéraire jour par jour (JSON)</label>
+            {{ form.itineraire_points }}
+            {{ form.itineraire_points.errors }}
+            <small class="help">
+              Chaque jour peut contenir day, title, description, distance, duration, points et street_view.
+              Les points doivent contenir label, lat et lng.
+            </small>
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.itineraire_google_maps_url.id_for_label }}">Lien Google Maps / My Maps</label>
+            {{ form.itineraire_google_maps_url }}
+            {{ form.itineraire_google_maps_url.errors }}
+            <small class="help">Optionnel : lien public utilisé pour ouvrir l’itinéraire complet.</small>
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.itineraire_embed_url.id_for_label }}">URL d’intégration Google Maps</label>
+            {{ form.itineraire_embed_url }}
+            {{ form.itineraire_embed_url.errors }}
+            <small class="help">Optionnel : src d’iframe Google Maps, utile si la clé JS n’est pas encore configurée.</small>
+          </div>
+
+          <div class="fg">
+            <label for="{{ form.itineraire_street_view_url.id_for_label }}">URL d’intégration Street View</label>
+            {{ form.itineraire_street_view_url }}
+            {{ form.itineraire_street_view_url.errors }}
+            <small class="help">Optionnel : src d’iframe Street View en secours.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Emails (sur-mesure par circuit)</h3>
+        <p class="subtitle" style="margin:0 0 10px;color:var(--text-light)">
+          Laisse vide pour utiliser le texte standard (par défaut). Renseigne uniquement pour les circuits spécifiques.
+        </p>
+
+        <div class="grid two">
+          <div class="fg col-2">
+            <label for="{{ form.email_rdv.id_for_label }}">Email — RDV / Logistique (override)</label>
+            {{ form.email_rdv }}
+            {{ form.email_rdv.errors }}
+            <small class="help">
+              Si vide : “Départ depuis la station Total (Walin, près de Namur ou Luxembourg suivant le programme) en direction du Luxembourg.”
+              <br>Tu peux écrire sur plusieurs lignes.
+            </small>
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.email_organisation.id_for_label }}">Email — Organisation du circuit (override)</label>
+            {{ form.email_organisation }}
+            {{ form.email_organisation.errors }}
+            <small class="help">
+              Si vide : “Le circuit se déroule en autonomie (avec ta trace GPS)…”
+              <br>Tu peux écrire sur plusieurs lignes.
+            </small>
+          </div>
+
+          <div class="fg col-2">
+            <label for="{{ form.email_checklist.id_for_label }}">Email — Checklist (override)</label>
+            {{ form.email_checklist }}
+            {{ form.email_checklist.errors }}
+            <small class="help">
+              Une ligne = un item de la liste (bullet).
+              <br>Si vide : la checklist standard (carte d’identité, permis, etc.) est utilisée.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Échéancier par défaut</h3>
+        <div class="grid three">
+          <div class="fg">
+            <label for="{{ form.acompte1_par_personne.id_for_label }}">Acompte 1 (par personne)</label>
+            <div class="input-suffix">
+              {{ form.acompte1_par_personne }}
+              <span class="suffix" data-currency>—</span>
+            </div>
+            {{ form.acompte1_par_personne.errors }}
+            <small class="help">Ex: 250 (EUR) — exigible à la validation.</small>
+          </div>
+          <div class="fg">
+            <label for="{{ form.acompte2_par_personne.id_for_label }}">Acompte 2 (par personne)</label>
+            <div class="input-suffix">
+              {{ form.acompte2_par_personne }}
+              <span class="suffix" data-currency>—</span>
+            </div>
+            {{ form.acompte2_par_personne.errors }}
+            <small class="help">Ex: 250 (EUR).</small>
+          </div>
+          <div class="fg">
+            <label for="{{ form.delai_acompte2_jours.id_for_label }}">Acompte 2 — J-jours</label>
+            {{ form.delai_acompte2_jours }}
+            {{ form.delai_acompte2_jours.errors }}
+            <small class="help">Ex: 60 → J-60.</small>
+          </div>
+          <div class="fg">
+            <label for="{{ form.delai_solde_jours.id_for_label }}">Solde — J-jours</label>
+            {{ form.delai_solde_jours }}
+            {{ form.delai_solde_jours.errors }}
+            <small class="help">Ex: 30 → J-30.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3 class="card-title">Options du circuit</h3>
+          <button type="button" class="btn btn-primary" id="addOption">+ Ajouter une option</button>
+        </div>
+
+        {% if formset.non_form_errors %}
+          <div class="alert error">{{ formset.non_form_errors }}</div>
+        {% endif %}
+
+        {{ formset.management_form }}
+
+        <div id="optionsList" class="stack">
+          {% for f in formset.forms %}
+            <div class="option-row" data-row>
+              {{ f.id }}
+
+              {% if f.non_field_errors %}
+                <div class="alert error">{{ f.non_field_errors }}</div>
+              {% endif %}
+
+              <div class="row-grid">
+                <div class="fg">
+                  <label>Code</label>
+                  {{ f.code }}
+                  {{ f.code.errors }}
+                </div>
+
+                <div class="fg">
+                  <label>Intitulé</label>
+                  {{ f.intitule }}
+                  {{ f.intitule.errors }}
+                </div>
+
+                <div class="fg">
+                  <label>Catégorie</label>
+                  {{ f.categorie }}
+                  {{ f.categorie.errors }}
+                </div>
+
+                <div class="fg">
+                  <label>Prix unitaire</label>
+                  <div class="input-suffix">
+                    {{ f.prix_unitaire }}
+                    <span class="suffix" data-currency>—</span>
+                  </div>
+                  {{ f.prix_unitaire.errors }}
+                </div>
+
+                <div class="fg check">
+                  <label class="check-label">{{ f.facture_par_personne }} Facturer par personne</label>
+                  {{ f.facture_par_personne.errors }}
+                </div>
+
+                <div class="fg check">
+                  <label class="check-label">{{ f.quantite_variable }} Quantité variable</label>
+                  {{ f.quantite_variable.errors }}
+                </div>
+
+                <div class="fg">
+                  <label>Quantité min.</label>
+                  {{ f.quantite_min }}
+                  {{ f.quantite_min.errors }}
+                </div>
+
+                <div class="fg">
+                  <label>Quantité max (0 = illimité)</label>
+                  {{ f.quantite_max }}
+                  {{ f.quantite_max.errors }}
+                </div>
+              </div>
+
+              <div class="row-actions">
+                {{ f.DELETE }}
+                <button type="button" class="btn btn-danger" data-remove>Supprimer</button>
+              </div>
+            </div>
+          {% empty %}
+            <div class="empty">Aucune option pour l’instant. Ajoutez-en avec le bouton ci-dessus.</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-secondary" href="{% url 'bo_circuit_list' %}">Annuler</a>
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+      </div>
+
+    </form>
+
+  </div>
+
+  {# --------- PROTOTYPE D’UNE LIGNE OPTION (pour ajout JS) --------- #}
+  <template id="optProto">
+    <div class="row-grid">
+      <div class="fg">
+        <label>Code</label>
+        REPLACE-CODE
+      </div>
+      <div class="fg">
+        <label>Intitulé</label>
+        REPLACE-INTITULE
+      </div>
+      <div class="fg">
+        <label>Catégorie</label>
+        REPLACE-CATEGORIE
+      </div>
+      <div class="fg">
+        <label>Prix unitaire</label>
+        <div class="input-suffix">
+          REPLACE-PRIX
+          <span class="suffix" data-currency>—</span>
+        </div>
+      </div>
+      <div class="fg check">
+        <label class="check-label">REPLACE-FPP Facturer par personne</label>
+      </div>
+      <div class="fg check">
+        <label class="check-label">REPLACE-QV Quantité variable</label>
+      </div>
+      <div class="fg">
+        <label>Quantité min.</label>
+        REPLACE-QMIN
+      </div>
+      <div class="fg">
+        <label>Quantité max (0 = illimité)</label>
+        REPLACE-QMAX
+      </div>
+    </div>
+    <div class="row-actions">
+      <button type="button" class="btn btn-danger" data-remove>Supprimer</button>
+    </div>
+  </template>
+
+  <style>
+    .admin-wrap{max-width:1100px;margin:0 auto}
+    .page-head{margin:0 0 1.25rem}
+    .title{margin:0;font-size:1.6rem}
+    .subtitle{color:var(--text-light)}
+
+    .card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:16px;margin:14px 0}
+    .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .card-title{margin:0 0 10px;font-size:1.1rem}
+
+    .grid{display:grid;gap:12px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    .col-2{grid-column:1 / -1}
+
+    .fg{display:flex;flex-direction:column;gap:6px}
+    .fg.check{justify-content:end}
+    .check-label{display:flex;align-items:center;gap:8px; font-weight:400}
+    .input-suffix{display:flex;align-items:center;gap:8px}
+    .suffix{opacity:.7;white-space:nowrap}
+
+    .stack{display:flex;flex-direction:column;gap:12px}
+    .option-row{border:1px dashed var(--border);border-radius:12px;padding:12px}
+    .row-grid{display:grid;gap:10px;grid-template-columns:repeat(4,1fr)}
+    .row-actions{margin-top:8px;display:flex;gap:8px;justify-content:flex-end}
+
+    .btn{padding:.6rem 1rem;border:none;border-radius:10px;cursor:pointer}
+    .btn-primary{background:linear-gradient(90deg,#3b82f6,#6366f1);color:white}
+    .btn-primary:hover{background:linear-gradient(90deg,#2563eb,#4f46e5)}
+    .btn-secondary{background:var(--secondary);color:var(--text)}
+    .btn-danger{background:#ef4444;color:white}
+
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+    .alert.error{background:rgba(239,68,68,.08);border:1px solid #ef4444;color:#991b1b;padding:.6rem .8rem;border-radius:10px;margin:.5rem 0}
+    .fg.has-error input,.fg.has-error select,.fg.has-error textarea{border-color:#ef4444}
+    .fg .error{color:#b91c1c;font-size:.9rem}
+
+    @media (max-width: 900px){
+      .grid.two{grid-template-columns:1fr}
+      .grid.three{grid-template-columns:1fr}
+      .row-grid{grid-template-columns:1fr}
+    }
+  </style>
+
+  {# --------- JS : gestion devise, autoslug, formset, validations --------- #}
+  <script>
+  (function () {
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+    const byName = (name, root = document) => root.querySelector(`[name="${name}"]`);
+    function slugify(s){return (s||"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
+    function clearErrors(scope=document){ $$(".fg.has-error",scope).forEach(el=>el.classList.remove("has-error")); $$(".fg .error",scope).forEach(el=>el.remove()); }
+    function showError(inputEl,msg){ if(!inputEl) return; const fg=inputEl.closest(".fg")||inputEl.parentElement; if(!fg) return; fg.classList.add("has-error"); const e=document.createElement("div"); e.className="error"; e.textContent=msg; fg.appendChild(e); }
+    function toast(msg){ alert(msg); }
+
+    // AUTOSLUG Circuit code depuis nom
+    const nom = document.querySelector("#id_nom");
+    const code = document.querySelector("#id_code");
+
+    if (nom && code) {
+      let autoSlug = !code.value.trim();
+      const compute = () => slugify(nom.value);
+
+      nom.addEventListener("input", () => { if (autoSlug) code.value = compute(); });
+      code.addEventListener("input", () => { autoSlug = !code.value.trim(); });
+      nom.addEventListener("blur", () => { if (autoSlug) code.value = compute(); });
+    }
+
+    // Suffix devise
+    const deviseSelect = $("#id_devise");
+    function updateCurrencySuffix(){
+      const cur = deviseSelect ? deviseSelect.value : "XOF";
+      $$("[data-currency]").forEach(el => el.textContent = cur);
+    }
+    if(deviseSelect){ deviseSelect.addEventListener("change", updateCurrencySuffix); }
+    updateCurrencySuffix();
+
+    // FORMSET
+    const list = $("#optionsList");
+    const addBtn = $("#addOption");
+    const totalInput = $("#id_opts-TOTAL_FORMS");
+    const EMPTY_FORM_HTML = `{{ formset.empty_form.as_p|escapejs }}`;
+    const prefix = "opts";
+
+    function nextIndex(){ return parseInt(totalInput.value || "0", 10); }
+    function incrementTotalForms(){ totalInput.value = nextIndex() + 1; }
+
+    function getField(root, index, fname){ return root.querySelector(`[name="${prefix}-${index}-${fname}"]`); }
+    function extractWidgetHTML(tmpRoot, index, fname){ const el = getField(tmpRoot, index, fname); return el ? el.outerHTML : ""; }
+
+    function ensureDeleteInput(row, index){
+      let del = byName(`${prefix}-${index}-DELETE`, row);
+      if(!del){
+        del = document.createElement("input");
+        del.type = "checkbox";
+        del.name = `${prefix}-${index}-DELETE`;
+        del.style.display = "none";
+        row.appendChild(del);
+      } else { del.style.display = "none"; }
+      return del;
+    }
+
+    function wireRemoveButton(row){
+      const btn = $("[data-remove]", row);
+      if(!btn) return;
+      btn.addEventListener("click", () => {
+        const delBox = $$('input[name$="-DELETE"]', row)[0];
+        if(delBox) delBox.checked = true;
+        row.style.display = "none";
+      });
+    }
+
+    function wireAutoSlug(row){
+      const intitule = row.querySelector('input[name$="-intitule"]');
+      const code = row.querySelector('input[name$="-code"]');
+      if(!intitule || !code) return;
+
+      let auto = !code.value.trim();
+      const compute = () => slugify(intitule.value);
+
+      intitule.addEventListener("input", () => { if (auto) code.value = compute(); });
+      code.addEventListener("input", () => { auto = !code.value.trim(); });
+      intitule.addEventListener("blur", () => { if (auto) code.value = compute(); });
+    }
+
+    function updateSuffixInRow(row){
+      const cur = deviseSelect ? deviseSelect.value : "XOF";
+      $$("[data-currency]", row).forEach(el => el.textContent = cur);
+    }
+
+    function addRowFromEmptyForm(){
+      const idx = nextIndex();
+      const tmp = document.createElement("div");
+      tmp.innerHTML = EMPTY_FORM_HTML.replaceAll("__prefix__", String(idx));
+
+      const fields = {
+        code: extractWidgetHTML(tmp, idx, "code"),
+        intitule: extractWidgetHTML(tmp, idx, "intitule"),
+        categorie: extractWidgetHTML(tmp, idx, "categorie"),
+        prix_unitaire: extractWidgetHTML(tmp, idx, "prix_unitaire"),
+        facture_par_personne: extractWidgetHTML(tmp, idx, "facture_par_personne"),
+        quantite_variable: extractWidgetHTML(tmp, idx, "quantite_variable"),
+        quantite_min: extractWidgetHTML(tmp, idx, "quantite_min"),
+        quantite_max: extractWidgetHTML(tmp, idx, "quantite_max"),
+        deleteField: extractWidgetHTML(tmp, idx, "DELETE"),
+        idField: extractWidgetHTML(tmp, idx, "id"),
+      };
+
+      const proto = $("#optProto");
+      let html = proto.innerHTML;
+      html = html.replace("REPLACE-CODE", fields.code || "");
+      html = html.replace("REPLACE-INTITULE", fields.intitule || "");
+      html = html.replace("REPLACE-CATEGORIE", fields.categorie || "");
+      html = html.replace("REPLACE-PRIX", fields.prix_unitaire || "");
+      html = html.replace("REPLACE-FPP", fields.facture_par_personne || "");
+      html = html.replace("REPLACE-QV", fields.quantite_variable || "");
+      html = html.replace("REPLACE-QMIN", fields.quantite_min || "");
+      html = html.replace("REPLACE-QMAX", fields.quantite_max || "");
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "option-row";
+      wrapper.setAttribute("data-row", "");
+      wrapper.innerHTML = html;
+
+      if(fields.idField){
+        const box = document.createElement("div");
+        box.style.display = "none";
+        box.innerHTML = fields.idField;
+        wrapper.appendChild(box);
+      }
+      if(fields.deleteField){
+        const box = document.createElement("div");
+        box.style.display = "none";
+        box.innerHTML = fields.deleteField;
+        wrapper.appendChild(box);
+      }
+
+      list.appendChild(wrapper);
+
+      ensureDeleteInput(wrapper, idx);
+      wireRemoveButton(wrapper);
+      wireAutoSlug(wrapper);
+      updateSuffixInRow(wrapper);
+      incrementTotalForms();
+    }
+
+    $$("#optionsList [data-row]").forEach(row => {
+      wireRemoveButton(row);
+      wireAutoSlug(row);
+    });
+
+    if(addBtn){
+      addBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        addRowFromEmptyForm();
+      });
+    }
+
+    function validateOptions(){
+      clearErrors(list);
+      let ok = true;
+      const seen = new Set();
+
+      $$("#optionsList [data-row]").forEach(row => {
+        const del = $$('input[name$="-DELETE"]', row)[0];
+        if(del && del.checked) return;
+
+        const code = $$('input[name$="-code"]', row)[0];
+        const intitule = $$('input[name$="-intitule"]', row)[0];
+        const prix = $$('input[name$="-prix_unitaire"]', row)[0];
+        const qmin = $$('input[name$="-quantite_min"]', row)[0];
+        const qmax = $$('input[name$="-quantite_max"]', row)[0];
+
+        if(code && (!code.value || !code.value.trim())){
+          if(intitule && intitule.value){ code.value = slugify(intitule.value); }
+        }
+
+        if(prix){
+          const v = Number(prix.value || 0);
+          if(isNaN(v) || v < 0){ ok=false; showError(prix, "Prix invalide (≥ 0)."); }
+        }
+
+        const vmin = qmin ? Number(qmin.value || 0) : 0;
+        const vmax = qmax ? Number(qmax.value || 0) : 0;
+        if(!isNaN(vmin) && !isNaN(vmax) && vmax !== 0 && vmax < vmin){
+          ok=false; if(qmax) showError(qmax, "Max ≥ min (ou 0 pour illimité).");
+        }
+
+        if(code && code.value.trim()){
+          const c = code.value.trim();
+          if(seen.has(c)){ ok=false; showError(code, "Code déjà utilisé dans ce formulaire."); }
+          else { seen.add(c); }
+        }
+      });
+
+      return ok;
+    }
+
+    const form = document.querySelector("form.form-step");
+    if(form){
+      form.addEventListener("submit", (e) => {
+        if(!validateOptions()){
+          e.preventDefault();
+          toast("Veuillez corriger les erreurs dans les options.");
+          const firstErr = $(".fg.has-error input, .fg.has-error select, .fg.has-error textarea", list);
+          if(firstErr) firstErr.focus({ preventScroll:false });
+        }
+      });
+    }
+  })();
+  </script>
+
+{% endblock %}
+

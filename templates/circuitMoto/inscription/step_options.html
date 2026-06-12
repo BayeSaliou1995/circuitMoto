@@ -1,0 +1,110 @@
+{# templates/circuitMoto/inscription/step_options.html #}
+{% extends "circuitMoto/inscription/base/base_inscription.html" %}
+{% load static i18n version_static %}
+
+{% block body_class %}page-wizard{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% version_static 'circuitMoto/css/step.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="step-hero">
+    <h2 class="step-title">{% trans "Options du circuit" %}</h2>
+    <p class="step-subtitle">
+      {% trans "Sélectionnez les options supplémentaires que vous souhaitez ajouter à votre inscription." %}
+    </p>
+  </div>
+
+  <form method="post" class="form-step">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <section class="step-section step-options">
+      <header class="section-head">
+        <h3 class="section-title">{% trans "Options" %}</h3>
+        <p class="section-subtitle">{% trans "Cochez uniquement ce dont vous avez besoin." %}</p>
+      </header>
+
+      {% if form.fields %}
+        <div class="options-grid">
+          {% for field in form %}
+            {% if field.field.widget.input_type == "checkbox" %}
+              <div class="option-card">
+                <label class="option-check">
+                  {{ field }}
+                  <span class="option-ui" aria-hidden="true"></span>
+                  <span class="option-main">
+                    <span class="option-title">
+                      {{ field.label }}
+                      {% if field.field.required %}
+                        <span class="req-star" aria-hidden="true">*</span>
+                      {% endif %}
+                    </span>
+                    {% if field.help_text %}
+                      <span class="option-help">{{ field.help_text }}</span>
+                    {% endif %}
+                  </span>
+                </label>
+
+                {{ field.errors }}
+              </div>
+            {% else %}
+              <div class="option-card option-noncheck">
+                <label for="{{ field.id_for_label }}" class="{% if field.field.required %}required{% endif %}">
+                  {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                  <div class="helptext">{{ field.help_text }}</div>
+                {% endif %}
+
+                {{ field.errors }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="card info-card info-card--options">
+          <p>{% trans "Aucune option disponible pour ce circuit." %}</p>
+        </div>
+      {% endif %}
+    </section>
+
+    <div class="actions">
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          {% trans "Précédent" %}
+        </button>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        {% trans "Suivant" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script defer src="{% version_static 'circuitMoto/js/step.js' %}"></script>
+{% endblock %}
